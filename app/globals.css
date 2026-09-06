@@ -130,7 +130,11 @@ html::before {
   display: flex;
   /* 頭は右の端に立てる。縦組みは右から始まるので、そこが冊子の背にあたる。 */
   flex-direction: row-reverse;
-  height: 100dvh;
+  /*
+   * 鍵盤に覆われた分を差し引く。縦組みでは字が下へ流れるので、
+   * 覆われたままだと打っているところも消しているところも裏に隠れる。
+   */
+  height: calc(100dvh - var(--keyboard, 0px));
   min-height: 0;
 }
 
@@ -684,7 +688,7 @@ html::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100dvh;
+  min-height: calc(100dvh - var(--keyboard, 0px));
   padding: var(--air) var(--gutter);
   position: relative;
   z-index: 1;

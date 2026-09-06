@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SoundProvider } from "@/components/sound-provider";
+import { KeyboardInset } from "@/components/keyboard-inset";
 
 export const metadata: Metadata = {
   title: "つれづれ",
@@ -11,6 +12,8 @@ export const viewport = {
   themeColor: "#f2eee4",
   width: "device-width",
   initialScale: 1,
+  // 鍵盤が出たら版面のほうを縮める。縦組みでは、覆われた先に字が流れてしまうので。
+  interactiveWidget: "resizes-content" as const,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -27,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        <KeyboardInset />
         <SoundProvider>{children}</SoundProvider>
       </body>
     </html>
