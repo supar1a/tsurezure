@@ -12,6 +12,15 @@ export function paragraphs(body: string) {
     .filter(Boolean);
 }
 
+/**
+ * 題の長さの上限。
+ *
+ * 目次では一篇が一行になるので、題が長いと行が伸びて一覧の体をなさなくなる。
+ * 打ち込みの上限（maxLength）と、送られてきたものの検めと、
+ * 書く人に見せる残り字数——三つが食い違わないよう、ここ一か所から取る。
+ */
+export const TITLE_MAX = 40;
+
 export function countChars(body: string) {
   return [...body.replace(/\s/g, "")].length;
 }

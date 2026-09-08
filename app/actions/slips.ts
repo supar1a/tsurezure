@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 import { readPhoto } from "@/lib/photo";
-import { composeBody } from "@/lib/text";
+import { TITLE_MAX, composeBody } from "@/lib/text";
 
 export type FormState = { error?: string } | null;
 
@@ -48,6 +48,7 @@ export async function writeSlipAction(_prev: FormState, formData: FormData): Pro
 
   const published = formData.get("intent") !== "draft";
   const title = String(formData.get("title") ?? "").trim();
+  if (title.length > TITLE_MAX) return { error: `題は${TITLE_MAX}字までです。` };
 
   const slip = await prisma.slip.create({
     data: { placeId, authorId: user.id, title: title || null, body, published },
@@ -80,6 +81,7 @@ export async function saveSlipAction(_prev: FormState, formData: FormData): Prom
   const published = formData.get("intent") === "draft" ? false : slip.published;
 
   const title = String(formData.get("title") ?? "").trim();
+  if (title.length > TITLE_MAX) return { error: `題は${TITLE_MAX}字までです。` };
   await prisma.slip.update({
     where: { id: slipId },
     data: { title: title || null, body, published },

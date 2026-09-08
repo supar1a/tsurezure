@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
+import { TITLE_MAX, countChars } from "@/lib/text";
 import { useSound } from "./sound-provider";
 import type { FormState } from "@/app/actions/slips";
 
@@ -57,6 +58,8 @@ export function Composer({
   const [afterSeed, setAfterSeed] = useState(defaultAfter);
   const [afterKey, setAfterKey] = useState(0);
   const [count, setCount] = useState(() => countChars(defaultBefore + defaultAfter));
+  // 題の残り。打てなくなってから気づくのでは遅いので、終わりが近づいたら見せる。
+  const [titleLeft, setTitleLeft] = useState(() => TITLE_MAX - defaultTitle.length);
   const [trouble, setTrouble] = useState<string | null>(null);
 
   const { play } = useSound();
@@ -188,9 +191,10 @@ export function Composer({
           className="compose-title"
           placeholder="題（なくてよい）"
           defaultValue={defaultTitle}
-          maxLength={40}
+          maxLength={TITLE_MAX}
           rows={1}
           spellCheck={false}
+          onChange={(event) => setTitleLeft(TITLE_MAX - event.currentTarget.value.length)}
           onKeyDown={(event) => {
             // 題は一行きり。改行では送らない。
             if (event.key === "Enter" && !event.metaKey && !event.ctrlKey) {
@@ -269,6 +273,11 @@ export function Composer({
 
         {cancel}
 
+        {/* 題の上限は、ぶつかる手前でだけ言う。ずっと出していると急かしになる。 */}
+        {titleLeft <= 10 ? (
+          <span className="compose-count">題はあと{titleLeft}字</span>
+        ) : null}
+
         <span className="compose-count">{count > 0 ? `${count}字` : "　"}</span>
       </div>
     </form>
@@ -296,8 +305,4 @@ async function shrink(file: File) {
   if (!blob) throw new Error("書き出せませんでした");
 
   return { blob, width, height };
-}
-
-function countChars(value: string) {
-  return [...value.replace(/\s/g, "")].length;
 }
