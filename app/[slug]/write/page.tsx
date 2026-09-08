@@ -13,7 +13,7 @@ export default async function WritePage({ params }: { params: Promise<{ slug: st
   return (
     <div className="app">
       <Masthead sub={place.name}>
-        <PaperLink href={`/b/${slug}`} className="masthead-link">
+        <PaperLink href={`/${slug}`} className="masthead-link">
           やめる
         </PaperLink>
       </Masthead>

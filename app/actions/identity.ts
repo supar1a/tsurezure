@@ -38,7 +38,7 @@ export async function startAction(_prev: FormState, formData: FormData): Promise
     },
   });
 
-  redirect(`/b/${place.slug}`);
+  redirect(`/${place.slug}`);
 }
 
 /**
@@ -66,7 +66,7 @@ export async function joinAction(_prev: FormState, formData: FormData): Promise<
   });
 
   revalidatePath("/");
-  redirect(`/b/${place.slug}`);
+  redirect(`/${place.slug}`);
 }
 
 /**
@@ -80,7 +80,7 @@ export async function iAmAction(formData: FormData) {
   const slug = String(formData.get("slug") ?? "");
   const userId = String(formData.get("userId") ?? "");
 
-  if (await currentUser()) redirect(`/b/${slug}`);
+  if (await currentUser()) redirect(`/${slug}`);
 
   const place = await prisma.place.findUnique({ where: { slug } });
   if (!place) redirect("/");
@@ -88,10 +88,10 @@ export async function iAmAction(formData: FormData) {
   const membership = await prisma.membership.findUnique({
     where: { userId_placeId: { userId, placeId: place.id } },
   });
-  if (!membership) redirect(`/b/${slug}`);
+  if (!membership) redirect(`/${slug}`);
 
   await becomeUser(userId);
-  redirect(`/b/${slug}`);
+  redirect(`/${slug}`);
 }
 
 export async function forgetAction() {

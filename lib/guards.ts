@@ -28,7 +28,7 @@ export async function openPlace(slug: string) {
 /** 中身を読む画面で使う。メンバーでなければ、入口へ戻す。 */
 export async function requirePlace(slug: string) {
   const { user, place, membership } = await openPlace(slug);
-  if (!user || !membership) redirect(`/b/${slug}`);
+  if (!user || !membership) redirect(`/${slug}`);
   return { user, place, membership };
 }
 

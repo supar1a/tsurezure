@@ -88,7 +88,7 @@ export default async function HomePage() {
                 const last = tally?._max.createdAt ?? null;
 
                 return (
-                  <PaperLink key={place.id} href={`/b/${place.slug}`} className="book">
+                  <PaperLink key={place.id} href={`/${place.slug}`} className="book">
                     <div className="book-head">
                       <h2 className="book-name">{place.name}</h2>
                       <div className="book-meta">

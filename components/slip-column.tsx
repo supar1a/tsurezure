@@ -30,7 +30,7 @@ export function SlipColumn({
     <article className="slip">
       <header className="slip-head">
         <PaperLink
-          href={`/b/${slug}/by/${slip.author.id}`}
+          href={`/${slug}/by/${slip.author.id}`}
           className="slip-who"
           voice="rustle"
         >

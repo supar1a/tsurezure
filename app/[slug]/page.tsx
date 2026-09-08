@@ -69,17 +69,17 @@ export default async function PlacePage({
   return (
     <div className="app">
       <Masthead sub={place.name}>
-        <PaperLink href={`/b/${slug}/write`} className="masthead-link" voice="rustle">
+        <PaperLink href={`/${slug}/write`} className="masthead-link" voice="rustle">
           書く
         </PaperLink>
         <PaperLink
-          href={scroll ? `/b/${slug}` : `/b/${slug}?view=maki`}
+          href={scroll ? `/${slug}` : `/${slug}?view=maki`}
           className="masthead-link"
           voice="rustle"
         >
           {scroll ? "目次で見る" : "巻物で読む"}
         </PaperLink>
-        <PaperLink href={`/b/${slug}/members`} className="masthead-link" voice="rustle">
+        <PaperLink href={`/${slug}/members`} className="masthead-link" voice="rustle">
           メンバー
         </PaperLink>
         <PaperLink href="/" className="masthead-link">
@@ -113,7 +113,7 @@ export default async function PlacePage({
               ))}
 
               {/* 巻物の左端。次の一枚が書かれる場所。 */}
-              <PaperLink href={`/b/${slug}/write`} className="blankpage" voice="rustle">
+              <PaperLink href={`/${slug}/write`} className="blankpage" voice="rustle">
                 <span className="blankpage-lede">書く</span>
                 <span className="blankpage-hint">
                   なんでもいい。

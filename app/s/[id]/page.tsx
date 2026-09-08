@@ -21,7 +21,7 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
             <DeleteSlip slipId={slip.id} />
           </>
         ) : null}
-        <PaperLink href={`/b/${slip.place.slug}`} className="masthead-link">
+        <PaperLink href={`/${slip.place.slug}`} className="masthead-link">
           グループへ戻る
         </PaperLink>
       </Masthead>
@@ -33,7 +33,7 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
               <div className="sheet-head-lead">
                 {slip.title ? <h1 className="sheet-title">{slip.title}</h1> : null}
                 <PaperLink
-                  href={`/b/${slip.place.slug}/by/${slip.author.id}`}
+                  href={`/${slip.place.slug}/by/${slip.author.id}`}
                   className="sheet-who"
                   voice="rustle"
                 >

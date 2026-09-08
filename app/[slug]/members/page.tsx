@@ -14,7 +14,7 @@ export default async function MembersPage({ params }: { params: Promise<{ slug: 
   const head = await headers();
   const proto = head.get("x-forwarded-proto") ?? "http";
   const host = head.get("host") ?? "localhost:3000";
-  const inviteUrl = `${proto}://${host}/b/${place.slug}`;
+  const inviteUrl = `${proto}://${host}/${place.slug}`;
 
   const members = await prisma.membership.findMany({
     where: { placeId: place.id },
@@ -25,7 +25,7 @@ export default async function MembersPage({ params }: { params: Promise<{ slug: 
   return (
     <div className="app">
       <Masthead sub={place.name}>
-        <PaperLink href={`/b/${slug}`} className="masthead-link">
+        <PaperLink href={`/${slug}`} className="masthead-link">
           グループへ戻る
         </PaperLink>
       </Masthead>
@@ -52,7 +52,7 @@ export default async function MembersPage({ params }: { params: Promise<{ slug: 
               return (
                 <div key={member.id} className="person">
                   <PaperLink
-                    href={`/b/${slug}/by/${member.userId}`}
+                    href={`/${slug}/by/${member.userId}`}
                     className="person-name slip-who"
                     voice="rustle"
                   >

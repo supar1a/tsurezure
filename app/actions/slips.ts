@@ -56,8 +56,8 @@ export async function writeSlipAction(_prev: FormState, formData: FormData): Pro
     await prisma.photo.create({ data: { slipId: slip.id, ...photo } });
   }
 
-  revalidatePath(`/b/${place.slug}`);
-  redirect(published ? `/b/${place.slug}` : `/s/${slip.id}`);
+  revalidatePath(`/${place.slug}`);
+  redirect(published ? `/${place.slug}` : `/s/${slip.id}`);
 }
 
 export async function saveSlipAction(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -93,7 +93,7 @@ export async function saveSlipAction(_prev: FormState, formData: FormData): Prom
     await prisma.photo.create({ data: { slipId, ...photo } });
   }
 
-  revalidatePath(`/b/${slip.place.slug}`);
+  revalidatePath(`/${slip.place.slug}`);
   revalidatePath(`/s/${slipId}`);
   redirect(`/s/${slipId}`);
 }
@@ -106,7 +106,7 @@ export async function setPublishedAction(formData: FormData) {
 
   await prisma.slip.update({ where: { id: slipId }, data: { published } });
 
-  revalidatePath(`/b/${slip.place.slug}`);
+  revalidatePath(`/${slip.place.slug}`);
   revalidatePath(`/s/${slipId}`);
 }
 
@@ -116,6 +116,6 @@ export async function deleteSlipAction(formData: FormData) {
 
   await prisma.slip.delete({ where: { id: slipId } });
 
-  revalidatePath(`/b/${slip.place.slug}`);
-  redirect(`/b/${slip.place.slug}`);
+  revalidatePath(`/${slip.place.slug}`);
+  redirect(`/${slip.place.slug}`);
 }

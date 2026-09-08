@@ -146,7 +146,7 @@ async function main() {
       "  入口の「開発用」から、その人として見られます。",
       "  はなこで見ると、前に見たあとに書かれた分に目印が出ます。",
       "",
-      `  招待 URL: http://localhost:3000/b/${place.slug}`,
+      `  招待 URL: http://localhost:3000/${place.slug}`,
       "",
     ].join("\n"),
   );

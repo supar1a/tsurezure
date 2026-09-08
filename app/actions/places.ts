@@ -28,7 +28,7 @@ export async function createPlaceAction(
   });
 
   revalidatePath("/");
-  redirect(`/b/${place.slug}`);
+  redirect(`/${place.slug}`);
 }
 
 /**
@@ -66,7 +66,7 @@ export async function removeMemberAction(formData: FormData) {
   if (!target || target.role === "owner") return;
 
   await prisma.membership.delete({ where: { id: target.id } });
-  revalidatePath(`/b/${target.place.slug}/members`);
+  revalidatePath(`/${target.place.slug}/members`);
 }
 
 export async function leavePlaceAction(formData: FormData) {
