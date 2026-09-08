@@ -20,7 +20,7 @@ export function ContentsEntry({
   mine?: boolean;
 }) {
   return (
-    <PaperLink href={`/s/${slip.id}`} className="entry">
+    <PaperLink href={`/post/${slip.id}`} className="entry">
       <span className="entry-title">{headingOf(slip)}</span>
 
       <span className="entry-leader" aria-hidden="true" />

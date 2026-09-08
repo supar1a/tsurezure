@@ -40,7 +40,7 @@ export function SlipColumn({
         <div className="slip-meta">
           {!slip.published ? <span className="seal">下書き</span> : null}
           {mine ? <span className="slip-mine">じぶん</span> : null}
-          <PaperLink href={`/s/${slip.id}`} className="slip-when">
+          <PaperLink href={`/post/${slip.id}`} className="slip-when">
             {kanjiDateShort(slip.createdAt)}
           </PaperLink>
         </div>

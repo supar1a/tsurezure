@@ -14,7 +14,7 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
       <Masthead sub={slip.place.name}>
         {isAuthor ? (
           <>
-            <PaperLink href={`/s/${slip.id}/edit`} className="masthead-link" voice="rustle">
+            <PaperLink href={`/post/${slip.id}/edit`} className="masthead-link" voice="rustle">
               編集
             </PaperLink>
             <PublishToggle slipId={slip.id} published={slip.published} />

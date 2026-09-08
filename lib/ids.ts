@@ -7,7 +7,7 @@ const ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789";
  * グループの URL は道筋の一段目に直に置くので、ほかの画面と同じ名前になっては困る。
  * 実際に当たることはまずないが（14 字の生成なので）、当たったら黙って壊れる類なので塞ぐ。
  */
-const TAKEN = new Set(["new", "me", "s", "i", "b", "api", "favicon.ico", "_next"]);
+const TAKEN = new Set(["new", "me", "post", "i", "s", "b", "api", "favicon.ico", "_next"]);
 
 /**
  * 招待 URL の中身。

@@ -9,14 +9,15 @@ const nextConfig: NextConfig = {
   },
 
   /*
-   * グループの URL から `/b/` を外した。
-   * 招待状は人に渡してあるもので、こちらの都合で切ってよいものではないので、
-   * 前の形は新しい形へ送りつづける。
+   * 道筋から意味の分からない一文字を外した（`/b/` はグループ、`/s/` は一篇のつもりだった）。
+   * どちらも人の手に渡っているかもしれないので、前の形は新しい形へ送りつづける。
    */
   async redirects() {
     return [
       { source: "/b/:slug", destination: "/:slug", permanent: true },
       { source: "/b/:slug/:rest*", destination: "/:slug/:rest*", permanent: true },
+      { source: "/s/:id", destination: "/post/:id", permanent: true },
+      { source: "/s/:id/:rest*", destination: "/post/:id/:rest*", permanent: true },
     ];
   },
 };

@@ -57,7 +57,7 @@ export async function writeSlipAction(_prev: FormState, formData: FormData): Pro
   }
 
   revalidatePath(`/${place.slug}`);
-  redirect(published ? `/${place.slug}` : `/s/${slip.id}`);
+  redirect(published ? `/${place.slug}` : `/post/${slip.id}`);
 }
 
 export async function saveSlipAction(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -94,8 +94,8 @@ export async function saveSlipAction(_prev: FormState, formData: FormData): Prom
   }
 
   revalidatePath(`/${slip.place.slug}`);
-  revalidatePath(`/s/${slipId}`);
-  redirect(`/s/${slipId}`);
+  revalidatePath(`/post/${slipId}`);
+  redirect(`/post/${slipId}`);
 }
 
 /** 公開する／下書きに戻す。 */
@@ -107,7 +107,7 @@ export async function setPublishedAction(formData: FormData) {
   await prisma.slip.update({ where: { id: slipId }, data: { published } });
 
   revalidatePath(`/${slip.place.slug}`);
-  revalidatePath(`/s/${slipId}`);
+  revalidatePath(`/post/${slipId}`);
 }
 
 export async function deleteSlipAction(formData: FormData) {

@@ -20,7 +20,7 @@ export default async function EditSlipPage({ params }: { params: Promise<{ id: s
   return (
     <div className="app">
       <Masthead sub={slip.place.name}>
-        <PaperLink href={`/s/${slip.id}`} className="masthead-link">
+        <PaperLink href={`/post/${slip.id}`} className="masthead-link">
           やめる
         </PaperLink>
       </Masthead>
