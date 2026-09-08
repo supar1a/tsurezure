@@ -1,8 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { useSound } from "./sound-provider";
-import { leavePlaceAction, removeMemberAction } from "@/app/actions/places";
+import { leavePlaceAction, removeMemberAction, renamePlaceAction } from "@/app/actions/places";
+import { PLACE_NAME_MAX } from "@/lib/text";
+
+/**
+ * グループの名前を付けなおす。
+ *
+ * 名前だけが変わる。URL（合鍵）はそのままなので、渡してある招待状は切れない。
+ */
+export function RenamePlace({ placeId, current }: { placeId: string; current: string }) {
+  const [state, formAction, pending] = useActionState(renamePlaceAction, null);
+  const { play } = useSound();
+
+  return (
+    <form action={formAction} className="leaf-section">
+      <input type="hidden" name="placeId" value={placeId} />
+
+      <label className="field">
+        <span className="field-label">グループ名</span>
+        <input
+          name="name"
+          className="input"
+          maxLength={PLACE_NAME_MAX}
+          required
+          defaultValue={current}
+        />
+      </label>
+
+      {state?.error ? <p className="notice">{state.error}</p> : null}
+
+      <div className="row">
+        <button
+          type="submit"
+          className="btn"
+          disabled={pending}
+          onClick={() => play("ink")}
+        >
+          保存する
+        </button>
+      </div>
+    </form>
+  );
+}
 
 /** 招待 URL。これを渡すことが、そのまま招待になる。 */
 export function InviteUrl({ url }: { url: string }) {

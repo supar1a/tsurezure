@@ -4,7 +4,7 @@ import { requirePlace } from "@/lib/guards";
 import { kanjiDateShort } from "@/lib/kanji";
 import { Masthead } from "@/components/masthead";
 import { PaperLink } from "@/components/paper-link";
-import { InviteUrl, LeavePlace, RemoveMember } from "@/components/place-admin";
+import { InviteUrl, LeavePlace, RemoveMember, RenamePlace } from "@/components/place-admin";
 
 export default async function MembersPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -45,6 +45,18 @@ export default async function MembersPage({ params }: { params: Promise<{ slug: 
               </p>
               {!isOwner ? <LeavePlace placeId={place.id} /> : null}
             </section>
+
+            {isOwner ? (
+              <section className="panel">
+                <h1 className="panel-title">グループの名前</h1>
+                <p className="caption">
+                  付けなおしても、
+                  <br />
+                  招待 URL は変わりません。
+                </p>
+                <RenamePlace placeId={place.id} current={place.name} />
+              </section>
+            ) : null}
 
             {members.map((member) => {
               const isMe = member.userId === user.id;
