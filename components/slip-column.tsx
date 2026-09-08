@@ -64,7 +64,7 @@ export function SlipPhoto({
       {/* next/image は縦組みの中で扱いにくいので、素の img で置く */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={`/i/${photo.id}`}
+        src={`/photo/${photo.id}`}
         alt=""
         width={photo.width}
         height={photo.height}

@@ -47,7 +47,7 @@ export function Composer({
   const [photo, setPhoto] = useState<Attached | null>(
     defaultPhoto
       ? {
-          url: `/i/${defaultPhoto.id}`,
+          url: `/photo/${defaultPhoto.id}`,
           width: defaultPhoto.width,
           height: defaultPhoto.height,
           local: false,

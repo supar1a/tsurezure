@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
       { source: "/b/:slug/:rest*", destination: "/:slug/:rest*", permanent: true },
       { source: "/s/:id", destination: "/post/:id", permanent: true },
       { source: "/s/:id/:rest*", destination: "/post/:id/:rest*", permanent: true },
+      { source: "/i/:id", destination: "/photo/:id", permanent: true },
     ];
   },
 };
