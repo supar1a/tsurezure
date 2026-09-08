@@ -240,7 +240,7 @@ components/        巻物の一枚・書く場・戸口・音まわり
 
 ## 公開する（Vercel）
 
-公開先は **https://tsure-zure.vercel.app** 、置き場は `github.com/supar1a/tsurezure`。
+公開先は **https://tsurezure.site** 、置き場は `github.com/supar1a/tsurezure`。
 GitHub に push すると Vercel が拾って公開しなおす。環境変数は二種類だけ。
 
 | 名前 | どこから |
@@ -263,6 +263,17 @@ vercel project rename <いまの名前> <新しい名前>
 **名前を変えただけでは新しい URL は生えない。** 次に本番へ配信したときに割り当たるので、
 一度 push してから確かめること。GitHub の置き場の名前とは別ものなので、
 置き場を変えても公開先は変わらない。
+
+独自ドメインを繋ぐときは、DNS を Vercel に向けたうえで
+`vercel domains add <ドメイン> <プロジェクト名>` まで要る。
+DNS だけ向けても、どのプロジェクトのものでもないので 404 が返る。
+
+| 種別 | 名前 | 値 |
+|---|---|---|
+| A | `@` | `216.198.79.1` と `64.29.17.1`（2本とも） |
+| CNAME | `www` など | Vercel が案内するアカウント固有の値 |
+
+`tsure-zure.vercel.app` と `kokan-nikki-six.vercel.app` も、まだ同じところを指している。
 
 なお、データベースの名前（ローカルの `kokan_nikki` と Neon 側）はそのままにしてある。
 外からは見えないうえ、両方を揃えることはできないので、変えても割に合わない。
