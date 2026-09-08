@@ -33,7 +33,7 @@ export default async function HomePage() {
             <StartForm action={startAction} />
 
             <p className="leaf-lede">
-              アカウントはありません。名前は、このブラウザに残るだけです。
+              アカウントはありません。
               <br />
               誰かに招待された方は、受け取った URL をひらいてください。
             </p>

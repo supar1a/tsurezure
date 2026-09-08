@@ -6,10 +6,6 @@ export function GateMark() {
         仲間うちだけの、
         <br />
         縦書きの書き散らし。
-        <br />
-        返事も、いいねも、
-        <br />
-        数字もない。
       </p>
     </div>
   );
