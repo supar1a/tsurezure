@@ -84,11 +84,17 @@ export default async function HomePage() {
             <div className="stream tate fade-in">
               {/* 名前のもと。縦組みは右から読むので、いちばんはじめに置く。 */}
               <div className="epigraph">
-                <p className="epigraph-text">
-                  つれづれなるままに、日暮らし、硯に向かひて、心にうつりゆくよしなしごとを、
-                  そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。
-                </p>
-                <p className="epigraph-from">徒然草 序段</p>
+                {[
+                  "つれづれなるままに、",
+                  "日暮らし、硯に向かひて、",
+                  "心にうつりゆくよしなしごとを、",
+                  "そこはかとなく書きつくれば、",
+                  "あやしうこそものぐるほしけれ。",
+                ].map((line) => (
+                  <p key={line} className="epigraph-text">
+                    {line}
+                  </p>
+                ))}
               </div>
 
               {places.map((place) => {

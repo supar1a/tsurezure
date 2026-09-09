@@ -139,6 +139,17 @@ html::before {
   min-height: 0;
 }
 
+/*
+ * 広い画面では、上下に息を入れる。
+ * 中身の丈が画面いっぱいだと、端まで詰まって読むところが見つけにくい。
+ * 決め打ちの数ではなく画面の丈に対する割合で取るので、どの大きさでも同じ息づかいになる。
+ */
+@media (min-width: 900px) {
+  .app {
+    padding-block: clamp(2rem, 16vh, 9rem);
+  }
+}
+
 .stage {
   flex: 1 1 auto;
   min-width: 0;
@@ -171,16 +182,18 @@ html::before {
   text-decoration: none;
   white-space: nowrap;
   /*
-   * 横に少し潰す。縦組みでは字が縦に連なるので、幅を詰めると
-   * 筆で細く引いたような締まりが出る。字の大きさは、そのぶん少し上げてある。
+   * 字を横長に潰す。縦組みでは字が縦に連なるので、
+   * 詰めるのは高さのほう（scaleY）。横幅を詰めると縦長になってしまう。
    * 変形は場所を取らないので、中心を軸にして箱の中心からずらさない。
    */
   display: inline-block;
-  transform: scaleX(0.72);
+  transform: scaleY(0.72);
   transform-origin: center;
 }
 
 .masthead-sub {
+  /* 丈が足りなくなっても、名前は削らない。詰めるのは品書きのほう。 */
+  flex: 0 0 auto;
   font-size: 0.78rem;
   letter-spacing: 0.24em;
   color: var(--sumi-faint);
@@ -760,7 +773,7 @@ a.slip-when:hover {
   letter-spacing: 0.55em;
   line-height: 1.6;
   /* 品書きの表題と同じ組みかたで */
-  transform: scaleX(0.72);
+  transform: scaleY(0.72);
   transform-origin: center;
 }
 
@@ -800,9 +813,8 @@ a.slip-when:hover {
   display: flex;
   flex-direction: column; /* 縦組みでは右から左へ */
   align-items: flex-start;
-  gap: clamp(1.2rem, 2vw, 2rem);
+  gap: clamp(0.9rem, 1.4vw, 1.4rem);
   align-self: flex-start;
-  max-block-size: 18rem;
   padding-block-end: clamp(2rem, 4vw, 4rem);
   margin-block-end: clamp(2rem, 4vw, 4rem);
   border-block-end: 1px solid var(--rule-soft);
@@ -813,14 +825,6 @@ a.slip-when:hover {
   letter-spacing: 0.22em;
   line-height: 2.6;
   color: var(--sumi-faint);
-  text-indent: 1em;
-  margin: 0;
-}
-
-.epigraph-from {
-  font-size: 0.68rem;
-  letter-spacing: 0.3em;
-  color: var(--sumi-ghost);
   margin: 0;
 }
 
