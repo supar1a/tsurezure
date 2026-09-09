@@ -1445,8 +1445,12 @@ a {
   color: var(--sumi);
   max-inline-size: 100%;
   overflow: hidden;
-  border-block-end: 1px solid transparent;
-  padding-block-end: 0.3em;
+  /*
+   * 罫は片側にしか出ないが、余白と枠は両側に取る。
+   * 片側だけだと箱の中心と字の中心が食い違い、下の名前・日付と縦筋が合わなくなる。
+   */
+  border-block: 1px solid transparent;
+  padding-block: 0.3em;
   transition: border-color var(--quick) var(--ease);
 }
 
@@ -1457,7 +1461,8 @@ a {
 .entry-meta {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  /* 印も名前も日付も、題と同じ縦筋の上に載せる */
+  align-items: center;
   gap: 1.1em;
   font-size: 0.7rem;
   letter-spacing: 0.18em;

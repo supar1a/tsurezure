@@ -38,6 +38,9 @@ export function OpenAtLatest({ scrollerId }: { scrollerId: string }) {
 
     const align = () => {
       if (handedOver) return;
+      // 指や輪が触れている最中は、こちらからは動かさない。
+      // 見張りと人の操作が競ると、送っているそばから引き戻すことになる。
+      if (reaching) return;
       // 最後の一枚ではなく、中身そのものの左端を画面の左端に合わせる。
       // 一枚に合わせると、中身が自前で持っている余白のぶんだけ端まで行き着かない。
       const stream = scroller.querySelector<HTMLElement>("[data-stream]");
