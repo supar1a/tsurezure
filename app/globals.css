@@ -23,6 +23,7 @@
   --sumi-faint: #8a8073;
   --sumi-ghost: #ada395;
   --shu: #a8412c; /* 朱 */
+  --ai: #2d5573; /* 藍 — 外へ出る戸口の色 */
   --rule: rgba(33, 30, 25, 0.12);
   --rule-soft: rgba(33, 30, 25, 0.06);
 
@@ -162,13 +163,21 @@ html::before {
 }
 
 .masthead-title {
-  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  font-size: clamp(1.18rem, 1.55vw, 1.38rem);
   font-weight: 600;
   letter-spacing: 0.42em;
   text-indent: 0.42em;
   color: var(--sumi);
   text-decoration: none;
   white-space: nowrap;
+  /*
+   * 横に少し潰す。縦組みでは字が縦に連なるので、幅を詰めると
+   * 筆で細く引いたような締まりが出る。字の大きさは、そのぶん少し上げてある。
+   * 変形は場所を取らないので、中心を軸にして箱の中心からずらさない。
+   */
+  display: inline-block;
+  transform: scaleX(0.72);
+  transform-origin: center;
 }
 
 .masthead-sub {
@@ -516,10 +525,29 @@ a.slip-when:hover {
 }
 
 .slip-body p {
-  white-space: pre-line;
   text-indent: 1em;
   max-inline-size: 100%;
   margin: 0;
+}
+
+/*
+ * 空行を続けて置いたところ。
+ * 丸ごと一行空けると流れが切れすぎるので、半字ぶんだけ間を足す。
+ * 区切りの意味は残しつつ、読みは続く。
+ */
+.slip-body p.line-apart {
+  margin-block-start: 0.6em;
+}
+
+/* 外へ出る戸口。飾らず、色だけで分かるように。 */
+.link {
+  color: var(--ai);
+  text-decoration: none;
+  transition: color var(--quick) var(--ease);
+}
+
+.link:hover {
+  color: #1d3c55;
 }
 
 /* 下書きの印 */
@@ -727,10 +755,13 @@ a.slip-when:hover {
 }
 
 .gate-mark-title {
-  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  font-size: clamp(1.62rem, 2.75vw, 2.22rem);
   font-weight: 600;
   letter-spacing: 0.55em;
   line-height: 1.6;
+  /* 品書きの表題と同じ組みかたで */
+  transform: scaleX(0.72);
+  transform-origin: center;
 }
 
 .gate-mark-note {
@@ -761,11 +792,44 @@ a.slip-when:hover {
    ノート
    -------------------------------------------------------------------------- */
 
+/*
+ * 名前のもとになった一節。
+ * 読むものではなく、そこに在るものなので、囲わず、薄く、選べる並びの外に置く。
+ */
+.epigraph {
+  display: flex;
+  flex-direction: column; /* 縦組みでは右から左へ */
+  align-items: flex-start;
+  gap: clamp(1.2rem, 2vw, 2rem);
+  align-self: flex-start;
+  max-block-size: 18rem;
+  padding-block-end: clamp(2rem, 4vw, 4rem);
+  margin-block-end: clamp(2rem, 4vw, 4rem);
+  border-block-end: 1px solid var(--rule-soft);
+}
+
+.epigraph-text {
+  font-size: 0.82rem;
+  letter-spacing: 0.22em;
+  line-height: 2.6;
+  color: var(--sumi-faint);
+  text-indent: 1em;
+  margin: 0;
+}
+
+.epigraph-from {
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  color: var(--sumi-ghost);
+  margin: 0;
+}
+
 /* グループは「選ぶもの」なので、一枚ずつ囲って輪郭を与える。
    （巻物のほうは「読むもの」なので囲わない。） */
 .book {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: clamp(1.2rem, 2vw, 2.2rem);
   /* 中身のぶんだけの高さにする。短冊のように、それぞれ長さが違ってよい。 */
   align-self: flex-start;
@@ -1339,14 +1403,15 @@ a {
 .book-head {
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */
-  align-items: flex-start;
+  /* 名前も人数も枚数も日付も、ひとつの縦筋に載せる */
+  align-items: center;
   gap: clamp(1.4rem, 2.2vw, 2.2rem);
 }
 
 .book-meta {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   gap: 1.2em;
   font-size: 0.72rem;
   letter-spacing: 0.2em;

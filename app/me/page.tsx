@@ -4,7 +4,7 @@ import { Masthead } from "@/components/masthead";
 import { PaperLink } from "@/components/paper-link";
 import { RenameForm, Forget } from "@/components/identity-forms";
 
-export const metadata = { title: "名前 — つれづれ" };
+export const metadata = { title: "あなたのページ — つれづれ" };
 
 export default async function MePage() {
   const user = await requireUser();

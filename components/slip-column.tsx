@@ -1,5 +1,5 @@
 import { kanjiDateShort } from "@/lib/kanji";
-import { paragraphs, splitAroundPhoto } from "@/lib/text";
+import { linkify, paragraphs, splitAroundPhoto } from "@/lib/text";
 import { PaperLink } from "./paper-link";
 
 export type SlipRow = {
@@ -108,8 +108,18 @@ export function SlipText({
 function Prose({ body, className }: { body: string; className: string }) {
   return (
     <div className={className}>
-      {paragraphs(body).map((block, index) => (
-        <p key={index}>{block}</p>
+      {paragraphs(body).map((line, index) => (
+        <p key={index} className={line.afterBlank ? "line line-apart" : "line"}>
+          {linkify(line.text).map((piece, i) =>
+            piece.link ? (
+              <a key={i} className="link" href={piece.value} target="_blank" rel="noreferrer">
+                {piece.value}
+              </a>
+            ) : (
+              <span key={i}>{piece.value}</span>
+            ),
+          )}
+        </p>
       ))}
     </div>
   );

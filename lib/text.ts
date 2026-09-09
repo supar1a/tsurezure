@@ -4,12 +4,61 @@ export function excerpt(body: string, max = 110) {
   return flat.length > max ? flat.slice(0, max) + "…" : flat;
 }
 
-/** 本文の段落分け（空行区切り） */
-export function paragraphs(body: string) {
-  return body
-    .split(/\n{2,}/)
-    .map((p) => p.replace(/\n/g, "\n").trim())
-    .filter(Boolean);
+/*
+ * 本文を行に分ける。
+ *
+ * 改行のたびに一行として扱い、そのそれぞれに一字下げが付く。
+ * 縦組みの日本語では、行頭を一字下げるのが段落の目印で、
+ * 段落と段落のあいだに空きは作らない。
+ *
+ * ただし空行を続けて置いた人は、そこで一区切り置いたつもりのはず。
+ * 空行そのものは落としつつ、「前に空きがあった」ことだけを覚えておいて、
+ * あとで少しだけ間を足す。丸ごと一行空けると流れが切れすぎる。
+ */
+export type Line = { text: string; afterBlank: boolean };
+
+export function paragraphs(body: string): Line[] {
+  const out: Line[] = [];
+  let blank = false;
+  for (const raw of body.split("\n")) {
+    const text = raw.trim();
+    if (!text) {
+      // 先頭の空行は、間の取りようがないので数えない
+      if (out.length > 0) blank = true;
+      continue;
+    }
+    out.push({ text, afterBlank: blank });
+    blank = false;
+  }
+  return out;
+}
+
+/*
+ * 本文のなかの URL を、そのまま戸口にする。
+ *
+ * 書いた人が打った文字をこちらで書き換えることはしない。見えかたが変わるだけ。
+ * 末尾に句読点や閉じ括弧が付いていたら、それは URL の一部ではないので外す。
+ */
+const URL_RE = /https?:\/\/[^\s]+/g;
+const TRAILING = /[、。，．,.!?！？)）\]］}｝」』】〉》"'']+$/;
+
+export type Piece = { link: boolean; value: string };
+
+export function linkify(text: string): Piece[] {
+  const out: Piece[] = [];
+  let at = 0;
+  for (const m of text.matchAll(URL_RE)) {
+    const start = m.index ?? 0;
+    let url = m[0];
+    const cut = url.match(TRAILING);
+    if (cut) url = url.slice(0, url.length - cut[0].length);
+    if (!url) continue;
+    if (start > at) out.push({ link: false, value: text.slice(at, start) });
+    out.push({ link: true, value: url });
+    at = start + url.length;
+  }
+  if (at < text.length) out.push({ link: false, value: text.slice(at) });
+  return out;
 }
 
 /**

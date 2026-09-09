@@ -67,7 +67,7 @@ export default async function HomePage() {
           グループを作る
         </PaperLink>
         <PaperLink href="/me" className="masthead-link" voice="rustle">
-          名前
+          あなたのページ
         </PaperLink>
       </Masthead>
 
@@ -82,6 +82,15 @@ export default async function HomePage() {
             </div>
           ) : (
             <div className="stream tate fade-in">
+              {/* 名前のもと。縦組みは右から読むので、いちばんはじめに置く。 */}
+              <div className="epigraph">
+                <p className="epigraph-text">
+                  つれづれなるままに、日暮らし、硯に向かひて、心にうつりゆくよしなしごとを、
+                  そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。
+                </p>
+                <p className="epigraph-from">徒然草 序段</p>
+              </div>
+
               {places.map((place) => {
                 const tally = tallyOf.get(place.id);
                 const written = tally?._count._all ?? 0;
