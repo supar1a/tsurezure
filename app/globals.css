@@ -919,7 +919,8 @@ a.slip-when:hover {
 .person {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  /* 名前も役も日付も、ひとつの縦筋に載せる */
+  align-items: center;
   gap: 1.4em;
   max-block-size: 20rem;
 }
@@ -1093,16 +1094,14 @@ a {
 }
 
 /* --------------------------------------------------------------------------
-   合鍵 — 縦組みのなかに、URL の札だけを横に組んで置く
+   合鍵
    -------------------------------------------------------------------------- */
 
-/* 札そのものは場の向きに従う。横に組むのは、中の URL だけでよい。 */
 .invite {
   display: flex;
   flex-direction: column; /* 縦組みでは右から左へ */
-  align-items: flex-start;
+  align-items: center;
   gap: 0.9rem;
-  max-block-size: 13rem;
 }
 
 /* --------------------------------------------------------------------------
@@ -1312,18 +1311,21 @@ a {
   padding: 0.55em 1em;
 }
 
-/* URL はラテン文字と記号の並びなので、ここだけはどうしても横に組むほかない */
+/*
+ * 合鍵の札。
+ * ラテン文字の連なりは縦組みのなかで九十度倒れて出る。本文に書かれた URL も
+ * 同じ組みかたなので、ここだけ横に組む理由はない。
+ */
 .invite-url {
-  writing-mode: horizontal-tb;
-  inline-size: 13rem;
   font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
   font-size: 0.74rem;
   line-height: 1.9;
+  letter-spacing: 0.02em;
   color: var(--sumi);
   background: rgba(255, 253, 246, 0.66);
   border: 1px solid var(--rule);
   border-radius: 1px;
-  padding: 0.7em 0.8em;
+  padding: 0.8em 0.7em;
   word-break: break-all;
 }
 

@@ -37,11 +37,7 @@ export default async function MembersPage({ params }: { params: Promise<{ slug: 
               <h1 className="panel-title">招待する</h1>
               <InviteUrl url={inviteUrl} />
               <p className="caption">
-                この URL を渡した人が入れます。
-                <br />
-                ひらくと名前をきかれて、
-                <br />
-                そのまま仲間になります。
+                この URL を渡した人が入れます。ひらくと名前をきかれて、そのまま仲間になります。
               </p>
               {!isOwner ? <LeavePlace placeId={place.id} /> : null}
             </section>
@@ -49,11 +45,7 @@ export default async function MembersPage({ params }: { params: Promise<{ slug: 
             {isOwner ? (
               <section className="panel">
                 <h1 className="panel-title">グループの名前</h1>
-                <p className="caption">
-                  付けなおしても、
-                  <br />
-                  招待 URL は変わりません。
-                </p>
+                <p className="caption">付けなおしても、招待 URL は変わりません。</p>
                 <RenamePlace placeId={place.id} current={place.name} />
               </section>
             ) : null}
