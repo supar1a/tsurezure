@@ -387,6 +387,11 @@ html::before {
   overflow-y: hidden;
   overscroll-behavior-x: contain;
   /*
+   * 中身が動いたときに、ブラウザが「読んでいた場所」を保とうとして
+   * 巻きを数ピクセル押し戻す。左端に着けたそばから戻されるので、切る。
+   */
+  overflow-anchor: none;
+  /*
    * 紙は画面ではなく、文字のほうに属する。
    * local にすると地が中身と一緒に流れるので、止まった紙の上を文字が滑るのではなく、
    * 一枚の紙そのものを繰っているように見える。
@@ -1417,34 +1422,13 @@ a {
   flex: 0 0 auto;
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */
-  align-items: flex-start;
+  /* 題と、その下の名前・日付は、字の大きさが違う。
+     端で揃えると中心線がずれるので、中心で揃える。 */
+  align-items: center;
   gap: 1.1rem;
   inline-size: 100%;
   color: inherit;
   text-decoration: none;
-}
-
-/*
- * 目次のリーダー。
- * 見出しは列の上、名前と日付は列の下にあるので、そのままでは同じ一篇だと
- * 結びつかない。点線で繋いで、ひと続きの一行として読めるようにする。
- */
-.entry-leader {
-  flex: 1 1 auto;
-  block-size: 1px;
-  min-inline-size: 1.5em;
-  align-self: center;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    var(--sumi-ghost) 0 1.5px,
-    transparent 1.5px 6px
-  );
-  opacity: 0.55;
-  transition: opacity var(--quick) var(--ease);
-}
-
-.entry:hover .entry-leader {
-  opacity: 0.9;
 }
 
 .entry-title {

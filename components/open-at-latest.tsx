@@ -4,8 +4,6 @@ import { useEffect } from "react";
 
 /** 巻きを置きなおすのをやめる時刻（開いてから何ミリ秒か）。 */
 const WATCH_FOR = 8000;
-/** 左端に置いたとき、端から空けておく幅。 */
-const MARGIN = 24;
 
 /**
  * ひらいたら、いつも左端（いちばん新しいところ）に立つ。
@@ -36,20 +34,29 @@ export function OpenAtLatest({ scrollerId }: { scrollerId: string }) {
     // 指や輪が触れている最中。この間の動きは、人が送ったものとみなす。
     let reaching = false;
     let releaseTimer = 0;
+    let nudge = 0;
 
     const align = () => {
       if (handedOver) return;
-      const last = scroller.querySelector<HTMLElement>("[data-stream] > :last-child");
-      if (!last) return;
-      const view = scroller.getBoundingClientRect();
-      const box = last.getBoundingClientRect();
-      const shift = box.left - (view.left + MARGIN);
-      if (Math.abs(shift) >= 1) scroller.scrollLeft += shift;
+      // 最後の一枚ではなく、中身そのものの左端を画面の左端に合わせる。
+      // 一枚に合わせると、中身が自前で持っている余白のぶんだけ端まで行き着かない。
+      const stream = scroller.querySelector<HTMLElement>("[data-stream]");
+      if (!stream) return;
+      // 一度では数ピクセル手前で止まることがあるので、動かなくなるまで詰める。
+      // 符号は環境で割れるので、端を直に指さず、測った差を足していく。
+      for (let i = 0; i < 4; i++) {
+        const shift = stream.getBoundingClientRect().left - scroller.getBoundingClientRect().left;
+        if (Math.abs(shift) < 1) break;
+        const was = scroller.scrollLeft;
+        scroller.scrollLeft += shift;
+        if (scroller.scrollLeft === was) break; // これ以上は動けない（端に着いている）
+      }
       mine = scroller.scrollLeft;
     };
 
     const handOver = () => {
       handedOver = true;
+      window.clearInterval(nudge);
     };
 
     const reach = () => {
@@ -81,10 +88,27 @@ export function OpenAtLatest({ scrollerId }: { scrollerId: string }) {
     align();
     const frame = requestAnimationFrame(align);
 
-    // 字体や写真が遅れて入ると幅が変わるので、寸法の変化も見張る
+    /*
+     * 開いた直後のあいだだけ、端との距離そのものを見張る。
+     *
+     * 寸法の変化を見ているだけでは足りない。字が組み直されると、器も中身の箱も
+     * 同じ大きさのまま、巻きの伸びだけが変わることがある。そうなると
+     * ResizeObserver は鳴らず、数ピクセル手前に取り残される。
+     * align は端に着いていれば何もしないので、空振りは安い。
+     */
+    nudge = window.setInterval(align, 120);
+    const stopNudging = window.setTimeout(() => window.clearInterval(nudge), 3000);
+
+    /*
+     * 寸法の変化を見張る。中身と器の両方を見る。
+     * 中身は写真が遅れて入ると伸びる。器のほうも、字体が届くと右の柱の幅が変わり、
+     * 巻きの見える幅がそのぶん動く。中身だけ見ていると、後者を取りこぼして
+     * 数ピクセル手前で止まる。
+     */
     const stream = scroller.querySelector<HTMLElement>("[data-stream]");
     const watcher = new ResizeObserver(align);
     if (stream) watcher.observe(stream);
+    watcher.observe(scroller);
 
     scroller.addEventListener("scroll", onScroll, { passive: true });
     // 輪や鍵は、それ自体が「送る」動きなので、触れた時点で人のものにする
@@ -108,6 +132,8 @@ export function OpenAtLatest({ scrollerId }: { scrollerId: string }) {
 
     return () => {
       cancelAnimationFrame(frame);
+      window.clearInterval(nudge);
+      window.clearTimeout(stopNudging);
       window.clearTimeout(stopWatching);
       window.clearTimeout(releaseTimer);
       watcher.disconnect();
