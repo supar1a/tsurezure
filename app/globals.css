@@ -483,12 +483,19 @@ html::before {
 .slip-when {
   color: inherit;
   text-decoration: none;
-  border-block-end: 1px solid var(--rule-soft);
-  padding-block-end: 0.25em;
   transition: color var(--quick) var(--ease), border-color var(--quick) var(--ease);
 }
 
-.slip-when:hover {
+/*
+ * 罫は、日付そのものが頁への戸口になっているときだけ引く（巻物）。
+ * 目次では一行まるごとが戸口なので、日付にだけ線があっても意味がない。
+ */
+a.slip-when {
+  border-block-end: 1px solid var(--rule-soft);
+  padding-block-end: 0.25em;
+}
+
+a.slip-when:hover {
   color: var(--sumi);
   border-block-end-color: rgba(33, 30, 25, 0.28);
 }
