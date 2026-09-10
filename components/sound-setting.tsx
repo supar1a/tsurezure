@@ -12,13 +12,11 @@ export function SoundSetting() {
   const { muted, toggle } = useSound();
 
   return (
-    <div className="leaf-section">
-      <p className="caption">いま、{muted ? "鳴りません。" : "鳴ります。"}</p>
-      <div className="row">
-        <button type="button" onClick={toggle} className="btn" aria-pressed={!muted}>
-          {muted ? "鳴らす" : "止める"}
-        </button>
-      </div>
+    <div className="row">
+      {/* いまどちらかは、釦の言葉そのものが示す。断り書きは要らない。 */}
+      <button type="button" onClick={toggle} className="btn" aria-pressed={!muted}>
+        {muted ? "鳴らす" : "止める"}
+      </button>
     </div>
   );
 }

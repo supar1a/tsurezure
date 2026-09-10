@@ -33,6 +33,14 @@ export default async function MembersPage({ params }: { params: Promise<{ slug: 
       <div className="stage">
         <div className="scroll-tate">
           <div className="roster tate fade-in">
+            {isOwner ? (
+              <section className="panel">
+                <h1 className="panel-title">名前</h1>
+                <p className="caption">付けなおしても、招待 URL は変わりません。</p>
+                <RenamePlace placeId={place.id} current={place.name} />
+              </section>
+            ) : null}
+
             <section className="panel">
               <h1 className="panel-title">招待する</h1>
               <InviteUrl url={inviteUrl} />
@@ -42,13 +50,7 @@ export default async function MembersPage({ params }: { params: Promise<{ slug: 
               {!isOwner ? <LeavePlace placeId={place.id} /> : null}
             </section>
 
-            {isOwner ? (
-              <section className="panel">
-                <h1 className="panel-title">グループの名前</h1>
-                <p className="caption">付けなおしても、招待 URL は変わりません。</p>
-                <RenamePlace placeId={place.id} current={place.name} />
-              </section>
-            ) : null}
+            <h2 className="panel-title roster-heading">メンバー</h2>
 
             {members.map((member) => {
               const isMe = member.userId === user.id;

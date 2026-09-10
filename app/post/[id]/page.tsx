@@ -12,15 +12,6 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
   return (
     <div className="app">
       <Masthead sub={slip.place.name}>
-        {isAuthor ? (
-          <>
-            <PaperLink href={`/post/${slip.id}/edit`} className="masthead-link" voice="rustle">
-              編集
-            </PaperLink>
-            <PublishToggle slipId={slip.id} published={slip.published} />
-            <DeleteSlip slipId={slip.id} />
-          </>
-        ) : null}
         <PaperLink href={`/${slip.place.slug}`} className="masthead-link">
           グループへ戻る
         </PaperLink>
@@ -53,6 +44,20 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
               bodyClassName="sheet-body"
               photoClassName="sheet-photo"
             />
+
+            {/*
+              この一篇にできること。読み終えた先——縦組みではいちばん左——に置く。
+              柱は「いまどこに居るか」を示すもので、選んだ物への操作の場ではない。
+            */}
+            {isAuthor ? (
+              <footer className="sheet-foot">
+                <PaperLink href={`/post/${slip.id}/edit`} className="btn" voice="rustle">
+                  編集
+                </PaperLink>
+                <PublishToggle slipId={slip.id} published={slip.published} />
+                <DeleteSlip slipId={slip.id} />
+              </footer>
+            ) : null}
           </article>
         </div>
       </div>

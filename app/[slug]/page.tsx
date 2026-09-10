@@ -80,7 +80,7 @@ export default async function PlacePage({
           {scroll ? "目次で見る" : "巻物で読む"}
         </PaperLink>
         <PaperLink href={`/${slug}/members`} className="masthead-link" voice="rustle">
-          メンバー
+          このグループ
         </PaperLink>
       </Masthead>
 

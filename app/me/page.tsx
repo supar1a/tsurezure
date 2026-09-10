@@ -4,14 +4,11 @@ import { Masthead } from "@/components/masthead";
 import { PaperLink } from "@/components/paper-link";
 import { RenameForm, Forget } from "@/components/identity-forms";
 import { SoundSetting } from "@/components/sound-setting";
-import { prisma } from "@/lib/db";
-import { kanjiNumber } from "@/lib/kanji";
 
 export const metadata = { title: "あなたのページ — つれづれ" };
 
 export default async function MePage() {
   const user = await requireUser();
-  const places = await prisma.membership.count({ where: { userId: user.id } });
 
   return (
     <div className="app">
@@ -38,9 +35,6 @@ export default async function MePage() {
 
             <section className="panel">
               <h1 className="panel-title">入っているグループ</h1>
-              <p className="caption">
-                {places > 0 ? `いま、${kanjiNumber(places)}つ。` : "まだどこにも入っていません。"}
-              </p>
               <div className="row">
                 <PaperLink href="/" className="btn" voice="rustle">
                   一覧を見る
