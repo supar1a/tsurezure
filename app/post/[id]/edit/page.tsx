@@ -6,7 +6,7 @@ import { PaperLink } from "@/components/paper-link";
 import { Composer } from "@/components/composer";
 import { splitAroundPhoto } from "@/lib/text";
 
-export const metadata = { title: "編集 — つれづれ" };
+export const metadata = { title: "編集" };
 
 export default async function EditSlipPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

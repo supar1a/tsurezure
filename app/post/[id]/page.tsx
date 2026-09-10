@@ -1,9 +1,19 @@
+import type { Metadata } from "next";
 import { requireReadableSlip } from "@/lib/guards";
 import { kanjiDate, kanjiTime } from "@/lib/kanji";
 import { Masthead } from "@/components/masthead";
 import { PaperLink } from "@/components/paper-link";
 import { DeleteSlip, PublishToggle } from "@/components/slip-actions";
 import { SlipText } from "@/components/slip-column";
+
+/*
+ * 一篇の頁には、何も出さない。
+ *
+ * 名札は名乗る前でも取りに来られる。LINE や Slack に貼れば、
+ * その場の仕組みが名乗らずに読みにくる。中身はメンバーだけのものなので、
+ * 題も本文も、どのグループのものかも、ここには書かない。
+ */
+export const metadata: Metadata = { title: { absolute: "つれづれ" } };
 
 export default async function SlipPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

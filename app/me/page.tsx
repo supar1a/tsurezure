@@ -5,7 +5,7 @@ import { PaperLink } from "@/components/paper-link";
 import { RenameForm, Forget } from "@/components/identity-forms";
 import { SoundSetting } from "@/components/sound-setting";
 
-export const metadata = { title: "あなたのページ — つれづれ" };
+export const metadata = { title: "あなたのページ" };
 
 export default async function MePage() {
   const user = await requireUser();

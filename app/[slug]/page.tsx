@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
 import { Fragment } from "react";
 import { openPlace, readableSlips } from "@/lib/guards";
 import { unreadMarkAt } from "@/lib/place";
 import { prisma } from "@/lib/db";
+import { SITE, card } from "@/lib/meta";
 import { joinAction } from "@/app/actions/identity";
 import { Masthead } from "@/components/masthead";
 import { PaperLink } from "@/components/paper-link";
@@ -13,6 +15,27 @@ import { GateMark } from "@/components/gate-mark";
 import { JoinAsMe, NameOnlyForm, PickMe } from "@/components/identity-forms";
 
 const SCROLLER = "scroller";
+
+/*
+ * 分かち合うときに出る名札。
+ *
+ * グループの名前は、URL を知っている人には元々見せているので出してよい。
+ * 中身（誰が何を書いたか）は出さない。名札は名乗る前でも取りに来られるので、
+ * ここに書いたものは URL を受け取った人みんなに見えることになる。
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const place = await prisma.place.findUnique({ where: { slug }, select: { name: true } });
+  if (!place) return {};
+  return {
+    title: place.name,
+    openGraph: card(`${place.name} — ${SITE}`),
+  };
+}
 
 export default async function PlacePage({
   params,

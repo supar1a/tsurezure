@@ -3,7 +3,7 @@ import { createPlaceAction } from "@/app/actions/places";
 import { Masthead } from "@/components/masthead";
 import { CreatePlaceForm } from "@/components/place-forms";
 
-export const metadata = { title: "グループを作る — つれづれ" };
+export const metadata = { title: "グループを作る" };
 
 export default async function NewPlacePage() {
   await requireUser();

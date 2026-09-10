@@ -111,5 +111,41 @@ ico.writeUInt32LE(dib.length, 14); ico.writeUInt32LE(22, 18);
 dib.copy(ico, 22);
 writeFileSync(`${outDir}/favicon.ico`, ico);
 
-console.log("icon.png", big.length, "/ apple-icon.png / favicon.ico", ico.length);
+/*
+ * 分かち合うときに出る名札の絵。
+ * 中身は何も入れない。名乗る前の人にも見えるものなので。
+ */
+const cardPage = `data:text/html;charset=utf-8,` + encodeURIComponent(`
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600&display=block" rel="stylesheet">
+<style>
+  html,body{margin:0;padding:0}
+  body{width:1200px;height:630px;background:#1e1b16;overflow:hidden;
+       display:flex;align-items:center;justify-content:center;gap:64px;
+       font-family:"Shippori Mincho B1",serif}
+  /* 四字が丈のうちに収まる大きさ。字間ぶんも数に入れる。 */
+  .mark{writing-mode:vertical-rl;font-weight:600;font-size:72px;letter-spacing:.36em;
+        color:#f2eee4;line-height:1.2;margin:0}
+  .note{writing-mode:vertical-rl;font-weight:400;font-size:22px;letter-spacing:.28em;
+        line-height:2.6;color:rgba(242,238,228,.5);margin:0}
+</style></head><body>
+  <p class="note">仲間うちだけの、<br>縦書きの書き散らし。</p>
+  <p class="mark">つれづれ</p>
+</body></html>`);
+
+{
+  const { targetId } = await send("Target.createTarget", { url: "about:blank" });
+  const { sessionId } = await send("Target.attachToTarget", { targetId, flatten: true });
+  await send("Page.enable", {}, sessionId);
+  await send("Emulation.setDeviceMetricsOverride", { width: 1200, height: 630, deviceScaleFactor: 1, mobile: false }, sessionId);
+  await send("Page.navigate", { url: cardPage }, sessionId);
+  await new Promise((r) => setTimeout(r, 2500));
+  await send("Runtime.evaluate", { expression: "document.fonts.ready.then(()=>1)", awaitPromise: true }, sessionId);
+  await new Promise((r) => setTimeout(r, 500));
+  const { data } = await send("Page.captureScreenshot", { format: "png" }, sessionId);
+  await send("Target.closeTarget", { targetId });
+  writeFileSync(`${outDir}/opengraph-image.png`, Buffer.from(data, "base64"));
+}
+
+console.log("icon.png", big.length, "/ apple-icon.png / favicon.ico", ico.length, "/ opengraph-image.png");
 ws.close(); clearTimeout(bail); process.exit(0);

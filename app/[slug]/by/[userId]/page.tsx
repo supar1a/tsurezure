@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { requirePlace, readableSlips } from "@/lib/guards";
@@ -7,6 +8,21 @@ import { SlipColumn } from "@/components/slip-column";
 import { OpenAtLatest } from "@/components/open-at-latest";
 
 /** その人が書いたものだけを続けて読む。相手を少し知るための入口。 */
+/* 名札。名前は URL を知っている人には元々見えているものだけ。 */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; userId: string }>;
+}): Promise<Metadata> {
+  const { slug, userId } = await params;
+  const [place, who] = await Promise.all([
+    prisma.place.findUnique({ where: { slug }, select: { name: true } }),
+    prisma.user.findUnique({ where: { id: userId }, select: { name: true } }),
+  ]);
+  if (!place || !who) return {};
+  return { title: `${who.name}さん — ${place.name}` };
+}
+
 export default async function ByPersonPage({
   params,
 }: {

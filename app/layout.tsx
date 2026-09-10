@@ -2,10 +2,21 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SoundProvider } from "@/components/sound-provider";
 import { KeyboardInset } from "@/components/keyboard-inset";
+import { ABOUT, SITE, card } from "@/lib/meta";
 
 export const metadata: Metadata = {
-  title: "つれづれ",
-  description: "仲間うちだけの、縦書きの書き散らし。",
+  metadataBase: new URL("https://tsurezure.site"),
+  title: { default: SITE, template: `%s — ${SITE}` },
+  description: ABOUT,
+
+  /*
+   * 探しものからは外す。
+   * グループは URL を知っている人だけのものなので、目録に載ってはいけない。
+   */
+  robots: { index: false, follow: false },
+
+  openGraph: card(),
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport = {

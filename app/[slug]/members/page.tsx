@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/db";
 import { requirePlace } from "@/lib/guards";
@@ -5,6 +6,17 @@ import { kanjiDateShort } from "@/lib/kanji";
 import { Masthead } from "@/components/masthead";
 import { PaperLink } from "@/components/paper-link";
 import { InviteUrl, LeavePlace, RemoveMember, RenamePlace } from "@/components/place-admin";
+
+/* 名札。名前は URL を知っている人には元々見えているものだけ。 */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const place = await prisma.place.findUnique({ where: { slug }, select: { name: true } });
+  return place ? { title: `このグループ — ${place.name}` } : {};
+}
 
 export default async function MembersPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

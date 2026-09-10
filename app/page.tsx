@@ -7,8 +7,6 @@ import { PaperLink } from "@/components/paper-link";
 import { GateMark } from "@/components/gate-mark";
 import { DevSwitcher, StartForm } from "@/components/identity-forms";
 
-export const metadata = { title: "つれづれ" };
-
 const isDev = process.env.NODE_ENV !== "production";
 
 export default async function HomePage() {
