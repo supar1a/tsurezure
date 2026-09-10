@@ -1,5 +1,4 @@
 import { PaperLink } from "./paper-link";
-import { SoundToggle } from "./sound-toggle";
 
 export function Masthead({
   sub,
@@ -24,10 +23,7 @@ export function Masthead({
         ) : sub ? (
           <span className="masthead-sub">{sub}</span>
         ) : null}
-        <nav className="masthead-nav">
-          {children}
-          <SoundToggle />
-        </nav>
+        <nav className="masthead-nav">{children}</nav>
       </header>
       <div className="masthead-rule" />
     </>

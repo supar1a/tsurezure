@@ -3,19 +3,19 @@ import { forgetAction, renameAction } from "@/app/actions/identity";
 import { Masthead } from "@/components/masthead";
 import { PaperLink } from "@/components/paper-link";
 import { RenameForm, Forget } from "@/components/identity-forms";
+import { SoundSetting } from "@/components/sound-setting";
+import { prisma } from "@/lib/db";
+import { kanjiNumber } from "@/lib/kanji";
 
 export const metadata = { title: "あなたのページ — つれづれ" };
 
 export default async function MePage() {
   const user = await requireUser();
+  const places = await prisma.membership.count({ where: { userId: user.id } });
 
   return (
     <div className="app">
-      <Masthead>
-        <PaperLink href="/" className="masthead-link">
-          入っているグループ
-        </PaperLink>
-      </Masthead>
+      <Masthead />
 
       <div className="stage">
         <div className="scroll-tate">
@@ -23,23 +23,36 @@ export default async function MePage() {
             <section className="panel">
               <h1 className="panel-title">名前</h1>
               <p className="caption">
-                グループの中で、こう呼ばれます。
-                <br />
-                いつでも変えられます。
+                グループの中で、こう呼ばれます。いつでも変えられます。
               </p>
               <RenameForm action={renameAction} current={user.name} />
             </section>
 
             <section className="panel">
+              <h1 className="panel-title">紙の音</h1>
+              <p className="caption">
+                書くときと、頁を繰るときに鳴ります。ここで止められます。
+              </p>
+              <SoundSetting />
+            </section>
+
+            <section className="panel">
+              <h1 className="panel-title">入っているグループ</h1>
+              <p className="caption">
+                {places > 0 ? `いま、${kanjiNumber(places)}つ。` : "まだどこにも入っていません。"}
+              </p>
+              <div className="row">
+                <PaperLink href="/" className="btn" voice="rustle">
+                  一覧を見る
+                </PaperLink>
+              </div>
+            </section>
+
+            <section className="panel">
               <h1 className="panel-title">このブラウザから消す</h1>
               <p className="caption">
-                この名前は、このブラウザにだけ残っています。
-                <br />
-                消すと、グループの URL をひらいて
-                <br />
-                名前を選び直すまで戻れません。
-                <br />
-                書いたものはそのまま残ります。
+                この名前は、このブラウザにだけ残っています。消すと、グループの URL をひらいて
+                名前を選び直すまで戻れません。書いたものはそのまま残ります。
               </p>
               <Forget action={forgetAction} />
             </section>

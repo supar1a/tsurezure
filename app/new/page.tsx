@@ -1,7 +1,6 @@
 import { requireUser } from "@/lib/auth";
 import { createPlaceAction } from "@/app/actions/places";
 import { Masthead } from "@/components/masthead";
-import { PaperLink } from "@/components/paper-link";
 import { CreatePlaceForm } from "@/components/place-forms";
 
 export const metadata = { title: "グループを作る — つれづれ" };
@@ -11,11 +10,7 @@ export default async function NewPlacePage() {
 
   return (
     <div className="app">
-      <Masthead>
-        <PaperLink href="/" className="masthead-link">
-          入っているグループ
-        </PaperLink>
-      </Masthead>
+      <Masthead />
 
       <div className="stage">
         <div className="scroll-tate">
