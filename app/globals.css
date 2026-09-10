@@ -226,6 +226,16 @@ html::before {
   color: var(--sumi);
 }
 
+/* 添え名が戸口を兼ねるとき。押せることは、触れたときの濃さで返す。 */
+.masthead-sub-link {
+  text-decoration: none;
+  transition: color var(--quick) var(--ease);
+}
+
+.masthead-sub-link:hover {
+  color: var(--sumi);
+}
+
 /* 柱と場を隔てる、縦の罫 */
 .masthead-rule {
   flex: 0 0 auto;

@@ -62,12 +62,10 @@ export default async function HomePage() {
 
   return (
     <div className="app">
-      <Masthead sub={`${user.name} さん`}>
+      {/* 名乗りそのものが、あなたのページへの戸口。品書きに同じ行き先は並べない。 */}
+      <Masthead sub={`${user.name} さん`} subHref="/me">
         <PaperLink href="/new" className="masthead-link" voice="rustle">
           グループを作る
-        </PaperLink>
-        <PaperLink href="/me" className="masthead-link" voice="rustle">
-          あなたのページ
         </PaperLink>
       </Masthead>
 
