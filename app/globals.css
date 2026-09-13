@@ -233,6 +233,21 @@ html::before {
   color: var(--sumi);
 }
 
+/*
+ * 読み進めているあいだは、柱を引っ込める。
+ * 消すのは濃さだけ。畳むと巻きの幅が変わり、本文が組み直されてしまう。
+ */
+.masthead,
+.masthead-rule {
+  transition: opacity var(--slow) var(--ease);
+}
+
+.app[data-reading="true"] .masthead,
+.app[data-reading="true"] .masthead-rule {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* 柱と場を隔てる、縦の罫 */
 .masthead-rule {
   flex: 0 0 auto;
@@ -556,7 +571,11 @@ a.slip-when:hover {
  * 区切りの意味は残しつつ、読みは続く。
  */
 .slip-body p.line-apart {
-  margin-block-start: 0.6em;
+  /*
+   * margin ではなく padding。隣り合う余白は環境によって潰れることがあり、
+   * padding なら潰れようがない。
+   */
+  padding-block-start: 0.6em;
 }
 
 /* 外へ出る戸口。飾らず、色だけで分かるように。 */
@@ -568,6 +587,22 @@ a.slip-when:hover {
 
 .link:hover {
   color: #1d3c55;
+}
+
+/*
+ * 「---」で引く区切り。
+ * 縦組みでは、行と行のあいだに立てる縦の線になる。
+ * 字の並びから外れるものなので、前後に息を入れる。
+ */
+.line-rule {
+  flex: 0 0 auto;
+  align-self: stretch;
+  inline-size: auto;
+  block-size: 1px;
+  margin-block: clamp(1.2rem, 2vw, 2rem);
+  margin-inline: 12%;
+  border: 0;
+  background: var(--rule);
 }
 
 /* 下書きの印 */
@@ -827,9 +862,9 @@ a.slip-when:hover {
   align-items: flex-start;
   gap: clamp(0.9rem, 1.4vw, 1.4rem);
   align-self: flex-start;
-  padding-block-end: clamp(2rem, 4vw, 4rem);
-  margin-block-end: clamp(2rem, 4vw, 4rem);
-  border-block-end: 1px solid var(--rule-soft);
+  padding-block-start: clamp(2rem, 4vw, 4rem);
+  margin-block-start: clamp(2rem, 4vw, 4rem);
+  border-block-start: 1px solid var(--rule-soft);
 }
 
 .epigraph-text {

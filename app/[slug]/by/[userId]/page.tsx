@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { requirePlace, readableSlips } from "@/lib/guards";
 import { Masthead } from "@/components/masthead";
+import { HeadAway } from "@/components/head-away";
 import { PaperLink } from "@/components/paper-link";
 import { SlipColumn } from "@/components/slip-column";
 import { OpenAtLatest } from "@/components/open-at-latest";
@@ -68,6 +69,7 @@ export default async function ByPersonPage({
 
         <OpenAtLatest scrollerId="scroller" />
       </div>
+      <HeadAway />
     </div>
   );
 }

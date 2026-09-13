@@ -6,6 +6,7 @@ import { prisma } from "@/lib/db";
 import { SITE, card } from "@/lib/meta";
 import { joinAction } from "@/app/actions/identity";
 import { Masthead } from "@/components/masthead";
+import { HeadAway } from "@/components/head-away";
 import { PaperLink } from "@/components/paper-link";
 import { SlipColumn } from "@/components/slip-column";
 import { ContentsEntry } from "@/components/contents-entry";
@@ -172,6 +173,7 @@ export default async function PlacePage({
       </div>
 
       <MarkAsRead placeId={place.id} />
+      <HeadAway />
     </div>
   );
 }

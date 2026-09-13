@@ -78,21 +78,6 @@ export default async function HomePage() {
             </div>
           ) : (
             <div className="stream tate fade-in">
-              {/* 名前のもと。縦組みは右から読むので、いちばんはじめに置く。 */}
-              <div className="epigraph">
-                {[
-                  "つれづれなるままに、",
-                  "日暮らし、硯に向かひて、",
-                  "心にうつりゆくよしなしごとを、",
-                  "そこはかとなく書きつくれば、",
-                  "あやしうこそものぐるほしけれ。",
-                ].map((line) => (
-                  <p key={line} className="epigraph-text">
-                    {line}
-                  </p>
-                ))}
-              </div>
-
               {places.map((place) => {
                 const tally = tallyOf.get(place.id);
                 const written = tally?._count._all ?? 0;
@@ -111,6 +96,22 @@ export default async function HomePage() {
                   </PaperLink>
                 );
               })}
+
+              {/* 名前のもと。読み終えたさきに、奥付のように置く。
+                  頭に置くと、狭い画面では序文だけで埋まってグループに手が届かない。 */}
+              <div className="epigraph">
+                {[
+                  "つれづれなるままに、",
+                  "日暮らし、硯に向かひて、",
+                  "心にうつりゆくよしなしごとを、",
+                  "そこはかとなく書きつくれば、",
+                  "あやしうこそものぐるほしけれ。",
+                ].map((line) => (
+                  <p key={line} className="epigraph-text">
+                    {line}
+                  </p>
+                ))}
+              </div>
             </div>
           )}
         </div>

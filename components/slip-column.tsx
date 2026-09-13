@@ -108,7 +108,10 @@ export function SlipText({
 function Prose({ body, className }: { body: string; className: string }) {
   return (
     <div className={className}>
-      {paragraphs(body).map((line, index) => (
+      {paragraphs(body).map((line, index) =>
+        line.rule ? (
+          <hr key={index} className="line-rule" />
+        ) : (
         <p key={index} className={line.afterBlank ? "line line-apart" : "line"}>
           {linkify(line.text).map((piece, i) =>
             piece.link ? (
@@ -120,7 +123,8 @@ function Prose({ body, className }: { body: string; className: string }) {
             ),
           )}
         </p>
-      ))}
+        ),
+      )}
     </div>
   );
 }

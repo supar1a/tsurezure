@@ -23,7 +23,7 @@ const check = (l, c, x = "") => (c ? ok : bad).push(l + (c ? "" : " ← " + Stri
 await send("Page.navigate", { url: "http://localhost:3000/sannin/write" }, sessionId);
 await wait(3000);
 await ev(`document.querySelector(".compose-body").focus()`);
-await send("Input.insertText", { text: "はじめの行。\n次の行。\n三つめの行。\n\n空きのあとの行。 https://example.com/a?b=1 。おわり。" }, sessionId);
+await send("Input.insertText", { text: "はじめの行。\n次の行。\n三つめの行。\n\n空きのあとの行。 https://example.com/a?b=1 。おわり。\n---\n線のあとの行。" }, sessionId);
 await wait(400);
 await ev(`[...document.querySelectorAll("button")].find(b => b.textContent.includes("書き残す")).click()`);
 await wait(4500);
@@ -44,13 +44,28 @@ const lines = await ev(`(() => {
 check("改行が見つかる", lines !== "見つからない", lines);
 const got = lines === "見つからない" ? { 数: 0, 字: [], 下げ: [] } : JSON.parse(lines);
 
-check("改行のたびに、行が分かれる", got.数 === 4, JSON.stringify(got.字));
+check("改行のたびに、行が分かれる", got.数 === 5, JSON.stringify(got.字));
 check("それぞれの行が別々に置かれている",
   got.字[0] === "はじめの行。" && got.字[1] === "次の行。" && got.字[2] === "三つめの行。",
   JSON.stringify(got.字));
 check("どの行にも一字下げが付く",
-  got.下げ.length === 4 && got.下げ.every((v) => v !== "0px" && parseFloat(v) > 8),
+  got.下げ.length === 5 && got.下げ.every((v) => v !== "0px" && parseFloat(v) > 8),
   JSON.stringify(got.下げ));
+
+// ── 「---」は区切りの線になる ──
+{
+  const rule = await ev(`(() => {
+    const box = [...document.querySelectorAll(".slip-body")].find((b) => b.textContent.includes("はじめの行"));
+    const hr = box.querySelector("hr.line-rule");
+    if (!hr) return "線が無い";
+    const r = hr.getBoundingClientRect();
+    return JSON.stringify({ 縦: Math.round(r.height), 横: Math.round(r.width), 字: box.textContent.includes("---") });
+  })()`);
+  check("「---」が線になる", rule !== "線が無い", rule);
+  const R = rule === "線が無い" ? {} : JSON.parse(rule);
+  check("線は縦に立つ（縦組みの区切り）", R.縦 > 60 && R.横 <= 2, JSON.stringify(R));
+  check("「---」の字そのものは残らない", R.字 === false, String(R.字));
+}
 
 // ── 空行を続けたところ ──
 {
@@ -59,16 +74,16 @@ check("どの行にも一字下げが付く",
     const ps = [...box.querySelectorAll("p")];
     return JSON.stringify({
       印: ps.map((p) => p.classList.contains("line-apart")),
-      間: ps.map((p) => getComputedStyle(p).marginBlockStart),
+      間: ps.map((p) => getComputedStyle(p).paddingBlockStart),
     });
   })()`);
   const a = JSON.parse(apart);
   check("空行のあとの行だけに、間の印が付く",
-    JSON.stringify(a.印) === JSON.stringify([false, false, false, true]), apart);
+    JSON.stringify(a.印) === JSON.stringify([false, false, false, true, false]), apart);
   check("その間は、一行ぶんではなく半字ぶん",
     parseFloat(a.間[3]) > 5 && parseFloat(a.間[3]) < 14 && parseFloat(a.間[0]) === 0,
     JSON.stringify(a.間));
-  check("空行そのものは、行として残らない", a.印.length === 4, String(a.印.length));
+  check("空行そのものは、行として残らない", a.印.length === 5, String(a.印.length));
 }
 
 // ── 書かれた URL が戸口になる ──
@@ -103,7 +118,7 @@ const starts = await ev(`(() => {
 })()`);
 const s = JSON.parse(starts);
 check("どの行も、上から同じだけ下がって始まる",
-  s.length === 4 && s.every((v) => v > 8) && Math.max(...s) - Math.min(...s) < 2,
+  s.length === 5 && s.every((v) => v > 8) && Math.max(...s) - Math.min(...s) < 2,
   `上からの下がり ${JSON.stringify(s)}`);
 
 await send("Target.closeTarget", { targetId }); ws.close();

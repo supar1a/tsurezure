@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { requireReadableSlip } from "@/lib/guards";
 import { kanjiDate, kanjiTime } from "@/lib/kanji";
 import { Masthead } from "@/components/masthead";
+import { HeadAway } from "@/components/head-away";
 import { PaperLink } from "@/components/paper-link";
 import { DeleteSlip, PublishToggle } from "@/components/slip-actions";
 import { SlipText } from "@/components/slip-column";
@@ -71,6 +72,7 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
           </article>
         </div>
       </div>
+      <HeadAway />
     </div>
   );
 }

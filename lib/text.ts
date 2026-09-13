@@ -15,7 +15,10 @@ export function excerpt(body: string, max = 110) {
  * 空行そのものは落としつつ、「前に空きがあった」ことだけを覚えておいて、
  * あとで少しだけ間を足す。丸ごと一行空けると流れが切れすぎる。
  */
-export type Line = { text: string; afterBlank: boolean };
+export type Line = { text: string; afterBlank: boolean; rule: boolean };
+
+/** 三つ以上のハイフンだけの行は、区切りの線として扱う。 */
+const RULE = /^-{3,}$/;
 
 export function paragraphs(body: string): Line[] {
   const out: Line[] = [];
@@ -27,7 +30,7 @@ export function paragraphs(body: string): Line[] {
       if (out.length > 0) blank = true;
       continue;
     }
-    out.push({ text, afterBlank: blank });
+    out.push({ text, afterBlank: blank, rule: RULE.test(text) });
     blank = false;
   }
   return out;
