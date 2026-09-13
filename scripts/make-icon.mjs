@@ -27,7 +27,7 @@ const page = (size) => `data:text/html;charset=utf-8,` + encodeURIComponent(`
   body::before{content:"";position:absolute;inset:0;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' seed='1741' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E");
     mix-blend-mode:screen;opacity:.16}
-  span{font-family:"Shippori Mincho B1",serif;font-weight:800;color:#f2eee4;
+  span{font-family:"Shippori Mincho B1",serif;font-weight:800;color:#f3f2ee;
        font-size:${Math.round(size * 0.88)}px;line-height:1;
        position:relative;display:block;
        transform:translateY(${Math.round(size * 0.02)}px)}
@@ -72,7 +72,7 @@ const pixels = async (size) => {
       c.width = ${size}; c.height = ${size};
       const x = c.getContext("2d");
       x.fillStyle = "#1e1b16"; x.fillRect(0, 0, ${size}, ${size});
-      x.fillStyle = "#f2eee4";
+      x.fillStyle = "#f3f2ee";
       x.font = '800 ${Math.round(size * 0.88)}px "Shippori Mincho B1", serif';
       x.textAlign = "center"; x.textBaseline = "middle";
       x.fillText("つ", ${size / 2}, ${Math.round(size * 0.52)});
@@ -125,7 +125,7 @@ const cardPage = `data:text/html;charset=utf-8,` + encodeURIComponent(`
        font-family:"Shippori Mincho B1",serif}
   /* 四字が丈のうちに収まる大きさ。字間ぶんも数に入れる。 */
   .mark{writing-mode:vertical-rl;font-weight:600;font-size:72px;letter-spacing:.36em;
-        color:#f2eee4;line-height:1.2;margin:0}
+        color:#f3f2ee;line-height:1.2;margin:0}
   .note{writing-mode:vertical-rl;font-weight:400;font-size:22px;letter-spacing:.28em;
         line-height:2.6;color:rgba(242,238,228,.5);margin:0}
 </style></head><body>
