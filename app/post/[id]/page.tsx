@@ -32,8 +32,11 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
         <div className="scroll-tate">
           <article className="sheet tate fade-in">
             <header className="sheet-head">
-              <div className="sheet-head-lead">
-                {slip.title ? <h1 className="sheet-title">{slip.title}</h1> : null}
+              {slip.title ? <h1 className="sheet-title">{slip.title}</h1> : null}
+
+              {/* 名前と時刻は同じ一列に。題は題だけで立たせる。 */}
+              <div className="sheet-byline">
+                {!slip.published ? <span className="seal">下書き</span> : null}
                 <PaperLink
                   href={`/${slip.place.slug}/by/${slip.author.id}`}
                   className="sheet-who"
@@ -41,9 +44,6 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
                 >
                   {slip.author.name}
                 </PaperLink>
-              </div>
-              <div className="sheet-byline">
-                {!slip.published ? <span className="seal">下書き</span> : null}
                 <span>{kanjiDate(slip.createdAt)}</span>
                 <span>{kanjiTime(slip.createdAt)}</span>
               </div>

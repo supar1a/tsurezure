@@ -554,8 +554,9 @@ a.slip-when:hover {
 /* 本文は読むためのもの。リンクにしない（選んで引用できるように） */
 .slip-body {
   font-size: clamp(0.95rem, 1.1vw, 1.04rem);
-  letter-spacing: 0.13em;
-  line-height: 2.45;
+  /* 縦組みでは line-height が列と列の間になる。息を入れるほど読みやすい。 */
+  letter-spacing: 0.16em;
+  line-height: 2.8;
   color: var(--sumi);
 }
 
@@ -662,8 +663,8 @@ a.slip-when:hover {
 
 .sheet-byline {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  flex-direction: row; /* 縦組みでは上から下へ。名前のあとに日と時刻。 */
+  align-items: center;
   gap: 1.6em;
   font-size: 0.76rem;
   letter-spacing: 0.24em;
@@ -673,16 +674,15 @@ a.slip-when:hover {
 
 .sheet-head {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 2rem;
-  padding-inline-end: clamp(1.5rem, 2.5vw, 3rem);
+  flex-direction: column; /* 縦組みでは右から左へ。題／名前と時刻、の二列。 */
+  align-items: flex-start;
+  gap: clamp(1.2rem, 2vw, 2rem);
 }
 
 .sheet-body {
   font-size: clamp(0.98rem, 1.15vw, 1.08rem);
-  letter-spacing: 0.14em;
-  line-height: 2.5;
+  letter-spacing: 0.16em;
+  line-height: 2.8;
 }
 
 .sheet-body p {
@@ -746,8 +746,8 @@ a.slip-when:hover {
   min-width: 0;
   height: 100%;
   font-size: clamp(0.98rem, 1.15vw, 1.08rem);
-  letter-spacing: 0.14em;
-  line-height: 2.5;
+  letter-spacing: 0.16em;
+  line-height: 2.8;
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: thin;
@@ -1581,8 +1581,8 @@ a {
 
 .entry-title {
   font-size: clamp(1rem, 1.25vw, 1.16rem);
-  letter-spacing: 0.18em;
-  line-height: 1.9;
+  letter-spacing: 0.2em;
+  line-height: 2.1;
   color: var(--sumi);
   max-inline-size: 100%;
   overflow: hidden;
@@ -1620,12 +1620,6 @@ a {
   border-radius: 1px;
   padding: 0.4em 0.28em;
   line-height: 1.5;
-}
-
-.sheet-head-lead {
-  display: flex;
-  flex-direction: column; /* 縦組みでは右から左へ */
-  gap: clamp(0.9rem, 1.6vw, 1.6rem);
 }
 
 .sheet-who {
