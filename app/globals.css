@@ -129,6 +129,12 @@ html::before {
 .app {
   position: relative;
   z-index: 1;
+  /*
+   * 横にはこぼさない。柱が右へ滑って出ていくときと、ひらいたときの滑り（.fade-in の translateX）が
+   * 右へはみ出すと、携帯の Chrome は「収まるように」画面ごと縮めてしまう（縮んだまま戻らない）。
+   * clip は送り場を作らないので、中の組みには触らない。
+   */
+  overflow-x: clip;
   display: flex;
   /* 頭は右の端に立てる。縦組みは右から始まるので、そこが冊子の背にあたる。 */
   flex-direction: row-reverse;
@@ -234,18 +240,28 @@ html::before {
 }
 
 /*
- * 読み進めているあいだは、柱を引っ込める。
- * 消すのは濃さだけ。畳むと巻きの幅が変わり、本文が組み直されてしまう。
+ * 柱は、送った向きへ滑る。右へ送れば右の端から出ていき、左へ送れば戻ってくる。
+ * 動かすのは見た目だけ。畳むと巻きの幅が変わり、本文が組み直されてしまう。
+ * 罫は幅が無いので滑らせようがない。こちらは薄れるだけ。
  */
-.masthead,
+.masthead {
+  /* 戻ってくるときは、出ていくときより少し長く。にゅっと滑り込む。 */
+  transition: transform 640ms var(--ease);
+  will-change: transform;
+}
+
 .masthead-rule {
   transition: opacity var(--slow) var(--ease);
 }
 
-.app[data-reading="true"] .masthead,
+.app[data-reading="true"] .masthead {
+  transform: translateX(110%);
+  transition-duration: var(--slow);
+  pointer-events: none;
+}
+
 .app[data-reading="true"] .masthead-rule {
   opacity: 0;
-  pointer-events: none;
 }
 
 /* 柱と場を隔てる、縦の罫 */
@@ -706,16 +722,7 @@ a.slip-when:hover {
   gap: clamp(1.2rem, 2vw, 2rem);
 }
 
-/*
- * 書く頁には柱が無く、書く場が幅いっぱいに広がる。
- * ひらいたときの滑り（.fade-in の translateX）が右へこぼれると、携帯の Chrome は
- * 「収まるように」画面ごと縮めてしまう（縮んだまま戻らない）。ここで留める。
- * clip は送り場を作らないので、中の組みには触らない。
- */
-.app-compose {
-  overflow: clip;
-}
-
+/* 書く頁には柱が無い。上下の息は .app が取るので、ここでは取らない。 */
 .app-compose .stage {
   min-height: 0;
 }
