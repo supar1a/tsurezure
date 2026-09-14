@@ -105,8 +105,9 @@ function png(size, alphaOf) {
 // 濃さは、もとの SVG を撮った画面と数で合わせた（紙の空き地の明るさの平均と散らばり）。
 // SVG の乱流は透明度もノイズなので、opacity の数字よりずっと淡く出ていた。
 // 平均の濃さと、粒の立ちかた（散らばり）を別々に決める：alpha = 平均 + 幅 × (0.5 − noise)
-const GRAIN = { mean: 0.04, spread: 0.09 };
-const MOTTLE = { mean: 0.0175, spread: 0.05 };
+// もとの半分の薄さ（2026-09-14、そう頼まれた）。
+const GRAIN = { mean: 0.02, spread: 0.045 };
+const MOTTLE = { mean: 0.009, spread: 0.025 };
 const alpha = ({ mean, spread }, n) => Math.round(255 * Math.min(1, Math.max(0, mean + spread * (0.5 - n))));
 
 // 画素の粗さ。CSS では半分の大きさで敷く（--paper-size）ので、2 倍の密度で焼く。
