@@ -61,6 +61,9 @@ export function Composer({
   // 題の残り。打てなくなってから気づくのでは遅いので、終わりが近づいたら見せる。
   const [titleLeft, setTitleLeft] = useState(() => TITLE_MAX - defaultTitle.length);
   const [trouble, setTrouble] = useState<string | null>(null);
+  // 題の欄を出しているか。狭い画面では、頼まれるまで出さない（幅を本文に譲る）。
+  // 広い画面では CSS が常に出す。すでに題があれば、はじめから出す。
+  const [titleOpen, setTitleOpen] = useState(() => defaultTitle.length > 0);
 
   const { play } = useSound();
   const lastStroke = useRef(0);
@@ -69,7 +72,9 @@ export function Composer({
   const fileRef = useRef<HTMLInputElement>(null);
   const beforeRef = useRef<HTMLTextAreaElement>(null);
   const afterRef = useRef<HTMLTextAreaElement>(null);
+  const titleRef = useRef<HTMLTextAreaElement>(null);
   const justPasted = useRef(false);
+  const wantTitle = useRef(false);
 
   // 見せている間だけの URL なので、置き換わったら手放す
   useEffect(() => {
@@ -87,6 +92,18 @@ export function Composer({
     el.focus();
     el.setSelectionRange(0, 0);
   }, [afterKey]);
+
+  // 題を出したら、そのまま題から書けるようにする
+  useEffect(() => {
+    if (!wantTitle.current) return;
+    wantTitle.current = false;
+    titleRef.current?.focus();
+  }, [titleOpen]);
+
+  function openTitle() {
+    wantTitle.current = true;
+    setTitleOpen(true);
+  }
 
   function tally() {
     setCount(countChars((beforeRef.current?.value ?? "") + (afterRef.current?.value ?? "")));
@@ -176,7 +193,7 @@ export function Composer({
   }
 
   return (
-    <form ref={formRef} action={formAction} className="compose">
+    <form ref={formRef} action={formAction} className="compose" data-title={titleOpen ? "open" : "closed"}>
       {Object.entries(hidden).map(([name, value]) => (
         <input key={name} type="hidden" name={name} value={value} />
       ))}
@@ -187,6 +204,7 @@ export function Composer({
 
       <div className="compose-shell">
         <textarea
+          ref={titleRef}
           name="title"
           className="compose-title"
           placeholder="題（なくてよい）"
@@ -247,6 +265,10 @@ export function Composer({
       {state?.error ? <p className="notice">{state.error}</p> : null}
       {trouble ? <p className="notice">{trouble}</p> : null}
 
+      {/*
+        釦の帯。書き終えたさき——縦組みではいちばん左——に立つ。
+        鍵盤が出ても場ごと縮むので、帯はいつも見えている。
+      */}
       <div className="compose-foot">
         <button
           ref={submitRef}
@@ -271,14 +293,22 @@ export function Composer({
           下書きに保存
         </button>
 
-        {cancel}
-
-        {/* 題の上限は、ぶつかる手前でだけ言う。ずっと出していると急かしになる。 */}
-        {titleLeft <= 10 ? (
-          <span className="compose-count">題はあと{titleLeft}字</span>
+        {/* 狭い画面でだけ見える。押せば題の欄が出て、この釦は引っ込む。 */}
+        {!titleOpen ? (
+          <button type="button" className="btn btn-quiet compose-title-open" onClick={openTitle}>
+            題を付ける
+          </button>
         ) : null}
 
-        <span className="compose-count">{count > 0 ? `${count}字` : "　"}</span>
+        {cancel}
+
+        <span className="compose-tally">
+          {/* 題の上限は、ぶつかる手前でだけ言う。ずっと出していると急かしになる。 */}
+          {titleLeft <= 10 ? (
+            <span className="compose-count">題はあと{titleLeft}字</span>
+          ) : null}
+          <span className="compose-count">{count > 0 ? `${count}字` : "　"}</span>
+        </span>
       </div>
     </form>
   );

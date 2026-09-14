@@ -706,6 +706,20 @@ a.slip-when:hover {
   gap: clamp(1.2rem, 2vw, 2rem);
 }
 
+/*
+ * 書く頁には柱が無く、書く場が幅いっぱいに広がる。
+ * ひらいたときの滑り（.fade-in の translateX）が右へこぼれると、携帯の Chrome は
+ * 「収まるように」画面ごと縮めてしまう（縮んだまま戻らない）。ここで留める。
+ * clip は送り場を作らないので、中の組みには触らない。
+ */
+.app-compose {
+  overflow: clip;
+}
+
+.app-compose .stage {
+  min-height: 0;
+}
+
 .compose-shell {
   flex: 1 1 auto;
   min-width: 0;
@@ -771,8 +785,16 @@ a.slip-when:hover {
   flex-direction: row; /* 縦組みでは上から下へ */
   align-items: center;
   gap: 1rem;
+  min-height: 0;
   padding-block-start: clamp(1rem, 2vw, 1.6rem);
   border-block-start: 1px solid var(--rule-soft);
+  /* 丈が足りない画面（鍵盤が出た携帯）では、帯の中を送れるようにしておく */
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.compose-foot::-webkit-scrollbar {
+  display: none;
 }
 
 /* 書く場の断りごとも、まわりに合わせて縦に */
@@ -1089,20 +1111,59 @@ a {
   }
 
   /*
-   * 幅の乏しい画面では、釦を左の端に置くと書く場がそのぶん痩せる。
-   * 縦組みで惜しいのは幅のほうなので、釦は下へ戻す。字は縦のまま。
+   * 釦は左の帯に固定する。下に置くと鍵盤の裏に入って、送るたびに鍵盤をしまうことになる。
+   * 幅は惜しいが、柱と題の欄を引っ込めたぶんで補う。
    */
+  .app-compose {
+    padding-block: 0;
+  }
+
   .compose {
-    flex-direction: column;
+    padding-block: max(1.4rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-bottom));
+    padding-inline: 1.1rem max(1.1rem, env(safe-area-inset-right));
+    gap: 0.9rem;
+  }
+
+  .compose-shell {
+    gap: 0.9rem;
+  }
+
+  /*
+   * 入力欄の字が 16px を割ると、iOS は触れた瞬間に画面ごと拡大する。
+   * 拡大されたまま書くことになり、書き終えても戻らない。ここは割らない。
+   */
+  .compose-body {
+    font-size: 16px;
+    line-height: 2.6;
+  }
+
+  .compose-title {
+    font-size: 17px;
+    width: calc(2.2em + 0.8rem);
+    padding-left: 0.8rem;
+  }
+
+  /* 題の欄は、頼まれるまで引っ込めておく。幅は本文のもの。 */
+  .compose[data-title="closed"] .compose-title {
+    display: none;
+  }
+
+  /* 後ろで display: none にしている素の規則より強くする */
+  .compose-foot .compose-title-open {
+    display: inline-flex;
   }
 
   .compose-foot {
-    flex-direction: column; /* 縦組みでは右から左へ */
-    align-items: flex-start;
-    padding-block-start: 0;
-    border-block-start: 0;
-    padding-inline-start: clamp(0.8rem, 2vh, 1.2rem);
-    border-inline-start: 1px solid var(--rule-soft);
+    gap: 0.6rem;
+    padding-block-start: 0.7rem;
+  }
+
+  .compose-tally {
+    padding-inline-start: 0.6rem;
+  }
+
+  .compose-photo img {
+    max-width: 7rem;
   }
 
   .masthead-link,
@@ -1115,15 +1176,10 @@ a {
     padding-inline: 0.4em;
   }
 
-  .compose-foot {
-    flex-wrap: wrap;
-    gap: 0.7rem;
-  }
-
   .compose-foot .btn {
     font-size: 0.78rem;
     letter-spacing: 0.12em;
-    padding: 0.7em 1.1em;
+    padding: 0.7em 0.9em;
   }
 
   .gate-inner {
@@ -1292,8 +1348,24 @@ a {
    仲間 — 回る順に並ぶ
    -------------------------------------------------------------------------- */
 
+/* 字数は帯のいちばん下へ。釦の並びから離して、数えているだけの顔にする。 */
+.compose-tally {
+  display: flex;
+  flex-direction: row; /* 縦組みでは上から下へ */
+  gap: 0.8rem;
+  margin-inline-start: auto;
+  padding-inline-start: 1.2rem;
+}
+
 .compose-count {
-  margin-inline-start: 1.2rem;
+  color: var(--sumi-ghost);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+}
+
+/* 「題を付ける」は狭い画面だけの釦。広い画面では題の欄が常にあるので出さない。 */
+.compose-title-open {
+  display: none;
 }
 
 /* --------------------------------------------------------------------------

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
 import { requirePlace } from "@/lib/guards";
 import { writeSlipAction } from "@/app/actions/slips";
-import { Masthead } from "@/components/masthead";
 import { PaperLink } from "@/components/paper-link";
 import { Composer } from "@/components/composer";
 
@@ -21,16 +20,20 @@ export default async function WritePage({ params }: { params: Promise<{ slug: st
   const { slug } = await params;
   const { place } = await requirePlace(slug);
 
+  // 書く頁には柱を立てない。表題も品書きも、書いているあいだは要らない。
+  // 戻り道（やめる）は、釦の帯のなかに置く。
   return (
-    <div className="app">
-      <Masthead sub={place.name}>
-        <PaperLink href={`/${slug}`} className="masthead-link">
-          やめる
-        </PaperLink>
-      </Masthead>
-
+    <div className="app app-compose">
       <div className="stage fade-in">
-        <Composer action={writeSlipAction} hidden={{ placeId: place.id }} />
+        <Composer
+          action={writeSlipAction}
+          hidden={{ placeId: place.id }}
+          cancel={
+            <PaperLink href={`/${slug}`} className="btn btn-quiet" voice="rustle">
+              やめる
+            </PaperLink>
+          }
+        />
       </div>
     </div>
   );

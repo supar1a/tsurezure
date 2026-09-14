@@ -44,6 +44,24 @@ const inset = () => ev(`getComputedStyle(document.documentElement).getPropertyVa
 const column = () => ev(`Math.round(document.querySelector(".compose-body").clientHeight)`);
 const appHeight = () => ev(`Math.round(document.querySelector(".app").getBoundingClientRect().height)`);
 
+// ── 携帯の書く頁のかたち：柱は無く、釦は左の帯、題は頼まれるまで出ない ──
+check("書く頁に柱が無い", !(await ev(`!!document.querySelector(".masthead")`)));
+check("入力欄の字は 16px を割らない（iOS が触れた瞬間に拡大するのを防ぐ）",
+  parseFloat(await ev(`getComputedStyle(document.querySelector(".compose-body")).fontSize`)) >= 16,
+  await ev(`getComputedStyle(document.querySelector(".compose-body")).fontSize`));
+{
+  const r = await ev(`(() => { const f = document.querySelector(".compose-foot").getBoundingClientRect(), b = document.querySelector(".compose-body").getBoundingClientRect();
+    return { footRight: Math.round(f.right), bodyLeft: Math.round(b.left), footTop: Math.round(f.top), bodyTop: Math.round(b.top) }; })()`);
+  check("釦の帯は本文の左に立つ（下ではない）", r.footRight <= r.bodyLeft && Math.abs(r.footTop - r.bodyTop) < 4, JSON.stringify(r));
+}
+check("題の欄は、はじめは出ていない", (await ev(`getComputedStyle(document.querySelector(".compose-title")).display`)) === "none");
+check("帯に「題を付ける」がある", await ev(`[...document.querySelectorAll(".compose-foot button")].some(b => b.textContent.trim() === "題を付ける")`));
+await ev(`[...document.querySelectorAll(".compose-foot button")].find(b => b.textContent.trim() === "題を付ける").click()`);
+await wait(300);
+check("押せば題の欄が出て、そこから書ける", (await ev(`getComputedStyle(document.querySelector(".compose-title")).display`)) !== "none"
+  && (await ev(`document.activeElement?.classList.contains("compose-title")`)));
+check("釦は引っ込む", !(await ev(`[...document.querySelectorAll(".compose-foot button")].some(b => b.textContent.trim() === "題を付ける")`)));
+
 check("鍵盤が無いうちは、差し引かない", (await inset()) === "0px", await inset());
 const openCol = await column(), openApp = await appHeight();
 check("書く欄に丈がある", openCol > 300, `${openCol}px`);
@@ -56,6 +74,12 @@ const shrunkApp = await appHeight(), shrunkCol = await column();
 check("場そのものが、覆われた分だけ縮む", Math.abs((openApp - shrunkApp) - 340) < 4,
   `${openApp} → ${shrunkApp}`);
 check("書く欄も一緒に縮む（字が鍵盤の裏へ流れない）", shrunkCol < openCol - 300, `${openCol} → ${shrunkCol}`);
+{
+  // 帯も鍵盤の上に残る。下に置いていたころは、送るたびに鍵盤をしまう必要があった。
+  const r = await ev(`(() => { const f = document.querySelector(".compose-foot").getBoundingClientRect(), a = document.querySelector(".app").getBoundingClientRect();
+    return { footBottom: Math.round(f.bottom), appBottom: Math.round(a.bottom), submit: Math.round(document.querySelector('button[value="publish"]').getBoundingClientRect().bottom) }; })()`);
+  check("鍵盤が出ても、釦の帯は鍵盤の上に見えている", r.footBottom <= r.appBottom + 1 && r.submit <= r.appBottom, JSON.stringify(r));
+}
 
 // ── 打っている最中の細かい揺れでは、版面を組み直さない ──
 {

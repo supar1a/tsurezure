@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { requireReadableSlip } from "@/lib/guards";
 import { saveSlipAction } from "@/app/actions/slips";
-import { Masthead } from "@/components/masthead";
 import { PaperLink } from "@/components/paper-link";
 import { Composer } from "@/components/composer";
 import { splitAroundPhoto } from "@/lib/text";
@@ -17,14 +16,9 @@ export default async function EditSlipPage({ params }: { params: Promise<{ id: s
     ? splitAroundPhoto(slip.body)
     : { before: slip.body, after: "" };
 
+  // 書く頁と同じく、柱は立てない。やめれば一篇の頁へ戻る。
   return (
-    <div className="app">
-      <Masthead sub={slip.place.name}>
-        <PaperLink href={`/post/${slip.id}`} className="masthead-link">
-          やめる
-        </PaperLink>
-      </Masthead>
-
+    <div className="app app-compose">
       <div className="stage fade-in">
         <Composer
           action={saveSlipAction}
@@ -34,6 +28,11 @@ export default async function EditSlipPage({ params }: { params: Promise<{ id: s
           defaultAfter={after}
           defaultPhoto={slip.photo}
           published={slip.published}
+          cancel={
+            <PaperLink href={`/post/${slip.id}`} className="btn btn-quiet" voice="rustle">
+              やめる
+            </PaperLink>
+          }
         />
       </div>
     </div>

@@ -76,10 +76,17 @@ for (const [path, expected] of pages) {
   const t = await title();
   if (expected !== null) check(`${path} の題が「${expected}」`, t === expected, t);
   else check(`${path} の題が「つれづれ」で終わる`, t.endsWith("つれづれ"), t);
-  check(`${path} の柱の表題が「つれづれ」で、戸口を兼ねる`,
-    (await ev(`document.querySelector(".masthead-title")?.textContent?.trim()`)) === "つれづれ"
-      && (await ev(`document.querySelector(".masthead-title")?.getAttribute("href")`)) === "/",
-    await ev(`document.querySelector(".masthead-title")?.outerHTML?.slice(0, 80)`));
+  if (path.endsWith("/write") || path.endsWith("/edit")) {
+    // 書く頁には柱を立てない。戻り道は釦の帯の中。
+    check(`${path} には柱が無い（書くことに専念）`, !(await ev(`!!document.querySelector(".masthead")`)));
+    check(`${path} の帯に「やめる」がある`,
+      await ev(`[...document.querySelectorAll(".compose-foot a, .compose-foot button")].some(e => e.textContent.trim() === "やめる")`));
+  } else {
+    check(`${path} の柱の表題が「つれづれ」で、戸口を兼ねる`,
+      (await ev(`document.querySelector(".masthead-title")?.textContent?.trim()`)) === "つれづれ"
+        && (await ev(`document.querySelector(".masthead-title")?.getAttribute("href")`)) === "/",
+      await ev(`document.querySelector(".masthead-title")?.outerHTML?.slice(0, 80)`));
+  }
   check(`${path} に前の名前が残っていない`, !OLD.test(await text()), (await text()).match(OLD)?.[0]);
 }
 
