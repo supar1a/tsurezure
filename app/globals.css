@@ -600,10 +600,10 @@ a.slip-when:hover {
 }
 
 /*
- * 空行を続けて置いたところは、一行ぶん空ける。
- * 書く欄では空行が丸ごと一列ぶん空くので、出たときも同じだけ空く（書いた見た目と出た見た目を揃える）。
- * 半字ぶんでは、携帯の列の間隔に紛れて空きに見えなかった。
- * 一行ぶん＝列と列の間隔＝ line-height。lh が使えない古い WebKit のために em でも書いておく。
+ * 空行を続けて置いたところは、半行ぶん空ける（列と列の間隔の半分）。
+ * 半字ぶん（0.6em）では携帯の列の間隔に紛れて空きに見えず、丸ごと一行では流れが切れすぎる。
+ * 空行を何行続けても、この半行ぶん。
+ * 列と列の間隔＝ line-height。lh が使えない古い WebKit のために em でも書いておく。
  */
 .slip-body p.line-apart,
 .sheet-body p.line-apart {
@@ -611,8 +611,8 @@ a.slip-when:hover {
    * margin ではなく padding。隣り合う余白は環境によって潰れることがあり、
    * padding なら潰れようがない。
    */
-  padding-block-start: 2.8em;
-  padding-block-start: 1lh;
+  padding-block-start: 1.4em;
+  padding-block-start: 0.5lh;
 }
 
 /* 外へ出る戸口。飾らず、色だけで分かるように。 */
