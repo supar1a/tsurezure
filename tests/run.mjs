@@ -43,7 +43,7 @@ for (const file of files) {
   // 試験ごとに要るものが違うので、ここで揃えて渡す
   const args = [];
   const needs = file.replace("e2e-", "").replace(".mjs", "");
-  if (["scroll", "keyboard", "paper", "namechange", "limit", "indent", "reading"].includes(needs))
+  if (["scroll", "keyboard", "paper", "namechange", "limit", "indent", "reading", "caret"].includes(needs))
     args.push(await keyFor("はなこ"));
   if (["url", "tategaki", "share", "tap"].includes(needs)) args.push(await keyFor("はなこ"), await slipId());
   if (needs === "rename") args.push(await keyFor("はなこ"), await keyFor("たろう"));

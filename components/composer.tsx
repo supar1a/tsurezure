@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 import { TITLE_MAX, countChars } from "@/lib/text";
 import { useSound } from "./sound-provider";
+import { DrawnCaret } from "./drawn-caret";
 import type { FormState } from "@/app/actions/slips";
 
 type Attached = { url: string; width: number; height: number; local: boolean };
@@ -222,6 +223,7 @@ export function Composer({
             onKeyDown(event);
           }}
         />
+        <DrawnCaret target={titleRef} />
 
         <textarea
           ref={beforeRef}
@@ -235,6 +237,7 @@ export function Composer({
           onPaste={onPaste}
           onChange={tally}
         />
+        <DrawnCaret target={beforeRef} />
 
         {photo ? (
           <>
@@ -258,6 +261,7 @@ export function Composer({
               onPaste={onPaste}
               onChange={tally}
             />
+            <DrawnCaret key={`caret-${afterKey}`} target={afterRef} />
           </>
         ) : null}
       </div>
