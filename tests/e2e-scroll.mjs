@@ -87,9 +87,10 @@ await open("http://localhost:3000/sannin", 390, 780);
   // そのあと外から動かされても、こちらからは戻さない
   await ev(`(() => { const s = document.getElementById("scroller"); if (s) s.scrollLeft = s.scrollWidth; })()`);
   await wait(900);
-  check("人に渡したあとは、右端に置かれても黙っている",
-    (await ev(`(() => { const s = document.getElementById("scroller"); return String(s.scrollWidth - s.clientWidth - s.scrollLeft); })()`)) < 3,
-    `右端から ${await ev(`(() => { const s = document.getElementById("scroller"); return String(s.scrollWidth - s.clientWidth - s.scrollLeft); })()`)}px`);
+  // 右端そのものに居るかは見ない。柱の出し入れで巻きの幅が変わるので、置いた瞬間の右端と
+  // 落ち着いたあとの右端は一致しない。見るのは「左端へ引き戻されていない」こと。
+  check("人に渡したあとは、右端に置かれても黙っている（左端へ引き戻さない）", Math.abs(await gap()) > 100,
+    `左端から ${await gap()}px`);
 }
 
 // ── 書き残したあとも、左端でひらく ──

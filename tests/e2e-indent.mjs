@@ -80,9 +80,11 @@ check("どの行にも一字下げが付く",
   const a = JSON.parse(apart);
   check("空行のあとの行だけに、間の印が付く",
     JSON.stringify(a.印) === JSON.stringify([false, false, false, true, false]), apart);
-  check("その間は、一行ぶんではなく半字ぶん",
-    parseFloat(a.間[3]) > 5 && parseFloat(a.間[3]) < 14 && parseFloat(a.間[0]) === 0,
-    JSON.stringify(a.間));
+  // 一行ぶん＝列と列の間隔（line-height 2.8）。書く欄で空行が空くのと同じだけ。
+  const fs = parseFloat(await ev(`getComputedStyle([...document.querySelectorAll(".slip-body")].find((b) => b.textContent.includes("はじめの行"))).fontSize`));
+  check("その間は、一行ぶん（書く欄で空行が空くのと同じだけ）",
+    Math.abs(parseFloat(a.間[3]) - fs * 2.8) < 2 && parseFloat(a.間[0]) === 0,
+    `${JSON.stringify(a.間)} / 字 ${fs}px`);
   check("空行そのものは、行として残らない", a.印.length === 5, String(a.印.length));
 }
 
