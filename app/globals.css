@@ -240,28 +240,36 @@ html::before {
 }
 
 /*
- * 指を左へ動かすと柱は右の端から滑って出ていき、指を右へ動かすと滑って戻る。
- * 動かすのは見た目だけ。畳むと巻きの幅が変わり、本文が組み直されてしまう。
- * 罫は幅が無いので滑らせようがない。こちらは薄れるだけ。
+ * 指を右へ動かす（中身が右へ流れる）と、柱は右の端から滑って出ていき、場所ごと畳まれる。
+ * 指を左へ動かすと、右からにゅっと戻る。
+ * 畳んでも本文は組み直されない。縦組みでは一列の長さは丈で決まり、幅は何列見えるかにしか効かない。
+ * 引っ込める幅（--masthead-w）は、柱の実寸を測って渡している（components/head-away.tsx）。
  */
 .masthead {
   /* 戻ってくるときは、出ていくときより少し長く。にゅっと滑り込む。 */
-  transition: transform 640ms var(--ease);
+  /* 柱は縦組みなので、畳む向きの余白は論理でなく物理（左）で書く */
+  transition:
+    transform 640ms var(--ease),
+    margin-left 640ms var(--ease);
   will-change: transform;
 }
 
 .masthead-rule {
-  transition: opacity var(--slow) var(--ease);
+  transition:
+    opacity var(--slow) var(--ease),
+    width var(--slow) var(--ease);
 }
 
 .app[data-reading="true"] .masthead {
   transform: translateX(110%);
+  margin-left: calc(-1 * var(--masthead-w, 0px));
   transition-duration: var(--slow);
   pointer-events: none;
 }
 
 .app[data-reading="true"] .masthead-rule {
   opacity: 0;
+  width: 0;
 }
 
 /* 柱と場を隔てる、縦の罫 */
@@ -1127,23 +1135,24 @@ a {
 
   .masthead {
     gap: 0.8rem;
-    padding-block: 1.25rem 1rem;
-    padding-inline: 1.25rem;
+    /*
+     * 柱は縦組みなので、inline が上下、block が左右。
+     * 上下は中身と同じ --air。表題の頭は中身の頭に揃う。
+     * 下だけは品書きの送り代（18px、端を薄める mask のぶん）だけ詰め、品書き側の余白で埋め戻す。
+     * それで品書きの最後の項の尻が、中身の尻に揃う。
+     */
+    padding-inline: var(--air) calc(var(--air) - 18px);
+    padding-block: 1.25rem;
   }
 
   .masthead-title {
     font-size: 0.95rem;
     letter-spacing: 0.3em;
-    text-indent: 0.3em;
+    /* text-indent は入れない。縦組みでは行頭の下げになり、表題だけが中身より下から始まる。 */
   }
 
   .masthead-sub {
     display: none;
-  }
-
-  .masthead {
-    /* 送り代のぶんだけ下を詰め、品書き側の余白で埋め戻す */
-    padding-inline-end: 2px;
   }
 
   /* 品書きが折り返して崩れるより、指で送れるほうがよい。

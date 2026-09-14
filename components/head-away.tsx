@@ -2,77 +2,78 @@
 
 import { useEffect } from "react";
 
-/** これだけ同じ向きに指が動いたら、向きが変わったとみなす。細かい揺れでは動かさない。 */
+/** これだけ同じ向きに巻きが動いたら、向きが変わったとみなす。細かい揺れでは動かさない。 */
 const TURN = 12;
 
 /**
- * 指を左へ動かすと柱は右の端から滑って出ていき、指を右へ動かすと右からにゅっと戻る。
- * 横書きの頁で、指を上へ動かすと（下へ送ると）頭の帯が消えるのと同じ。
+ * 指を右へ動かす（中身が右へ流れ、左にあるものが見えてくる）と、柱は右の端から滑って出ていき、
+ * 場所ごと畳まれて中身が広がる。指を左へ動かす（中身が左へ流れる）と、右からにゅっと戻る。
  *
- * 向きは、巻きの位置ではなく**指そのものの動き**で決める。
- * 縦組みの巻きは scrollLeft の符号も並びも環境で割れるが、指が右へ動いたか左へ動いたかは
- * どのブラウザでも一つしかない。輪（トラックパッド）は deltaX の向きで同じことをする。
+ * 向きは、巻きの位置（scrollLeft）の増減で決める。
+ * 器は横組みなので、位置はどのブラウザでも左端が 0 で、中身が左へ流れれば増える。
+ * 指そのものの動き（touchmove）は、iOS では送りが始まると届かなくなることがあり、
+ * 慣性で流れているあいだも拾えない。位置の変化なら、どちらも拾える。
  *
- * 動かすのは見た目だけで、場所は空けたままにしてある。
- * 柱を畳むと巻きの幅が変わり、縦組みでは一列に入る字数が変わるので、
- * 読んでいる最中に本文がまるごと組み直されてしまう。
+ * ただし人が触れる前は動かさない。ひらいた直後は、こちらが巻きを置きなおすことがあるので。
+ * 端で引っぱっただけ（跳ね返り）も、送ったうちに入れない。
+ *
+ * 柱を畳んでも本文は組み直されない。縦組みでは一列の長さは丈で決まり、幅は
+ * 何列見えるかにしか効かない。畳んだぶんは右側に、まだ読んでいない列として現れる。
  */
 export function HeadAway() {
   useEffect(() => {
     const scroller = document.querySelector<HTMLElement>(".scroll-tate");
-    const stream = scroller?.querySelector<HTMLElement>("[data-stream]");
     const app = document.querySelector<HTMLElement>(".app");
-    if (!scroller || !stream || !app) return;
+    const masthead = app?.querySelector<HTMLElement>(".masthead");
+    if (!scroller || !app || !masthead) return;
 
+    // 畳むときに引っ込める幅。柱の実寸を測って CSS に渡す。
+    const measure = () => {
+      app.style.setProperty("--masthead-w", `${masthead.offsetWidth}px`);
+    };
+    measure();
+    const sizer = new ResizeObserver(measure);
+    sizer.observe(masthead);
+
+    let armed = false;
+    let last = scroller.scrollLeft;
     let run = 0; // 同じ向きに動いた量。向きが変われば捨てる。
-    let lastX: number | null = null;
 
-    // 右端（いちばん古いところ）でさらに左へ引っぱっても、もう見るものは無い。柱は動かさない。
-    const atRightEnd = () =>
-      stream.getBoundingClientRect().right <= scroller.getBoundingClientRect().right + 1;
+    const arm = () => {
+      if (armed) return;
+      armed = true;
+      last = scroller.scrollLeft;
+      run = 0;
+    };
 
-    /** 指（や輪）が dx だけ横に動いた。正なら右へ。左へ動けば柱は引っ込み、右へ動けば出る。 */
-    const moved = (dx: number) => {
-      if (dx === 0) return;
-      if (dx < 0 && atRightEnd()) return;
-      run = Math.sign(run) === Math.sign(dx) ? run + dx : dx;
+    const onScroll = () => {
+      const now = scroller.scrollLeft;
+      const delta = now - last;
+      last = now;
+      if (!armed || delta === 0) return;
+      // 端を越えて引っぱっているあいだ（跳ね返り）は、送ったうちに入れない
+      const max = scroller.scrollWidth - scroller.clientWidth;
+      if (now < 0 || now > max) return;
+
+      run = Math.sign(run) === Math.sign(delta) ? run + delta : delta;
       if (Math.abs(run) < TURN) return;
+      // 位置が減った＝中身が右へ流れた＝指を右へ動かした。柱は出ていく。
       app.dataset.reading = run < 0 ? "true" : "false";
       run = 0;
     };
 
-    const onTouchStart = (event: TouchEvent) => {
-      lastX = event.touches[0]?.clientX ?? null;
-      run = 0;
-    };
-    const onTouchMove = (event: TouchEvent) => {
-      const x = event.touches[0]?.clientX;
-      if (x === undefined || lastX === null) return;
-      moved(x - lastX);
-      lastX = x;
-    };
-    const onTouchEnd = () => {
-      lastX = null;
-    };
-    // 輪：中身が左へ流れる（deltaX が正）のは、指を左へ動かしたのと同じ
-    const onWheel = (event: WheelEvent) => {
-      const dx = event.deltaX !== 0 ? event.deltaX : event.shiftKey ? event.deltaY : 0;
-      moved(-dx);
-    };
-
-    scroller.addEventListener("touchstart", onTouchStart, { passive: true });
-    scroller.addEventListener("touchmove", onTouchMove, { passive: true });
-    scroller.addEventListener("touchend", onTouchEnd, { passive: true });
-    scroller.addEventListener("touchcancel", onTouchEnd, { passive: true });
-    scroller.addEventListener("wheel", onWheel, { passive: true });
+    const starts = ["touchstart", "pointerdown", "wheel"] as const;
+    starts.forEach((name) => scroller.addEventListener(name, arm, { passive: true }));
+    window.addEventListener("keydown", arm, { passive: true });
+    scroller.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
-      scroller.removeEventListener("touchstart", onTouchStart);
-      scroller.removeEventListener("touchmove", onTouchMove);
-      scroller.removeEventListener("touchend", onTouchEnd);
-      scroller.removeEventListener("touchcancel", onTouchEnd);
-      scroller.removeEventListener("wheel", onWheel);
+      sizer.disconnect();
+      starts.forEach((name) => scroller.removeEventListener(name, arm));
+      window.removeEventListener("keydown", arm);
+      scroller.removeEventListener("scroll", onScroll);
       delete app.dataset.reading;
+      app.style.removeProperty("--masthead-w");
     };
   }, []);
 
