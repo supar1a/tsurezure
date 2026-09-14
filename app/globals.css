@@ -458,6 +458,14 @@ html::before {
    * 送りは正の値だけになり、ひらいた直後に置きなおす必要も無くなる。
    */
   writing-mode: horizontal-tb;
+  /*
+   * 中身が器より狭いときは、右に寄せる（縦組みは右から始まるので）。
+   * 横組みの器はそのままだと中身を左端に置く。flex にして子に margin-left: auto を与えると、
+   * 収まるときだけ右に寄り、はみ出すときは auto が 0 になって左端から送れる
+   * （justify-content: flex-end だと、はみ出した分が左の届かないところへ行ってしまう）。
+   */
+  display: flex;
+  align-items: stretch;
   flex: 1 1 auto;
   min-height: 0;
   overflow-x: auto;
@@ -481,6 +489,11 @@ html::before {
   background-attachment: local;
   scrollbar-width: thin;
   scrollbar-color: rgba(33, 30, 25, 0.16) transparent;
+}
+
+.scroll-tate > * {
+  flex: 0 0 auto;
+  margin-left: auto;
 }
 
 .scroll-tate::-webkit-scrollbar {
