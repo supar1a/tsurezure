@@ -42,7 +42,13 @@ export function paragraphs(body: string): Line[] {
  * 書いた人が打った文字をこちらで書き換えることはしない。見えかたが変わるだけ。
  * 末尾に句読点や閉じ括弧が付いていたら、それは URL の一部ではないので外す。
  */
-const URL_RE = /https?:\/\/[^\s]+/g;
+/*
+ * URL の終わり。空白のほか、URL に使われることのない全角の句読点・括弧・引用符で切る。
+ * 日本語の文は URL のあとに空白を置かないので、空白だけを終わりにすると
+ * 「https://a/x、と「https://b/y」」が丸ごと一本の行き先になってしまう。
+ * 漢字かなでは切らない（https://ja.wikipedia.org/wiki/徒然草 のような行き先があるので）。
+ */
+const URL_RE = /https?:\/\/[^\s、。，．！？「」『』（）【】〈〉《》〔〕［］｛｝“”‘’…]+/g;
 const TRAILING = /[、。，．,.!?！？)）\]］}｝」』】〉》"'']+$/;
 
 export type Piece = { link: boolean; value: string };
