@@ -50,6 +50,15 @@ export function DrawnCaret({ target }: { target: RefObject<HTMLTextAreaElement |
 
     let composing = false;
     let frame = 0;
+    // 書式の写しは、寸法や字体が変わったときだけ取り直す（打つたびに getComputedStyle を呼ばない）
+    let em = 16;
+    let dressed = false;
+    const dress = () => {
+      const style = getComputedStyle(area);
+      for (const name of COPIED) mirror.style[name] = style[name];
+      em = parseFloat(style.fontSize) || 16;
+      dressed = true;
+    };
 
     const place = () => {
       frame = 0;
@@ -57,8 +66,7 @@ export function DrawnCaret({ target }: { target: RefObject<HTMLTextAreaElement |
         caret.hidden = true;
         return;
       }
-      const style = getComputedStyle(area);
-      for (const name of COPIED) mirror.style[name] = style[name];
+      if (!dressed) dress();
 
       const box = area.getBoundingClientRect();
       const home = host.getBoundingClientRect();
@@ -84,7 +92,6 @@ export function DrawnCaret({ target }: { target: RefObject<HTMLTextAreaElement |
         return;
       }
       // 棒の長さは一字ぶん。印の箱は字面より少し広いので、真ん中に合わせて詰める。
-      const em = parseFloat(style.fontSize) || m.width;
       caret.style.left = `${m.left - home.left + (m.width - em) / 2}px`;
       caret.style.top = `${m.top - home.top}px`;
       caret.style.width = `${em}px`;
@@ -97,6 +104,10 @@ export function DrawnCaret({ target }: { target: RefObject<HTMLTextAreaElement |
     const soon = () => {
       if (!frame) frame = requestAnimationFrame(place);
     };
+    const undress = () => {
+      dressed = false;
+      soon();
+    };
     const onCompositionStart = () => { composing = true; soon(); };
     const onCompositionEnd = () => { composing = false; soon(); };
 
@@ -105,9 +116,9 @@ export function DrawnCaret({ target }: { target: RefObject<HTMLTextAreaElement |
     area.addEventListener("compositionstart", onCompositionStart);
     area.addEventListener("compositionend", onCompositionEnd);
     document.addEventListener("selectionchange", soon);
-    window.addEventListener("resize", soon);
-    window.visualViewport?.addEventListener("resize", soon);
-    document.fonts?.addEventListener("loadingdone", soon);
+    window.addEventListener("resize", undress);
+    window.visualViewport?.addEventListener("resize", undress);
+    document.fonts?.addEventListener("loadingdone", undress);
     soon();
 
     return () => {
@@ -116,9 +127,9 @@ export function DrawnCaret({ target }: { target: RefObject<HTMLTextAreaElement |
       area.removeEventListener("compositionstart", onCompositionStart);
       area.removeEventListener("compositionend", onCompositionEnd);
       document.removeEventListener("selectionchange", soon);
-      window.removeEventListener("resize", soon);
-      window.visualViewport?.removeEventListener("resize", soon);
-      document.fonts?.removeEventListener("loadingdone", soon);
+      window.removeEventListener("resize", undress);
+      window.visualViewport?.removeEventListener("resize", undress);
+      document.fonts?.removeEventListener("loadingdone", undress);
       area.classList.remove("caret-quiet");
       mirror.remove();
       caret.remove();

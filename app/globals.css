@@ -36,10 +36,14 @@
   --slow: 460ms;
   --quick: 220ms;
 
-  /* 紙の地。粒と斑と繊維、四枚を掛け合わせて漉く。
-     もともとは開くたびに違う種から作っていたが、種は一つに決めた。 */
-  --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' seed='1741' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='0.34'/%3E%3C/svg%3E");
-  --paper-mottle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.045' numOctaves='2' seed='6023' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='600' height='600' filter='url(%23n)' opacity='0.1'/%3E%3C/svg%3E");
+  /*
+   * 紙の地。粒と斑と繊維、四枚を重ねて漉く。
+   * 粒と斑は PNG に焼いてある（scripts/make-paper.mjs）。もとは SVG の feTurbulence を
+   * multiply で掛け合わせていたが、混色が入ると Safari は巻きを送るたびに地を描き直して重い。
+   * 地の色が一色なので、黒を透かして重ねれば multiply と同じ見た目になる。混色は使わない。
+   */
+  --paper-grain: url("/paper-grain.png");
+  --paper-mottle: url("/paper-mottle.png");
   --paper: var(--paper-mottle), var(--paper-grain),
     repeating-linear-gradient(
       97deg,
@@ -55,12 +59,12 @@
       transparent 1px,
       transparent 9px
     );
-  --paper-size: 600px 600px, 260px 260px, auto, auto;
+  --paper-size: 384px 384px, 192px 192px, auto, auto;
 
   color-scheme: light;
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  /* text-rendering: optimizeLegibility は入れない。日本語では効き目が無いうえ、Safari の組みが遅くなる。 */
 }
 
 html,
@@ -76,7 +80,6 @@ body {
   background-color: var(--washi);
   background-image: var(--paper);
   background-size: var(--paper-size);
-  background-blend-mode: multiply;
   letter-spacing: 0.06em;
   line-height: 1.9;
 }
@@ -97,7 +100,8 @@ html::before {
     transparent 62%,
     rgba(82, 78, 70, 0.07) 100%
   );
-  mix-blend-mode: multiply;
+  /* 混色（mix-blend-mode）は使わない。画面全体に掛かると Safari が毎フレーム描き直して重い。
+     翳りは透かした色なので、重ねるだけで同じに見える。 */
 }
 
 /* --------------------------------------------------------------------------
@@ -251,7 +255,6 @@ html::before {
   transition:
     transform 640ms var(--ease),
     margin-left 640ms var(--ease);
-  will-change: transform;
 }
 
 .masthead-rule {
@@ -485,7 +488,6 @@ html::before {
   background-color: var(--washi);
   background-image: var(--paper);
   background-size: var(--paper-size);
-  background-blend-mode: multiply;
   background-attachment: local;
   scrollbar-width: thin;
   scrollbar-color: rgba(33, 30, 25, 0.16) transparent;
@@ -785,14 +787,6 @@ a.slip-when:hover {
   resize: none;
   border-radius: 0;
   padding: 0;
-  /*
-   * 書く欄を、自前の層に載せる。
-   * 縦組みの入力欄は、字を消したあとに消えたはずの字が残ることがある
-   * （中身が縮んだのに、描き直しがそこまで届かない）。層を分けると
-   * まるごと描き直されるので、取り残しが起きにくい。
-   * 手元の Chrome では再現しないため、これは当て推量の手当てにとどまる。
-   */
-  transform: translateZ(0);
 }
 
 .compose-body {

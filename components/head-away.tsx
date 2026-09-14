@@ -28,12 +28,18 @@ export function HeadAway() {
     if (!scroller || !app || !masthead) return;
 
     // 畳むときに引っ込める幅。柱の実寸を測って CSS に渡す。
+    // 巻きの動ける幅も、ここで控えておく（scroll のたびに測ると、そのたびに組みを強いる）。
+    let room = scroller.scrollWidth - scroller.clientWidth;
     const measure = () => {
       app.style.setProperty("--masthead-w", `${masthead.offsetWidth}px`);
+      room = scroller.scrollWidth - scroller.clientWidth;
     };
     measure();
     const sizer = new ResizeObserver(measure);
     sizer.observe(masthead);
+    sizer.observe(scroller);
+    const stream = scroller.querySelector<HTMLElement>("[data-stream]");
+    if (stream) sizer.observe(stream);
 
     let armed = false;
     let last = scroller.scrollLeft;
@@ -52,8 +58,7 @@ export function HeadAway() {
       last = now;
       if (!armed || delta === 0) return;
       // 端を越えて引っぱっているあいだ（跳ね返り）は、送ったうちに入れない
-      const max = scroller.scrollWidth - scroller.clientWidth;
-      if (now < 0 || now > max) return;
+      if (now < 0 || now > room) return;
 
       run = Math.sign(run) === Math.sign(delta) ? run + delta : delta;
       if (Math.abs(run) < TURN) return;

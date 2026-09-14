@@ -174,6 +174,7 @@ cp .env.example .env        # DATABASE_URL を埋める
 npx prisma migrate dev
 npm run seed                # 手ざわりを見るための種データ（任意）
 npm run dev
+node scripts/make-paper.mjs # 紙の地（public/paper-*.png）を焼き直すとき
 ```
 
 ### 開発中の人の切り替え
@@ -294,6 +295,24 @@ Android Chrome 向けには `interactive-widget=resizes-content` も出してい
 
 名札の絵（`app/opengraph-image.png`）と顔（favicon）は `scripts/make-icon.mjs` で焼く。
 `e2e-share.mjs` が、名乗らない相手に何が渡って何が渡らないかを見張る。
+
+## 軽さ（Safari のために）
+
+縦組みはそれ自体が重い（字ごとの送り、`vpal`/`vkrn`、`line-break: strict`）。そのうえに
+描画の重い仕掛けを載せると、iOS の Safari で巻きを送るたびに引っかかる。載せない。
+
+- **混色（`mix-blend-mode` / `background-blend-mode`）は使わない。** 画面全体に掛かる混色が
+  あると、Safari は巻きを送るたびに地をまるごと描き直す。紙の粒と斑は、もとは SVG の
+  `feTurbulence` を multiply で掛け合わせていたが、地の色が一色なので「黒を透かして重ねる」のと
+  同じ結果になる。`scripts/make-paper.mjs` で PNG に焼いてある（`public/paper-*.png`、
+  濃さと粒の立ちかたは、もとの画面と数で合わせた）。四隅の翳りも、透かした色を重ねるだけ。
+- **字体は使う太さだけ**（400・500・600）。
+- **`text-rendering: optimizeLegibility` は入れない。** 日本語では効き目が無いうえ、Safari の組みが遅くなる。
+- **層を作らない。** 書く欄の `translateZ(0)`、柱の `will-change` は外した。
+- **送りのたびに組みを強いない。** 柱の出し入れ（`head-away.tsx`）は巻きの動ける幅を
+  `ResizeObserver` で控えておき、`scroll` のたびに `scrollWidth` を読まない。自前の挿入ポイント
+  （`drawn-caret.tsx`）は書式の写しを寸法や字体が変わったときだけ取り直し、打つたびに
+  `getComputedStyle` を呼ばない。
 
 ## 見えかた
 
