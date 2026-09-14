@@ -96,6 +96,20 @@ for (const [label, u] of [["このグループ", `${B}/sannin/members`], ["あ�
   check(`${label}は右端（はじまり）でひらく`, Math.abs(g.right) < 3 && g.sl >= 0, JSON.stringify(g));
 }
 
+// ── 名乗る前の戸口も、携帯の幅に収まる（送れる器ではないので、切れたら届かない） ──
+await send("Network.clearBrowserCookies", {}, sessionId);
+for (const w of [390, 375]) {
+  await send("Emulation.setDeviceMetricsOverride", { width: w, height: 780, deviceScaleFactor: 1, mobile: true }, sessionId);
+  await goto(`${B}/`);
+  await ev(`(() => { const st = document.createElement("style"); st.textContent = ".debug{display:none!important}"; document.head.appendChild(st); })()`);
+  await wait(200);
+  const g = await ev(`(() => { const R = (el) => { const r = el.getBoundingClientRect(); return [Math.round(r.left), Math.round(r.right)]; };
+    const lede = document.querySelector(".leaf-lede"), form = document.querySelector(".gate-form"), gate = document.querySelector(".gate");
+    return { docW: document.documentElement.scrollWidth, vw: innerWidth, lede: R(lede), form: R(form), scrollable: gate.scrollWidth > gate.clientWidth, sl: Math.round(gate.scrollLeft) }; })()`);
+  check(`${w}px：戸口の頁が横に広がっていない（縮小表示にならない）`, g.docW <= g.vw && g.vw === w, JSON.stringify(g));
+  check(`${w}px：断り書きまで画面の中に収まる（または右から送れる）`, (g.lede[0] >= 0 && g.lede[1] <= w) || g.scrollable, JSON.stringify(g));
+}
+
 await send("Target.closeTarget", { targetId }); ws.close();
 for (const l of ok) console.log("  ○ " + l);
 for (const l of bad) console.log("  × " + l);

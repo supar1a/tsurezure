@@ -1252,9 +1252,30 @@ a {
     padding: 0.7em 0.9em;
   }
 
+  /*
+   * 戸口は送れる器ではないので、書く欄が横に収まらないと左が切れたまま届かない
+   * （そのうえ携帯の Chrome は「収まるように」画面ごと縮める）。
+   * 間と縁を詰めて 375px に収める。それでも収まらない狭い画面では、右から送れるようにしておく。
+   * 縦組みは右から読むので、器は rtl にして原点を右端に置く（中の字は ltr に戻す）。
+   */
+  .gate {
+    padding-inline: 0.5rem;
+    overflow-x: auto;
+    direction: rtl;
+    justify-content: flex-start;
+  }
+
   .gate-inner {
+    direction: ltr;
     flex-direction: column;
     gap: 2.5rem;
+    width: max-content;
+    max-width: none;
+    margin-inline: auto; /* 収まるときは真ん中、はみ出すときは端から */
+  }
+
+  .gate-form {
+    gap: 0.9rem;
   }
 
   .page {
