@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { requirePlace } from "@/lib/guards";
 import { kanjiDateShort } from "@/lib/kanji";
 import { Masthead } from "@/components/masthead";
+import { OpenAt } from "@/components/open-at";
 import { PaperLink } from "@/components/paper-link";
 import { InviteUrl, LeavePlace, RemoveMember, RenamePlace } from "@/components/place-admin";
 
@@ -42,9 +43,10 @@ export default async function MembersPage({ params }: { params: Promise<{ slug: 
         </PaperLink>
       </Masthead>
 
+      <OpenAt edge="right" />
       <div className="stage">
         <div className="scroll-tate">
-          <div className="roster tate fade-in">
+          <div className="roster tate fade-in" data-stream>
             {isOwner ? (
               <section className="panel">
                 <h1 className="panel-title">名前</h1>

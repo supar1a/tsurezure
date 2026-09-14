@@ -55,7 +55,7 @@ for (const [label, url, w, h] of [
 // ── 何かに右端へ戻されても、置きなおす ──
 await open("http://localhost:3000/sannin", 390, 780);
 check("戻される前は左端", Math.abs(await gap()) < 3, `${await gap()}`);
-await ev(`(() => { const s = document.getElementById("scroller"); if (s) s.scrollLeft = 0; })()`); // 右端へ引き戻す
+await ev(`(() => { const s = document.getElementById("scroller"); if (s) s.scrollLeft = s.scrollWidth; })()`); // 右端（はじまり）へ引き戻す
 await wait(900);
 check("誰かに右端へ戻されても、置きなおす", Math.abs(await gap()) < 3, `左端から ${await gap()}px（戻ってこない）`);
 
@@ -85,9 +85,11 @@ await open("http://localhost:3000/sannin", 390, 780);
   check("しばらく置いても、そのまま", Math.abs((await at()) - left) < 3, `${left} → ${await at()}`);
 
   // そのあと外から動かされても、こちらからは戻さない
-  await ev(`(() => { const s = document.getElementById("scroller"); if (s) s.scrollLeft = 0; })()`);
+  await ev(`(() => { const s = document.getElementById("scroller"); if (s) s.scrollLeft = s.scrollWidth; })()`);
   await wait(900);
-  check("人に渡したあとは、右端に置かれても黙っている", Math.abs(await at()) < 3, `いま ${await at()}`);
+  check("人に渡したあとは、右端に置かれても黙っている",
+    (await ev(`(() => { const s = document.getElementById("scroller"); return String(s.scrollWidth - s.clientWidth - s.scrollLeft); })()`)) < 3,
+    `右端から ${await ev(`(() => { const s = document.getElementById("scroller"); return String(s.scrollWidth - s.clientWidth - s.scrollLeft); })()`)}px`);
 }
 
 // ── 書き残したあとも、左端でひらく ──

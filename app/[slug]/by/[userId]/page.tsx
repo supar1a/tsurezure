@@ -6,7 +6,7 @@ import { Masthead } from "@/components/masthead";
 import { HeadAway } from "@/components/head-away";
 import { PaperLink } from "@/components/paper-link";
 import { SlipColumn } from "@/components/slip-column";
-import { OpenAtLatest } from "@/components/open-at-latest";
+import { OpenAt } from "@/components/open-at";
 
 /** その人が書いたものだけを続けて読む。相手を少し知るための入口。 */
 /* 名札。名前は URL を知っている人には元々見えているものだけ。 */
@@ -67,7 +67,7 @@ export default async function ByPersonPage({
           </div>
         </div>
 
-        <OpenAtLatest scrollerId="scroller" />
+        <OpenAt edge="left" scrollerId="scroller" />
       </div>
       <HeadAway />
     </div>

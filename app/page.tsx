@@ -3,6 +3,7 @@ import { currentUser } from "@/lib/auth";
 import { kanjiDateShort, kanjiNumber } from "@/lib/kanji";
 import { startAction } from "@/app/actions/identity";
 import { Masthead } from "@/components/masthead";
+import { OpenAt } from "@/components/open-at";
 import { PaperLink } from "@/components/paper-link";
 import { GateMark } from "@/components/gate-mark";
 import { DevSwitcher, StartForm } from "@/components/identity-forms";
@@ -67,17 +68,18 @@ export default async function HomePage() {
         </PaperLink>
       </Masthead>
 
+      <OpenAt edge="right" />
       <div className="stage">
         <div className="scroll-tate">
           {places.length === 0 ? (
-            <div className="hollow tate fade-in">
+            <div className="hollow tate fade-in" data-stream>
               <p>まだグループがありません。</p>
               <PaperLink href="/new" className="btn" voice="rustle">
                 グループを作る
               </PaperLink>
             </div>
           ) : (
-            <div className="stream tate fade-in">
+            <div className="stream tate fade-in" data-stream>
               {places.map((place) => {
                 const tally = tallyOf.get(place.id);
                 const written = tally?._count._all ?? 0;

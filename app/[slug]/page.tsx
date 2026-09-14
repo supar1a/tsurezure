@@ -11,7 +11,7 @@ import { PaperLink } from "@/components/paper-link";
 import { SlipColumn } from "@/components/slip-column";
 import { ContentsEntry } from "@/components/contents-entry";
 import { MarkAsRead } from "@/components/mark-as-read";
-import { OpenAtLatest } from "@/components/open-at-latest";
+import { OpenAt } from "@/components/open-at";
 import { GateMark } from "@/components/gate-mark";
 import { JoinAsMe, NameOnlyForm, PickMe } from "@/components/identity-forms";
 
@@ -169,7 +169,7 @@ export default async function PlacePage({
           )}
         </div>
 
-        <OpenAtLatest scrollerId={SCROLLER} />
+        <OpenAt edge="left" scrollerId={SCROLLER} />
       </div>
 
       <MarkAsRead placeId={place.id} />

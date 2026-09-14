@@ -3,6 +3,7 @@ import { requireReadableSlip } from "@/lib/guards";
 import { kanjiDate, kanjiTime } from "@/lib/kanji";
 import { Masthead } from "@/components/masthead";
 import { HeadAway } from "@/components/head-away";
+import { OpenAt } from "@/components/open-at";
 import { PaperLink } from "@/components/paper-link";
 import { DeleteSlip, PublishToggle } from "@/components/slip-actions";
 import { SlipText } from "@/components/slip-column";
@@ -30,7 +31,7 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
 
       <div className="stage">
         <div className="scroll-tate">
-          <article className="sheet tate fade-in">
+          <article className="sheet tate fade-in" data-stream>
             <header className="sheet-head">
               {slip.title ? <h1 className="sheet-title">{slip.title}</h1> : null}
 
@@ -72,6 +73,8 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
           </article>
         </div>
       </div>
+      {/* 一篇は題から。右端（はじまり）でひらく。 */}
+      <OpenAt edge="right" />
       <HeadAway />
     </div>
   );

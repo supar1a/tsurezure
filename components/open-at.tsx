@@ -5,27 +5,37 @@ import { useEffect } from "react";
 /** 巻きを置きなおすのをやめる時刻（開いてから何ミリ秒か）。 */
 const WATCH_FOR = 8000;
 
+type Edge = "left" | "right";
+
 /**
- * ひらいたら、いつも左端（いちばん新しいところ）に立つ。
+ * ひらいたとき、どちらの端に立つか。
  *
+ * 巻物と目次は左端（いちばん新しいところ）。一篇や名簿は右端（はじまり）。
  * スマホでもPCでも、開く場所がいつも同じであってほしいので、
  * 読みかけの位置ではなく、常にここに合わせる。
  *
- * 縦組みの巻きでは scrollLeft の符号が環境で割れるので、位置を測って差分で動かす。
+ * 器（.scroll-tate）は横組みなので、送りの原点は左端。左端に立つ頁では、ひらいた時点で
+ * もう原点に居る（この部品は、何かに動かされたときの置きなおしにだけ働く）。
+ * 右端に立つ頁では、ひらいた直後にこちらから送る。送りは正の値だけを使う。
+ * 縦組みの器で負の値を使うと、iOS の WebKit では中のものが押せなくなる。
  *
  * 置いたあとに、こちらの与り知らぬところで巻きが戻されることがある
- * （字体や写真が遅れて入る、再描画で中身が入れ替わる、焦点が右端の見出しへ移る、など。
+ * （字体や写真が遅れて入る、再描画で中身が入れ替わる、焦点が見出しへ移る、など。
  * 端末や回線によって起きたり起きなかったりする）。
  * 一度きり置いて終わりにせず、しばらくは戻されたら置きなおす。
  *
  * ただし、**人が自分で送ったときだけは、二度と触らない。**
- * 読んでいる最中に巻きが引き戻されるのは、右端で開くよりずっと悪い。
+ * 読んでいる最中に巻きが引き戻されるのは、端で開くよりずっと悪い。
  * 指が触れただけでは引かず、触れたうえで実際に送られたときに手を引く。
  */
-export function OpenAtLatest({ scrollerId }: { scrollerId: string }) {
+export function OpenAt({ edge = "left", scrollerId }: { edge?: Edge; scrollerId?: string }) {
   useEffect(() => {
-    const scroller = document.getElementById(scrollerId);
+    const scroller = scrollerId
+      ? document.getElementById(scrollerId)
+      : document.querySelector<HTMLElement>(".scroll-tate");
     if (!scroller) return;
+    const stream = scroller.querySelector<HTMLElement>("[data-stream]");
+    if (!stream) return;
 
     // 人に渡した。もうこちらからは動かさない。
     let handedOver = false;
@@ -36,22 +46,26 @@ export function OpenAtLatest({ scrollerId }: { scrollerId: string }) {
     let releaseTimer = 0;
     let nudge = 0;
 
+    // 立つべき端と、中身のその端との差。0 なら着いている。
+    const shift = () => {
+      const s = stream.getBoundingClientRect();
+      const v = scroller.getBoundingClientRect();
+      return edge === "left" ? s.left - v.left : s.right - v.right;
+    };
+
     const align = () => {
       if (handedOver) return;
       // 指や輪が触れている最中は、こちらからは動かさない。
       // 見張りと人の操作が競ると、送っているそばから引き戻すことになる。
       if (reaching) return;
-      // 最後の一枚ではなく、中身そのものの左端を画面の左端に合わせる。
+      // 最後の一枚ではなく、中身そのものの端を画面の端に合わせる。
       // 一枚に合わせると、中身が自前で持っている余白のぶんだけ端まで行き着かない。
-      const stream = scroller.querySelector<HTMLElement>("[data-stream]");
-      if (!stream) return;
       // 一度では数ピクセル手前で止まることがあるので、動かなくなるまで詰める。
-      // 符号は環境で割れるので、端を直に指さず、測った差を足していく。
       for (let i = 0; i < 4; i++) {
-        const shift = stream.getBoundingClientRect().left - scroller.getBoundingClientRect().left;
-        if (Math.abs(shift) < 1) break;
+        const d = shift();
+        if (Math.abs(d) < 1) break;
         const was = scroller.scrollLeft;
-        scroller.scrollLeft += shift;
+        scroller.scrollLeft += d;
         if (scroller.scrollLeft === was) break; // これ以上は動けない（端に着いている）
       }
       mine = scroller.scrollLeft;
@@ -108,9 +122,8 @@ export function OpenAtLatest({ scrollerId }: { scrollerId: string }) {
      * 巻きの見える幅がそのぶん動く。中身だけ見ていると、後者を取りこぼして
      * 数ピクセル手前で止まる。
      */
-    const stream = scroller.querySelector<HTMLElement>("[data-stream]");
     const watcher = new ResizeObserver(align);
-    if (stream) watcher.observe(stream);
+    watcher.observe(stream);
     watcher.observe(scroller);
 
     scroller.addEventListener("scroll", onScroll, { passive: true });
@@ -146,7 +159,7 @@ export function OpenAtLatest({ scrollerId }: { scrollerId: string }) {
       releases.forEach((name) => scroller.removeEventListener(name, release));
       window.removeEventListener("keydown", onKey);
     };
-  }, [scrollerId]);
+  }, [edge, scrollerId]);
 
   return null;
 }

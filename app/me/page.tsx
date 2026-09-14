@@ -1,6 +1,7 @@
 import { requireUser } from "@/lib/auth";
 import { forgetAction, renameAction } from "@/app/actions/identity";
 import { Masthead } from "@/components/masthead";
+import { OpenAt } from "@/components/open-at";
 import { PaperLink } from "@/components/paper-link";
 import { RenameForm, Forget } from "@/components/identity-forms";
 import { SoundSetting } from "@/components/sound-setting";
@@ -14,9 +15,10 @@ export default async function MePage() {
     <div className="app">
       <Masthead />
 
+      <OpenAt edge="right" />
       <div className="stage">
         <div className="scroll-tate">
-          <div className="roster tate fade-in">
+          <div className="roster tate fade-in" data-stream>
             <section className="panel">
               <h1 className="panel-title">名前</h1>
               <p className="caption">
