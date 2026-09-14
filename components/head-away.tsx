@@ -6,11 +6,12 @@ import { useEffect } from "react";
 const TURN = 12;
 
 /**
- * 柱は、送った向きへ滑る。
+ * 読み進めているあいだ、柱は引っ込む。横書きの頁で、下へ送ると（指を上へ動かすと）
+ * 頭の帯が消えるのと同じ。
  *
- * 柱は右の端に立っている。右へ送れば（左にある中身を見にいけば）柱は右へ滑って画面の外に出る。
- * 左へ送れば（右にある中身へ戻れば）右から滑って戻ってくる。
- * 中身と一緒に動くので、手の動きと柱の動きが食い違わない。
+ * 巻物は左端（いちばん新しいところ）でひらく。読み進めるとは、右にある古いほうへ
+ * 進むこと——指を左へ動かすこと。だから指を左へ動かせば柱は右の端から滑って出ていき、
+ * 指を右へ動かせば（戻れば）右からにゅっと滑って戻る。
  *
  * 動かすのは見た目だけで、場所は空けたままにしてある。
  * 柱を畳むと巻きの幅が変わり、縦組みでは一列に入る字数が変わるので、
@@ -56,15 +57,15 @@ export function HeadAway() {
       last = now;
       if (delta === 0) return;
 
-      // 端で引っぱっただけ（跳ね返り）は、送ったうちに入れない
+      // 右端（いちばん古いところ）で引っぱっただけ（跳ね返り）は、読み進めたうちに入れない
       const view = scroller.getBoundingClientRect();
-      const atLeftEnd = now >= view.left - 1;
-      if (atLeftEnd && delta > 0) return;
+      const atRightEnd = stream.getBoundingClientRect().right <= view.right + 1;
+      if (atRightEnd && delta < 0) return;
 
       run = Math.sign(run) === Math.sign(delta) ? run + delta : delta;
       if (Math.abs(run) < TURN) return;
-      // 中身が右へ動いた（右へ送った）なら、柱も右へ出ていく
-      app.dataset.reading = run > 0 ? "true" : "false";
+      // 中身が左へ動いた（指を左へ動かした＝読み進めた）なら、柱は引っ込む。右へ戻せば出る。
+      app.dataset.reading = run < 0 ? "true" : "false";
       run = 0;
     };
 
