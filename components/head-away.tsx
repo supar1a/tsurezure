@@ -6,7 +6,8 @@ import { useEffect } from "react";
 const TURN = 12;
 
 /**
- * 指を右へ動かすと柱は右の端から滑って出ていき、指を左へ動かすと右からにゅっと戻る。
+ * 指を左へ動かすと柱は右の端から滑って出ていき、指を右へ動かすと右からにゅっと戻る。
+ * 横書きの頁で、指を上へ動かすと（下へ送ると）頭の帯が消えるのと同じ。
  *
  * 向きは、巻きの位置ではなく**指そのものの動き**で決める。
  * 縦組みの巻きは scrollLeft の符号も並びも環境で割れるが、指が右へ動いたか左へ動いたかは
@@ -26,17 +27,17 @@ export function HeadAway() {
     let run = 0; // 同じ向きに動いた量。向きが変われば捨てる。
     let lastX: number | null = null;
 
-    // 左端（いちばん新しいところ）でさらに右へ引っぱっても、もう見るものは無い。柱は動かさない。
-    const atLeftEnd = () =>
-      stream.getBoundingClientRect().left >= scroller.getBoundingClientRect().left - 1;
+    // 右端（いちばん古いところ）でさらに左へ引っぱっても、もう見るものは無い。柱は動かさない。
+    const atRightEnd = () =>
+      stream.getBoundingClientRect().right <= scroller.getBoundingClientRect().right + 1;
 
-    /** 指（や輪）が dx だけ横に動いた。正なら右へ。 */
+    /** 指（や輪）が dx だけ横に動いた。正なら右へ。左へ動けば柱は引っ込み、右へ動けば出る。 */
     const moved = (dx: number) => {
       if (dx === 0) return;
-      if (dx > 0 && atLeftEnd()) return;
+      if (dx < 0 && atRightEnd()) return;
       run = Math.sign(run) === Math.sign(dx) ? run + dx : dx;
       if (Math.abs(run) < TURN) return;
-      app.dataset.reading = run > 0 ? "true" : "false";
+      app.dataset.reading = run < 0 ? "true" : "false";
       run = 0;
     };
 
@@ -53,7 +54,7 @@ export function HeadAway() {
     const onTouchEnd = () => {
       lastX = null;
     };
-    // 輪：中身が右へ流れる（deltaX が負）のは、指を右へ動かしたのと同じ
+    // 輪：中身が左へ流れる（deltaX が正）のは、指を左へ動かしたのと同じ
     const onWheel = (event: WheelEvent) => {
       const dx = event.deltaX !== 0 ? event.deltaX : event.shiftKey ? event.deltaY : 0;
       moved(-dx);

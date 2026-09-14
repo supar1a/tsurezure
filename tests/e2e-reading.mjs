@@ -1,4 +1,4 @@
-// 指を右へ動かすと柱は右へ滑って出ていき、指を左へ動かすとにゅっと戻る。薄れるのではなく滑る。
+// 指を左へ動かすと柱は右へ滑って出ていき、指を右へ動かすとにゅっと戻る。薄れるのではなく滑る。
 const [, , token] = process.argv;
 const bail = setTimeout(() => { console.log("（時間切れ）"); process.exit(2); }, 150000); bail.unref?.();
 const v = await (await fetch("http://127.0.0.1:9222/json/version")).json();
@@ -72,22 +72,14 @@ await wait(3000);
   check("指で押すと、そのグループへ入れる", (await ev(`location.pathname`)) === "/sannin", await ev(`location.pathname`));
 }
 
-// ── 指を右へ動かすと出ていき、左へ動かすと戻る ──
+// ── 指を左へ動かすと出ていき、右へ動かすと戻る ──
 await send("Page.navigate", { url: "http://localhost:3000/sannin?view=maki" }, sessionId);
 await wait(3500);
 check("ひらいた直後は、柱が出ている", (await slid()) < -20, await slid());
 {
-  // 左端（いちばん新しいところ）でひらいている。ここでさらに右へ引っぱっても、見るものが無い。柱は動かさない。
-  await drag(200);
-  check("左端で右へ引っぱっただけでは、柱を動かさない", (await reading()) !== "true", await reading());
-
-  // 指を左へ（中身が左へ流れ、右にある古いほうが見える）
-  await drag(-400);
-  check("指を左へ動かしても、柱は出たまま", (await reading()) !== "true" && (await slid()) < -20, `${await reading()} / ${await slid()}`);
-
-  // 指を右へ：柱は右へ滑って出ていく
-  await drag(150);
-  check("指を右へ動かすと、柱は右へ滑って出ていく", (await reading()) === "true" && await settled("out"), `${await reading()} / ${await slid()}`);
+  // 左端（いちばん新しいところ）でひらいている。指を左へ：柱は右へ滑って出ていく
+  await drag(-150);
+  check("指を左へ動かすと、柱は右へ滑って出ていく", (await reading()) === "true" && await settled("out"), `${await reading()} / ${await slid()}`);
   check("薄れて消えるのではなく、濃さはそのまま", Number(await opacity()) > 0.95, await opacity());
   check("場所は空けたまま（幅が変わっていない）",
     (await ev(`Math.round(document.querySelector(".masthead").getBoundingClientRect().width) > 0`)));
@@ -96,27 +88,36 @@ check("ひらいた直後は、柱が出ている", (await slid()) < -20, await 
   check("横にこぼした分で頁が広がっていない", (await ev(`document.documentElement.scrollWidth`)) <= (await ev(`innerWidth`)),
     `${await ev(`document.documentElement.scrollWidth`)} / ${await ev(`innerWidth`)}`);
 
-  // 指を左へ：右からにゅっと戻る
-  await drag(-150);
-  check("指を左へ動かすと、右から滑って戻る", (await reading()) === "false" && await settled("in"), `${await reading()} / ${await slid()}`);
+  // 指を右へ：右からにゅっと戻る
+  await drag(100);
+  check("指を右へ動かすと、右から滑って戻る", (await reading()) === "false" && await settled("in"), `${await reading()} / ${await slid()}`);
 
   // 数ピクセルの揺れでは向きを変えない
-  await drag(4);
+  await drag(-4);
   check("数ピクセルの揺れでは動かない", (await reading()) === "false", await reading());
 
-  // また右へ動かせば、また出ていく
-  await drag(200);
-  check("また右へ動かせば、また出ていく", (await reading()) === "true" && await settled("out"), `${await reading()} / ${await slid()}`);
+  // また左へ動かせば、また出ていく
+  await drag(-200);
+  check("また左へ動かせば、また出ていく", (await reading()) === "true" && await settled("out"), `${await reading()} / ${await slid()}`);
 
-  // 輪でも同じ：中身が右へ流れる向き（deltaX が負）で出ていく
-  await ev(`document.querySelector(".scroll-tate").dispatchEvent(new WheelEvent("wheel", { deltaX: 60, bubbles: true }))`);
-  await wait(200);
+  // 右端（いちばん古いところ）まで行ってから、さらに左へ引っぱっても、向きは変えない
+  await drag(-3000);
+  await wait(300);
+  // 端に居たまま柱だけ出す（輪は巻きを動かさない）
+  await ev(`document.querySelector(".scroll-tate").dispatchEvent(new WheelEvent("wheel", { deltaX: -60, bubbles: true }))`);
+  await wait(300);
+  const before = await reading();
+  await drag(-200);
+  check("右端で左へ引っぱっただけでは、柱を動かさない", (await reading()) === before, `${before} → ${await reading()}`);
+
+  // 輪でも同じ：中身が左へ流れる向き（deltaX が正）で出ていく
+  await drag(3000);
   await ev(`document.querySelector(".scroll-tate").dispatchEvent(new WheelEvent("wheel", { deltaX: -60, bubbles: true }))`);
   await wait(200);
-  check("輪でも、中身が右へ流れる向きで出ていく", (await reading()) === "true", await reading());
+  check("輪でも、逆に回せば戻る", (await reading()) === "false", await reading());
   await ev(`document.querySelector(".scroll-tate").dispatchEvent(new WheelEvent("wheel", { deltaX: 60, bubbles: true }))`);
   await wait(200);
-  check("輪でも、逆に回せば戻る", (await reading()) === "false", await reading());
+  check("輪でも、中身が左へ流れる向きで出ていく", (await reading()) === "true", await reading());
 }
 
 await send("Target.closeTarget", { targetId }); ws.close();
