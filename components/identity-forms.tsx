@@ -18,24 +18,13 @@ export function StartForm({ action }: { action: Action }) {
   return (
     <form action={formAction} className="gate-block">
       <label className="field">
-        <span className="field-label">グループ名</span>
-        <input
-          name="placeName"
-          className="input"
-          maxLength={32}
-          required
-          autoFocus
-          placeholder="たとえば「三人のところ」"
-        />
-      </label>
-
-      <label className="field">
         <span className="field-label">あなたの名前</span>
         <input
           name="name"
           className="input"
           maxLength={24}
           required
+          autoFocus
           autoComplete="nickname"
           placeholder="呼ばれたい名前"
         />

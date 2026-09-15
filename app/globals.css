@@ -1471,7 +1471,7 @@ a {
   margin-inline-start: 1.4rem;
 }
 
-/* 置く先を選ぶ（部屋の外から書くとき、帳面の一篇を置くとき）。帯の中に縦に並ぶ。 */
+/* 置く先を選ぶ（部屋の外から書くとき、日記の一篇を置くとき）。帯の中に縦に並ぶ。 */
 .place-pick {
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */
@@ -1502,7 +1502,19 @@ a {
   gap: 1rem;
 }
 
-/* 帳面（あなたのページ）。目次と同じ一行一篇。 */
+/* 日記の一枚の頭：置いた部屋の名前（戸口）か、「日記」の印 */
+.slip-place {
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  color: var(--sumi-soft);
+  text-decoration: none;
+}
+
+.slip-place-none {
+  color: var(--sumi-ghost);
+}
+
+/* 日記（あなたのページ）。目次と同じ一行一篇。 */
 .notebook {
   display: flex;
   flex-direction: column; /* 縦組みでは右から左へ */

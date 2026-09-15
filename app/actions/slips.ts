@@ -37,13 +37,13 @@ async function requireOwnSlip(slipId: string) {
 }
 
 /**
- * 書く。まず帳面（自分だけ）に入り、「置く」で部屋に出る。
+ * 書く。まず日記（自分だけ）に入り、「置く」で部屋に出る。
  * 部屋の中から書けば、置く先はその部屋。部屋の外から書けば、置く先を選ぶ。
  */
 export async function writeSlipAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const published = formData.get("intent") !== "draft";
   const wanted = String(formData.get("placeId") ?? "");
-  // 帳面に残すだけなら、部屋は要らない
+  // 日記に残すだけなら、部屋は要らない
   const placeId = published ? wanted : "";
   const user = placeId ? await requireMember(placeId) : await requireUser();
 
@@ -71,8 +71,10 @@ export async function writeSlipAction(_prev: FormState, formData: FormData): Pro
   if (place) await rememberPlace(user.id, place.id, formData.get("remember") === "1");
 
   if (place) revalidatePath(`/${place.slug}`);
-  revalidatePath("/me");
-  redirect(place ? `/${place.slug}` : `/post/${slip.id}`);
+  revalidatePath("/");
+  // 部屋の中から書いたなら部屋へ、日記から書いたなら日記へ
+  const back = String(formData.get("back") ?? "");
+  redirect(back.startsWith("/") ? back : place ? `/${place.slug}` : "/");
 }
 
 export async function saveSlipAction(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -92,7 +94,7 @@ export async function saveSlipAction(_prev: FormState, formData: FormData): Prom
   );
   if (!body) return { error: "まだ何も書かれていません。" };
 
-  // 「下書きに保存」なら帳面へ戻す（部屋からも外す）
+  // 「下書きに保存」なら日記へ戻す（部屋からも外す）
   const toNotebook = formData.get("intent") === "draft";
   const published = toNotebook ? false : slip.published;
 
@@ -113,11 +115,11 @@ export async function saveSlipAction(_prev: FormState, formData: FormData): Prom
 
   if (slip.place) revalidatePath(`/${slip.place.slug}`);
   revalidatePath(`/post/${slipId}`);
-  revalidatePath("/me");
+  revalidatePath("/");
   redirect(`/post/${slipId}`);
 }
 
-/** 帳面の一篇を、部屋に置く。 */
+/** 日記の一篇を、部屋に置く。 */
 export async function placeSlipAction(formData: FormData) {
   const slipId = String(formData.get("slipId") ?? "");
   const placeId = String(formData.get("placeId") ?? "");
@@ -132,10 +134,10 @@ export async function placeSlipAction(formData: FormData) {
   if (slip.place) revalidatePath(`/${slip.place.slug}`);
   revalidatePath(`/${place.slug}`);
   revalidatePath(`/post/${slipId}`);
-  revalidatePath("/me");
+  revalidatePath("/");
 }
 
-/** 部屋から下げて、帳面へ戻す。 */
+/** 部屋から下げて、日記へ戻す。 */
 export async function withdrawSlipAction(formData: FormData) {
   const slipId = String(formData.get("slipId") ?? "");
   const { slip } = await requireOwnSlip(slipId);
@@ -144,7 +146,7 @@ export async function withdrawSlipAction(formData: FormData) {
 
   if (slip.place) revalidatePath(`/${slip.place.slug}`);
   revalidatePath(`/post/${slipId}`);
-  revalidatePath("/me");
+  revalidatePath("/");
 }
 
 export async function deleteSlipAction(formData: FormData) {
@@ -154,6 +156,6 @@ export async function deleteSlipAction(formData: FormData) {
   await prisma.slip.delete({ where: { id: slipId } });
 
   if (slip.place) revalidatePath(`/${slip.place.slug}`);
-  revalidatePath("/me");
-  redirect(slip.place ? `/${slip.place.slug}` : "/me");
+  revalidatePath("/");
+  redirect("/");
 }

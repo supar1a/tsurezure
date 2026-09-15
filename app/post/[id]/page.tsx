@@ -26,14 +26,14 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="app">
-      <Masthead sub={slip.place?.name ?? "帳面"}>
+      <Masthead sub={slip.place?.name ?? "日記"}>
         {slip.place ? (
           <PaperLink href={`/${slip.place.slug}`} className="masthead-link">
             グループへ戻る
           </PaperLink>
         ) : (
-          <PaperLink href="/me" className="masthead-link">
-            帳面へ戻る
+          <PaperLink href="/" className="masthead-link">
+            日記へ戻る
           </PaperLink>
         )}
       </Masthead>
@@ -46,7 +46,7 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
 
               {/* 名前と時刻は同じ一列に。題は題だけで立たせる。 */}
               <div className="sheet-byline">
-                {!placed ? <span className="seal">帳面</span> : null}
+                {!placed ? <span className="seal">日記</span> : null}
                 {slip.place ? (
                   <PaperLink
                     href={`/${slip.place.slug}/by/${slip.author.id}`}

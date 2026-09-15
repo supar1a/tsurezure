@@ -13,32 +13,17 @@ function readName(formData: FormData) {
 }
 
 /**
- * はじめまして。
- *
- * 名前だけ決めても、まだ何も無い画面に出るだけなので、
- * グループごと作ってもらう。名前は、その中のひとつとして聞く。
+ * はじめまして。名前をひとつ決めれば、日記が始まる。
+ * グループは要らない。分かち合いたくなったら、あとで作るか、招待の URL から入る。
  */
 export async function startAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const name = readName(formData);
-  const placeName = String(formData.get("placeName") ?? "").trim();
-
-  if (placeName.length < 1 || placeName.length > 32) {
-    return { error: "グループ名は1〜32字で入れてください。" };
-  }
   if (name.length < 1 || name.length > 24) {
     return { error: "名前は1〜24字で入れてください。" };
   }
 
-  const user = await createAndBecome(name);
-  const place = await prisma.place.create({
-    data: {
-      name: placeName,
-      slug: shortId(),
-      memberships: { create: { userId: user.id, role: "owner" } },
-    },
-  });
-
-  redirect(`/${place.slug}`);
+  await createAndBecome(name);
+  redirect("/");
 }
 
 /**

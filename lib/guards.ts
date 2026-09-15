@@ -63,7 +63,7 @@ export async function requireReadableSlip(slipId: string) {
 
   const isAuthor = slip.authorId === user.id;
 
-  // 帳面の中（部屋に置いていない）は、書いた本人だけ
+  // 日記の中（部屋に置いていない）は、書いた本人だけ
   if (!slip.placeId) {
     if (!isAuthor) notFound();
     return { user, slip, membership: null, isAuthor };
@@ -78,7 +78,7 @@ export async function requireReadableSlip(slipId: string) {
   return { user, slip, membership, isAuthor };
 }
 
-/** 自分の帳面。部屋に置いたものも、置いていないものも、書いた順に。 */
+/** 自分の日記。部屋に置いたものも、置いていないものも、書いた順に。 */
 export async function myNotebook(userId: string) {
   return prisma.slip.findMany({
     where: { authorId: userId },

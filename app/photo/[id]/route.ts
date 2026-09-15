@@ -20,7 +20,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   if (!user) return NOT_FOUND;
 
   const isAuthor = photo.slip.authorId === user.id;
-  // 帳面の中（部屋に置いていない）は、書いた本人だけ
+  // 日記の中（部屋に置いていない）は、書いた本人だけ
   if (!photo.slip.placeId) {
     if (!isAuthor) return NOT_FOUND;
   } else {

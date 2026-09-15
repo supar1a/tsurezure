@@ -38,7 +38,7 @@ export function PlacePicker({
   );
 }
 
-/** 帳面の一篇を部屋に置く。置いてあれば、帳面へ戻す。 */
+/** 日記の一篇を部屋に置く。置いてあれば、日記へ戻す。 */
 export function PlaceToggle({
   slipId,
   placed,
@@ -57,7 +57,7 @@ export function PlaceToggle({
       <form action={withdrawSlipAction}>
         <input type="hidden" name="slipId" value={slipId} />
         <button type="submit" className="btn btn-quiet" onClick={() => play("rustle")}>
-          帳面へ戻す
+          日記へ戻す
         </button>
       </form>
     );

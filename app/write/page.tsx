@@ -7,8 +7,8 @@ import { Composer } from "@/components/composer";
 export const metadata = { title: "書く" };
 
 /**
- * 部屋の外から書く。書いたものはまず帳面（自分だけ）に入り、「置く」で部屋に出る。
- * 柱は立てない（書く頁と同じ）。やめれば帳面へ戻る。
+ * 部屋の外から書く。書いたものはまず日記（自分だけ）に入り、「置く」で部屋に出る。
+ * 柱は立てない（書く頁と同じ）。やめれば日記へ戻る。
  */
 export default async function WritePage() {
   const user = await requireUser();
@@ -19,11 +19,11 @@ export default async function WritePage() {
       <div className="stage fade-in">
         <Composer
           action={writeSlipAction}
-          hidden={{}}
+          hidden={{ back: "/" }}
           places={places}
           defaultPlaceId={user.defaultPlaceId}
           cancel={
-            <PaperLink href="/me" className="btn btn-quiet" voice="rustle">
+            <PaperLink href="/" className="btn btn-quiet" voice="rustle">
               やめる
             </PaperLink>
           }

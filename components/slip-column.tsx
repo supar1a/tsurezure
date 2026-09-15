@@ -51,6 +51,39 @@ export function SlipColumn({
   );
 }
 
+/**
+ * 日記のなかの一枚。自分のものなので名前は出さず、代わりに置いた部屋の名前を添える。
+ * 置いていないものには「日記」の印。日付を押せば、その一枚をひらく。
+ */
+export function DiaryColumn({
+  slip,
+}: {
+  slip: SlipRow & { place: { name: string; slug: string } | null };
+}) {
+  const placed = Boolean(slip.place && slip.published);
+  return (
+    <article className="slip">
+      <header className="slip-head">
+        {placed && slip.place ? (
+          <PaperLink href={`/${slip.place.slug}`} className="slip-place" voice="rustle">
+            {slip.place.name}
+          </PaperLink>
+        ) : (
+          <span className="slip-place slip-place-none">日記</span>
+        )}
+
+        <div className="slip-meta">
+          <PaperLink href={`/post/${slip.id}`} className="slip-when">
+            {kanjiDateShort(slip.createdAt)}
+          </PaperLink>
+        </div>
+      </header>
+
+      <SlipText body={slip.body} photo={slip.photo} />
+    </article>
+  );
+}
+
 /** 貼られた一枚。行の高さに収まるところまで縮めて、紙に置いたように見せる。 */
 export function SlipPhoto({
   photo,
