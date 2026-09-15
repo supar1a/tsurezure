@@ -48,6 +48,8 @@ export default async function RoomsPage() {
             <div className="stream tate fade-in" data-stream>
               <PaperLink href="/" className="book book-self">
                 <div className="book-head">
+                  {/* 朱の印。巻物で自分の一枚に「じぶん」が付くのと同じ印。 */}
+                  <span className="seal book-seal">じぶん</span>
                   <h2 className="book-name">自分のスペース</h2>
                   <div className="book-meta">
                     <span>
