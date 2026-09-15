@@ -40,7 +40,7 @@ export default async function MePage() {
             </section>
 
             <section className="panel">
-              <h1 className="panel-title">グループ</h1>
+              <h1 className="panel-title">スペース</h1>
               <div className="row">
                 <PaperLink href="/rooms" className="btn" voice="rustle">
                   一覧を見る

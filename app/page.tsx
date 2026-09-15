@@ -56,7 +56,7 @@ export default async function HomePage() {
           書く
         </PaperLink>
         <PaperLink href="/rooms" className="masthead-link" voice="rustle">
-          グループ
+          スペース
         </PaperLink>
       </Masthead>
 

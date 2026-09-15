@@ -5,7 +5,7 @@ import { Masthead } from "@/components/masthead";
 import { OpenAt } from "@/components/open-at";
 import { PaperLink } from "@/components/paper-link";
 
-export const metadata = { title: "グループ" };
+export const metadata = { title: "スペース" };
 
 /** 入っているグループの一覧。日記を分かち合う先。 */
 export default async function RoomsPage() {
@@ -27,9 +27,16 @@ export default async function RoomsPage() {
     : [];
   const tallyOf = new Map(tallies.map((t) => [t.placeId, t]));
 
+  // 自分のスペース（日記）。グループではないが、投稿先としては同じ並びなので、先頭に置く。
+  const mine = await prisma.slip.aggregate({
+    where: { authorId: user.id },
+    _count: { _all: true },
+    _max: { createdAt: true },
+  });
+
   return (
     <div className="app">
-      <Masthead sub="グループ">
+      <Masthead sub="スペース">
         <PaperLink href="/new" className="masthead-link" voice="rustle">
           グループを作る
         </PaperLink>
@@ -38,15 +45,19 @@ export default async function RoomsPage() {
       <OpenAt edge="right" />
       <div className="stage">
         <div className="scroll-tate">
-          {places.length === 0 ? (
-            <div className="hollow tate fade-in" data-stream>
-              <p>まだグループがありません。</p>
-              <PaperLink href="/new" className="btn" voice="rustle">
-                グループを作る
-              </PaperLink>
-            </div>
-          ) : (
             <div className="stream tate fade-in" data-stream>
+              <PaperLink href="/" className="book book-self">
+                <div className="book-head">
+                  <h2 className="book-name">自分のスペース</h2>
+                  <div className="book-meta">
+                    <span>
+                      {mine._count._all > 0 ? `${kanjiNumber(mine._count._all)}枚` : "まだ何もない"}
+                    </span>
+                    {mine._max.createdAt ? <span>{kanjiDateShort(mine._max.createdAt)}</span> : null}
+                  </div>
+                </div>
+              </PaperLink>
+
               {places.map((place) => {
                 const tally = tallyOf.get(place.id);
                 const written = tally?._count._all ?? 0;
@@ -82,7 +93,6 @@ export default async function RoomsPage() {
                 ))}
               </div>
             </div>
-          )}
         </div>
       </div>
 
