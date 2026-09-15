@@ -133,9 +133,9 @@ export default async function PlacePage({
                 </Fragment>
               ))}
 
-              {/* 巻物の左端。次の一枚が書かれる場所。 */}
+              {/* 巻物の左端。次の一枚が書かれる場所。押せると分かるように、投稿するのと同じ墨の釦にする。 */}
               <PaperLink href={`/${slug}/write`} className="blankpage" voice="rustle">
-                <span className="blankpage-lede">書く</span>
+                <span className="btn btn-ink blankpage-btn">書く</span>
               </PaperLink>
             </div>
           ) : (
