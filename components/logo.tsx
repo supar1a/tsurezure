@@ -1,8 +1,7 @@
 import { LOGO_PATH, LOGO_VIEWBOX } from "./logo-path";
 
 /**
- * ロゴ「つれづれ」。あじふでの筆の字を、輪郭に焼いた SVG。
- * 字のままだと見る人の端末にフォントが無く、別の字体で出てしまう。
+ * ロゴ「つれづれ」。筆の字を輪郭に焼いた SVG（scripts/logo/logo-tsurezure.svg）。
  * 色は currentColor。大きさは、置く側の CSS で height を与える。
  * 読み上げには、置く側が字の「つれづれ」を添える（この絵は飾りとして隠す）。
  */
