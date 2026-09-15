@@ -1471,31 +1471,22 @@ a {
   margin-inline-start: 1.4rem;
 }
 
-/* 置く先を選ぶ（部屋の外から書くとき、日記の一篇を置くとき）。帯の中に縦に並ぶ。 */
-.place-pick {
+/* 共有先を選ぶ（書く帯の中と、一篇の頁）。縦に並ぶ。 */
+.share-pick {
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */
   align-items: center;
   gap: 0.8rem;
 }
 
-.place-select {
+.share-select {
   inline-size: auto;
   max-inline-size: 9em;
   font-size: 0.82rem;
 }
 
-.place-remember {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4em;
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  color: var(--sumi-faint);
-  white-space: nowrap;
-}
 
-.place-form {
+.share-form {
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */
   align-items: center;

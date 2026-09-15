@@ -5,7 +5,7 @@ import { Masthead } from "@/components/masthead";
 import { HeadAway } from "@/components/head-away";
 import { OpenAt } from "@/components/open-at";
 import { PaperLink } from "@/components/paper-link";
-import { DeleteSlip, PlaceToggle } from "@/components/slip-actions";
+import { DeleteSlip, ShareControl } from "@/components/slip-actions";
 import { myPlaces } from "@/lib/guards";
 import { SlipText } from "@/components/slip-column";
 
@@ -26,16 +26,17 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="app">
-      <Masthead sub={slip.place?.name ?? "日記"}>
-        {slip.place ? (
-          <PaperLink href={`/${slip.place.slug}`} className="masthead-link">
-            グループへ戻る
-          </PaperLink>
-        ) : (
+      <Masthead sub={slip.place && placed ? slip.place.name : "日記"}>
+        {isAuthor ? (
           <PaperLink href="/" className="masthead-link">
             日記へ戻る
           </PaperLink>
-        )}
+        ) : null}
+        {slip.place && placed ? (
+          <PaperLink href={`/${slip.place.slug}`} className="masthead-link">
+            グループへ戻る
+          </PaperLink>
+        ) : null}
       </Masthead>
 
       <div className="stage">
@@ -46,7 +47,7 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
 
               {/* 名前と時刻は同じ一列に。題は題だけで立たせる。 */}
               <div className="sheet-byline">
-                {!placed ? <span className="seal">日記</span> : null}
+                {!placed ? <span className="seal">自分のみ</span> : null}
                 {slip.place ? (
                   <PaperLink
                     href={`/${slip.place.slug}/by/${slip.author.id}`}
@@ -79,11 +80,11 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
                 <PaperLink href={`/post/${slip.id}/edit`} className="btn" voice="rustle">
                   編集
                 </PaperLink>
-                <PlaceToggle
+                <ShareControl
                   slipId={slip.id}
-                  placed={placed}
+                  shared={placed}
                   places={places}
-                  defaultPlaceId={slip.place?.id ?? user.defaultPlaceId}
+                  defaultPlaceId={user.defaultPlaceId}
                 />
                 <DeleteSlip slipId={slip.id} />
               </footer>

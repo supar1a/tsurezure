@@ -37,18 +37,14 @@ async function requireOwnSlip(slipId: string) {
 }
 
 /**
- * 書く。まず日記（自分だけ）に入り、「置く」で部屋に出る。
- * 部屋の中から書けば、置く先はその部屋。部屋の外から書けば、置く先を選ぶ。
+ * 投稿する。共有先（placeId）が選ばれていればそのグループに出る。選ばれていなければ自分のみ。
+ * 最後に共有したグループは控えておき、次に書くときの初期値にする。
  */
 export async function writeSlipAction(_prev: FormState, formData: FormData): Promise<FormState> {
-  const published = formData.get("intent") !== "draft";
-  const wanted = String(formData.get("placeId") ?? "");
-  // 日記に残すだけなら、部屋は要らない
-  const placeId = published ? wanted : "";
+  const placeId = String(formData.get("placeId") ?? "");
   const user = placeId ? await requireMember(placeId) : await requireUser();
-
   const place = placeId ? await prisma.place.findUnique({ where: { id: placeId } }) : null;
-  if (published && !place) return { error: "置く先のグループを選んでください。" };
+  if (placeId && !place) return { error: "そのグループはありません。" };
 
   // 写真は本文の途中に挟まるので、前と後ろに分かれて届く
   const photo = await readPhoto(formData);
@@ -63,23 +59,23 @@ export async function writeSlipAction(_prev: FormState, formData: FormData): Pro
   if (title.length > TITLE_MAX) return { error: `題は${TITLE_MAX}字までです。` };
 
   const slip = await prisma.slip.create({
-    data: { placeId: place?.id ?? null, authorId: user.id, title: title || null, body, published },
+    data: { placeId: place?.id ?? null, authorId: user.id, title: title || null, body, published: Boolean(place) },
   });
   if (photo) {
     await prisma.photo.create({ data: { slipId: slip.id, ...photo } });
   }
-  if (place) await rememberPlace(user.id, place.id, formData.get("remember") === "1");
+  if (place) await rememberPlace(user.id, place.id, true);
 
   if (place) revalidatePath(`/${place.slug}`);
   revalidatePath("/");
-  // 部屋の中から書いたなら部屋へ、日記から書いたなら日記へ
+  // グループの中から書いたならそのグループへ、日記から書いたなら日記へ
   const back = String(formData.get("back") ?? "");
   redirect(back.startsWith("/") ? back : place ? `/${place.slug}` : "/");
 }
 
 export async function saveSlipAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const slipId = String(formData.get("slipId") ?? "");
-  const { slip } = await requireOwnSlip(slipId);
+  const { user, slip } = await requireOwnSlip(slipId);
 
   const photo = await readPhoto(formData);
   const removed = formData.get("photoRemove") === "1";
@@ -94,16 +90,20 @@ export async function saveSlipAction(_prev: FormState, formData: FormData): Prom
   );
   if (!body) return { error: "まだ何も書かれていません。" };
 
-  // 「下書きに保存」なら日記へ戻す（部屋からも外す）
-  const toNotebook = formData.get("intent") === "draft";
-  const published = toNotebook ? false : slip.published;
+  // 共有先。選び直せる（共有しない ⇔ どれかのグループ）。
+  const placeId = String(formData.get("placeId") ?? "");
+  if (placeId) await requireMember(placeId);
+  const nextPlace = placeId ? await prisma.place.findUnique({ where: { id: placeId } }) : null;
+  if (placeId && !nextPlace) return { error: "そのグループはありません。" };
 
   const title = String(formData.get("title") ?? "").trim();
   if (title.length > TITLE_MAX) return { error: `題は${TITLE_MAX}字までです。` };
   await prisma.slip.update({
     where: { id: slipId },
-    data: { title: title || null, body, published, ...(toNotebook ? { placeId: null } : {}) },
+    data: { title: title || null, body, placeId: nextPlace?.id ?? null, published: Boolean(nextPlace) },
   });
+  if (nextPlace) await rememberPlace(user.id, nextPlace.id, true);
+  if (nextPlace) revalidatePath(`/${nextPlace.slug}`);
 
   // 貼り直したときは、古いほうを消してから入れ替える
   if (photo || removed) {
@@ -119,7 +119,7 @@ export async function saveSlipAction(_prev: FormState, formData: FormData): Prom
   redirect(`/post/${slipId}`);
 }
 
-/** 日記の一篇を、部屋に置く。 */
+/** 一篇をグループに共有する。 */
 export async function placeSlipAction(formData: FormData) {
   const slipId = String(formData.get("slipId") ?? "");
   const placeId = String(formData.get("placeId") ?? "");
@@ -129,7 +129,7 @@ export async function placeSlipAction(formData: FormData) {
   if (!place) throw new Error("そのグループはありません。");
 
   await prisma.slip.update({ where: { id: slipId }, data: { placeId, published: true } });
-  await rememberPlace(user.id, placeId, formData.get("remember") === "1");
+  await rememberPlace(user.id, placeId, true);
 
   if (slip.place) revalidatePath(`/${slip.place.slug}`);
   revalidatePath(`/${place.slug}`);
@@ -137,7 +137,7 @@ export async function placeSlipAction(formData: FormData) {
   revalidatePath("/");
 }
 
-/** 部屋から下げて、日記へ戻す。 */
+/** 共有をやめる。自分のみに戻る。 */
 export async function withdrawSlipAction(formData: FormData) {
   const slipId = String(formData.get("slipId") ?? "");
   const { slip } = await requireOwnSlip(slipId);

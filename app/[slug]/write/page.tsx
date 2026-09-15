@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
-import { requirePlace } from "@/lib/guards";
+import { myPlaces, requirePlace } from "@/lib/guards";
 import { writeSlipAction } from "@/app/actions/slips";
 import { PaperLink } from "@/components/paper-link";
 import { Composer } from "@/components/composer";
@@ -18,7 +18,8 @@ export async function generateMetadata({
 
 export default async function WritePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const { place } = await requirePlace(slug);
+  const { user, place } = await requirePlace(slug);
+  const places = await myPlaces(user.id);
 
   // 書く頁には柱を立てない。表題も品書きも、書いているあいだは要らない。
   // 戻り道（やめる）は、釦の帯のなかに置く。
@@ -27,7 +28,9 @@ export default async function WritePage({ params }: { params: Promise<{ slug: st
       <div className="stage fade-in">
         <Composer
           action={writeSlipAction}
-          hidden={{ placeId: place.id }}
+          hidden={{ back: `/${slug}` }}
+          places={places}
+          defaultPlaceId={place.id}
           cancel={
             <PaperLink href={`/${slug}`} className="btn btn-quiet" voice="rustle">
               やめる

@@ -4,7 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { TITLE_MAX, countChars } from "@/lib/text";
 import { useSound } from "./sound-provider";
 import { DrawnCaret } from "./drawn-caret";
-import { PlacePicker, type PlaceOption } from "./slip-actions";
+import { ShareSelect, type PlaceOption } from "./slip-actions";
 import type { FormState } from "@/app/actions/slips";
 
 type Attached = { url: string; width: number; height: number; local: boolean };
@@ -23,7 +23,7 @@ type Props = {
   /** すでに部屋に置いてあるものを編集しているとき */
   published?: boolean;
   cancel?: React.ReactNode;
-  /** 部屋の外から書くとき、置く先の候補（hidden に placeId が無いときだけ使う） */
+  /** 共有先の候補（入っているグループ）と、先に選んでおくグループ（null なら「共有しない」） */
   places?: PlaceOption[];
   defaultPlaceId?: string | null;
 };
@@ -51,8 +51,7 @@ export function Composer({
   places,
   defaultPlaceId,
 }: Props) {
-  // 部屋の中から書いているか（置く先が決まっているか）
-  const inPlace = "placeId" in hidden;
+
   const [state, formAction, pending] = useActionState(action, null);
   const [photo, setPhoto] = useState<Attached | null>(
     defaultPhoto
@@ -282,32 +281,17 @@ export function Composer({
         鍵盤が出ても場ごと縮むので、帯はいつも見えている。
       */}
       <div className="compose-foot">
-        {/* 部屋の外から書くときは、置く先をここで選ぶ */}
-        {!inPlace && !published && places ? (
-          <PlacePicker places={places} defaultPlaceId={defaultPlaceId} />
-        ) : null}
+        {/* 書き終えたら、最後に共有先を選ぶ。グループの中から書けば、そのグループが先に選ばれている。 */}
+        {places ? <ShareSelect places={places} defaultPlaceId={defaultPlaceId} /> : null}
 
         <button
           ref={submitRef}
           type="submit"
-          name="intent"
-          value="publish"
           className="btn btn-ink"
-          disabled={pending || (!inPlace && !published && (places?.length ?? 0) === 0)}
+          disabled={pending}
           onClick={() => play("ink")}
         >
-          {published ? "保存する" : inPlace ? "書き残す" : "置く"}
-        </button>
-
-        <button
-          type="submit"
-          name="intent"
-          value="draft"
-          className="btn"
-          disabled={pending}
-          onClick={() => play("rustle")}
-        >
-          下書きに保存
+          {published ? "保存する" : "投稿する"}
         </button>
 
         {/* 狭い画面でだけ見える。押せば題の欄が出て、この釦は引っ込む。 */}

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { requireReadableSlip } from "@/lib/guards";
+import { myPlaces, requireReadableSlip } from "@/lib/guards";
 import { saveSlipAction } from "@/app/actions/slips";
 import { PaperLink } from "@/components/paper-link";
 import { Composer } from "@/components/composer";
@@ -9,8 +9,9 @@ export const metadata = { title: "編集" };
 
 export default async function EditSlipPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { slip, isAuthor } = await requireReadableSlip(id);
+  const { user, slip, isAuthor } = await requireReadableSlip(id);
   if (!isAuthor) notFound();
+  const places = await myPlaces(user.id);
 
   const { before, after } = slip.photo
     ? splitAroundPhoto(slip.body)
@@ -27,7 +28,9 @@ export default async function EditSlipPage({ params }: { params: Promise<{ id: s
           defaultBefore={before}
           defaultAfter={after}
           defaultPhoto={slip.photo}
-          published={slip.published}
+          published={true}
+          places={places}
+          defaultPlaceId={slip.published ? slip.placeId : null}
           cancel={
             <PaperLink href={`/post/${slip.id}`} className="btn btn-quiet" voice="rustle">
               やめる

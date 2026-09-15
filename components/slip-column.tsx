@@ -69,7 +69,7 @@ export function DiaryColumn({
             {slip.place.name}
           </PaperLink>
         ) : (
-          <span className="slip-place slip-place-none">日記</span>
+          <span className="slip-place slip-place-none">自分のみ</span>
         )}
 
         <div className="slip-meta">

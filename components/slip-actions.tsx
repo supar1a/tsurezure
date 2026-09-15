@@ -5,8 +5,11 @@ import { deleteSlipAction, placeSlipAction, withdrawSlipAction } from "@/app/act
 
 export type PlaceOption = { id: string; name: string };
 
-/** 置く先を選ぶ。部屋が一つなら選ばせない。「いつもここに置く」も添える。 */
-export function PlacePicker({
+/**
+ * 共有先を選ぶ。「共有しない（自分のみ）」か、入っているグループのどれか一つ。
+ * defaultPlaceId が null なら「共有しない」、文字列ならそのグループが選ばれた状態で出る。
+ */
+export function ShareSelect({
   places,
   defaultPlaceId,
   name = "placeId",
@@ -15,60 +18,55 @@ export function PlacePicker({
   defaultPlaceId?: string | null;
   name?: string;
 }) {
-  if (places.length === 0) return <p className="notice">置ける部屋がまだありません。</p>;
-  const chosen = places.find((p) => p.id === defaultPlaceId)?.id ?? places[0].id;
+  const chosen = places.some((p) => p.id === defaultPlaceId) ? defaultPlaceId! : "";
   return (
-    <span className="place-pick">
-      {places.length === 1 ? (
-        <input type="hidden" name={name} value={places[0].id} />
-      ) : (
-        <select name={name} className="input place-select" defaultValue={chosen} aria-label="置く先">
-          {places.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name}
-            </option>
-          ))}
-        </select>
-      )}
-      <label className="place-remember">
-        <input type="checkbox" name="remember" value="1" defaultChecked={!!defaultPlaceId} />
-        いつもここに置く
-      </label>
-    </span>
+    <label className="share-pick">
+      <span className="field-label">共有先</span>
+      <select name={name} className="input share-select" defaultValue={chosen}>
+        <option value="">共有しない（自分のみ）</option>
+        {places.map((p) => (
+          <option key={p.id} value={p.id}>
+            {p.name}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }
 
-/** 日記の一篇を部屋に置く。置いてあれば、日記へ戻す。 */
-export function PlaceToggle({
+/** 一篇の共有。共有していれば「共有をやめる」、していなければ共有先を選んで「共有する」。 */
+export function ShareControl({
   slipId,
-  placed,
+  shared,
   places,
   defaultPlaceId,
 }: {
   slipId: string;
-  placed: boolean;
+  shared: boolean;
   places: PlaceOption[];
   defaultPlaceId?: string | null;
 }) {
   const { play } = useSound();
 
-  if (placed) {
+  if (shared) {
     return (
       <form action={withdrawSlipAction}>
         <input type="hidden" name="slipId" value={slipId} />
         <button type="submit" className="btn btn-quiet" onClick={() => play("rustle")}>
-          日記へ戻す
+          共有をやめる
         </button>
       </form>
     );
   }
 
+  if (places.length === 0) return null;
+
   return (
-    <form action={placeSlipAction} className="place-form">
+    <form action={placeSlipAction} className="share-form">
       <input type="hidden" name="slipId" value={slipId} />
-      <PlacePicker places={places} defaultPlaceId={defaultPlaceId} />
-      <button type="submit" className="btn btn-ink" onClick={() => play("ink")} disabled={places.length === 0}>
-        置く
+      <ShareSelect places={places} defaultPlaceId={defaultPlaceId ?? places[0].id} />
+      <button type="submit" className="btn btn-ink" onClick={() => play("ink")}>
+        共有する
       </button>
     </form>
   );
