@@ -1,4 +1,5 @@
 import { PaperLink } from "./paper-link";
+import { Logo } from "./logo";
 
 export function Masthead({
   sub,
@@ -14,7 +15,8 @@ export function Masthead({
     <>
       <header className="masthead">
         <PaperLink href="/" className="masthead-title">
-          つれづれ
+          <Logo />
+          <span className="sr-only">つれづれ</span>
         </PaperLink>
         {sub && subHref ? (
           <PaperLink href={subHref} className="masthead-sub masthead-sub-link" voice="rustle">

@@ -185,6 +185,15 @@ node scripts/make-paper.mjs # 紙の地（public/paper-*.png）を焼き直す�
 種データを入れると、はなこで見たときに未読の目印が出る状態から始まる。
 グループ「三人のところ」の招待 URL は `/b/sannin`。
 
+## ロゴ
+
+表題と戸口の印は、ロゴ（あじふでの筆で書いた「つれづれ」）。もとの SVG（`scripts/logo/logo-tsurezure.src.svg`）は
+生の文字なので、見る人の端末にフォントが無いと別の字体で出る。`scripts/outline-logo.mjs` で
+この Mac のフォントから字形を取り出して輪郭に焼き、`components/logo-path.ts` に埋めてある
+（`npm i --no-save opentype.js` のうえ `node scripts/outline-logo.mjs`。`~/Library/Fonts/ajihude.ttf` が要る）。
+色は `currentColor`、大きさは置く側の CSS の `height`。字面ぴったりに切ってあるので、箱の頭がそのまま字の頭。
+読み上げには字の「つれづれ」を `.sr-only` で添える。
+
 ## 名乗り
 
 **戸口（名乗る前の画面）は、携帯の幅に収める。** 戸口は送れる器ではないので、題から断り書きまでが
