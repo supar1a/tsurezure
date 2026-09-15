@@ -45,7 +45,7 @@ export default async function HomePage() {
     );
   }
 
-  // ── 日記。自分の書いたものが、巻物で並ぶ。左端がいちばん新しい。 ──
+  // ── 自分のスペース。自分の書いたものが、巻物で並ぶ。左端がいちばん新しい。 ──
   const slips = await myNotebook(user.id);
 
   return (

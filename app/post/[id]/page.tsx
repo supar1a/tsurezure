@@ -20,23 +20,24 @@ export const metadata: Metadata = { title: { absolute: "つれづれ" } };
 
 export default async function SlipPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { user, slip, isAuthor, through, shared } = await requireReadableSlip(id);
+  const { user, slip, isAuthor, through } = await requireReadableSlip(id);
   const places = isAuthor ? await myPlaces(user.id) : [];
   const sharedTo = slip.shares.map((s) => s.place);
+  // 書いた本人には、どこに投げていようと自分のスペースの一枚。ほかの人には、通ってきたグループの一枚。
+  const via = isAuthor ? null : through;
 
   return (
     <div className="app">
-      <Masthead sub={isAuthor ? "日記" : through?.name}>
-        {isAuthor ? (
-          <PaperLink href="/" className="masthead-link">
-            日記へ戻る
-          </PaperLink>
-        ) : null}
-        {through ? (
-          <PaperLink href={`/${through.slug}`} className="masthead-link">
+      <Masthead sub={via?.name ?? "自分のスペース"}>
+        {via ? (
+          <PaperLink href={`/${via.slug}`} className="masthead-link">
             グループへ戻る
           </PaperLink>
-        ) : null}
+        ) : (
+          <PaperLink href="/" className="masthead-link">
+            自分のスペースへ戻る
+          </PaperLink>
+        )}
       </Masthead>
 
       <div className="stage">
@@ -47,10 +48,9 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
 
               {/* 名前と時刻は同じ一列に。題は題だけで立たせる。 */}
               <div className="sheet-byline">
-                {!shared ? <span className="seal">自分のみ</span> : null}
-                {through ? (
+                {via ? (
                   <PaperLink
-                    href={`/${through.slug}/by/${slip.author.id}`}
+                    href={`/${via.slug}/by/${slip.author.id}`}
                     className="sheet-who"
                     voice="rustle"
                   >
@@ -59,10 +59,7 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
                 ) : (
                   <span className="sheet-who">{slip.author.name}</span>
                 )}
-                {/* 投げてあるグループ。書いた本人には全部見せる。 */}
-                {isAuthor && sharedTo.length > 0 ? (
-                  <span className="sheet-shared">{sharedTo.map((p) => p.name).join("・")}</span>
-                ) : null}
+
                 <span>{kanjiDate(slip.createdAt)}</span>
                 <span>{kanjiTime(slip.createdAt)}</span>
               </div>
@@ -84,6 +81,10 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
                 <PaperLink href={`/post/${slip.id}/edit`} className="btn" voice="rustle">
                   編集
                 </PaperLink>
+                {/* いまの投稿先。ここでだけ、書いた本人にだけ。すぐ下の釦で変えられる。 */}
+                <span className="sheet-shared">
+                  {["自分のスペース", ...sharedTo.map((p) => p.name)].join("・")}
+                </span>
                 <ShareControl slipId={slip.id} places={places} checked={sharedTo.map((p) => p.id)} />
                 <DeleteSlip slipId={slip.id} />
               </footer>

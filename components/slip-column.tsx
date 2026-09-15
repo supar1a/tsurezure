@@ -52,29 +52,13 @@ export function SlipColumn({
 }
 
 /**
- * 日記のなかの一枚。自分のものなので名前は出さず、代わりに投げたグループの名前を添える。
- * どこにも投げていなければ「自分のみ」。日付を押せば、その一枚をひらく。
+ * 自分のスペースのなかの一枚。自分のものなので名前は出さず、日付だけ。
+ * どこに投稿したかは、ここでは出さない（一篇の頁で扱う）。日付を押せば、その一枚をひらく。
  */
 export function DiaryColumn({ slip }: { slip: SlipRow }) {
-  const places = (slip.shares ?? []).map((s) => s.place);
   return (
     <article className="slip">
       <header className="slip-head">
-        {places.length > 0 ? (
-          <span className="slip-place">
-            {places.map((p, i) => (
-              <span key={p.id}>
-                {i > 0 ? "・" : ""}
-                <PaperLink href={`/${p.slug}`} className="slip-place-link" voice="rustle">
-                  {p.name}
-                </PaperLink>
-              </span>
-            ))}
-          </span>
-        ) : (
-          <span className="slip-place slip-place-none">自分のみ</span>
-        )}
-
         <div className="slip-meta">
           <PaperLink href={`/post/${slip.id}`} className="slip-when">
             {kanjiDateShort(slip.createdAt)}

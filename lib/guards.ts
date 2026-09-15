@@ -75,7 +75,7 @@ export async function requireReadableSlip(slipId: string) {
   return { user, slip, isAuthor, through, shared: slip.shares.length > 0 };
 }
 
-/** 自分の日記。投げたものも、自分のみのものも、書いた順に。 */
+/** 自分のスペース。投げたものも、自分のみのものも、書いた順に。 */
 export async function myNotebook(userId: string) {
   return prisma.slip.findMany({
     where: { authorId: userId },

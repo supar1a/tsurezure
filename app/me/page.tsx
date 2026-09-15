@@ -2,22 +2,17 @@ import { requireUser } from "@/lib/auth";
 import { forgetAction, renameAction } from "@/app/actions/identity";
 import { Masthead } from "@/components/masthead";
 import { OpenAt } from "@/components/open-at";
-import { PaperLink } from "@/components/paper-link";
 import { RenameForm, Forget } from "@/components/identity-forms";
 import { SoundSetting } from "@/components/sound-setting";
 
-export const metadata = { title: "あなたのページ" };
+export const metadata = { title: "設定" };
 
 export default async function MePage() {
   const user = await requireUser();
 
   return (
     <div className="app">
-      <Masthead sub={`${user.name} さん`}>
-        <PaperLink href="/write" className="masthead-link" voice="rustle">
-          書く
-        </PaperLink>
-      </Masthead>
+      <Masthead sub="設定" />
 
       <OpenAt edge="right" />
       <div className="stage">
@@ -37,15 +32,6 @@ export default async function MePage() {
                 書くときと、頁を繰るときに鳴ります。ここで止められます。
               </p>
               <SoundSetting />
-            </section>
-
-            <section className="panel">
-              <h1 className="panel-title">スペース</h1>
-              <div className="row">
-                <PaperLink href="/rooms" className="btn" voice="rustle">
-                  一覧を見る
-                </PaperLink>
-              </div>
             </section>
 
             <section className="panel">

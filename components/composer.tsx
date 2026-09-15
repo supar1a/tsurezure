@@ -115,6 +115,8 @@ export function Composer({
 
   function tally() {
     setCount(countChars((beforeRef.current?.value ?? "") + (afterRef.current?.value ?? "")));
+    // 書きはじめたら、注意は引っ込める
+    setTrouble(null);
   }
 
   /**
@@ -122,6 +124,15 @@ export function Composer({
    * どのグループにも入っていなければ、選ぶものが無いのでそのまま送る。
    */
   function post() {
+    // 何も書いていなければ、送る前にここで言う。モーダルを開いてから知るのでは遅い。
+    const written =
+      (beforeRef.current?.value ?? "").trim() || (afterRef.current?.value ?? "").trim() || photo;
+    if (!written) {
+      setTrouble("まだ何も書かれていません。");
+      beforeRef.current?.focus();
+      return;
+    }
+    setTrouble(null);
     if (places && places.length > 0) {
       shareRef.current?.open();
       return;

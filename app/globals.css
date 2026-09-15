@@ -1568,9 +1568,12 @@ a {
   display: contents;
 }
 
-/* 一篇の頭に添える、投げてあるグループの名前 */
+/* 一篇の帯に添える「投稿先」。釦ではないので薄く小さく。 */
 .sheet-shared {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
   color: var(--sumi-faint);
+  white-space: nowrap;
 }
 
 /* 日記（あなたのページ）。目次と同じ一行一篇。 */

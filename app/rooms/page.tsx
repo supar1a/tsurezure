@@ -7,7 +7,7 @@ import { PaperLink } from "@/components/paper-link";
 
 export const metadata = { title: "スペース" };
 
-/** 入っているグループの一覧。日記を分かち合う先。 */
+/** 入っているグループの一覧。自分のスペースを分かち合う先。 */
 export default async function RoomsPage() {
   const user = await requireUser();
 
@@ -27,7 +27,7 @@ export default async function RoomsPage() {
     : [];
   const tallyOf = new Map(tallies.map((t) => [t.placeId, t]));
 
-  // 自分のスペース（日記）。グループではないが、投稿先としては同じ並びなので、先頭に置く。
+  // 自分のスペース（自分のスペース）。グループではないが、投稿先としては同じ並びなので、先頭に置く。
   const mine = await prisma.slip.aggregate({
     where: { authorId: user.id },
     _count: { _all: true },

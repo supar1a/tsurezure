@@ -69,7 +69,7 @@ export async function writeSlipAction(_prev: FormState, formData: FormData): Pro
 
   for (const p of places) revalidatePath(`/${p.slug}`);
   revalidatePath("/");
-  // グループの中から書いたならそのグループへ、日記から書いたなら日記へ
+  // グループの中から書いたならそのグループへ、自分のスペースから書いたならそこへ
   const back = String(formData.get("back") ?? "");
   redirect(back.startsWith("/") ? back : "/");
 }
