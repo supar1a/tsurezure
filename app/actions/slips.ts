@@ -76,7 +76,7 @@ export async function writeSlipAction(_prev: FormState, formData: FormData): Pro
 
 export async function saveSlipAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const slipId = String(formData.get("slipId") ?? "");
-  const { user, slip } = await requireOwnSlip(slipId);
+  const { user } = await requireOwnSlip(slipId);
 
   const photo = await readPhoto(formData);
   const removed = formData.get("photoRemove") === "1";

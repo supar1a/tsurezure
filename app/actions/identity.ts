@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { becomeUser, createAndBecome, currentUser, forget } from "@/lib/auth";
-import { shortId } from "@/lib/ids";
 
 export type FormState = { error?: string } | null;
 
