@@ -1621,7 +1621,6 @@ a {
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */
   align-items: flex-start;
-  gap: 0.8rem; /* 「書く」と添えの一行は一組 */
   inline-size: 100%;
   block-size: 9rem;
   color: var(--sumi-soft);
@@ -1637,13 +1636,6 @@ a {
 .blankpage-lede {
   font-size: 0.98rem;
   letter-spacing: 0.28em;
-}
-
-.blankpage-hint {
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  color: var(--sumi-faint);
-  line-height: 2.1;
 }
 
 .stream-end {

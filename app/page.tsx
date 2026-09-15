@@ -80,11 +80,6 @@ export default async function HomePage() {
             {/* 巻物の左端。次の一枚が書かれる場所。 */}
             <PaperLink href="/write" className="blankpage" voice="rustle">
               <span className="blankpage-lede">書く</span>
-              <span className="blankpage-hint">
-                なんでもいい。
-                <br />
-                整っていなくていい。
-              </span>
             </PaperLink>
           </div>
         </div>
