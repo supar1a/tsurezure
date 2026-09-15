@@ -21,7 +21,7 @@ export default async function WritePage() {
           action={writeSlipAction}
           hidden={{ back: "/" }}
           places={places}
-          defaultPlaceIds={user.lastPlaceIds}
+          defaultPlaceIds={[]}
           cancel={
             <PaperLink href="/" className="btn btn-quiet" voice="rustle">
               やめる

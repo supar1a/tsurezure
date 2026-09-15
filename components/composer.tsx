@@ -4,7 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { TITLE_MAX, countChars } from "@/lib/text";
 import { useSound } from "./sound-provider";
 import { DrawnCaret } from "./drawn-caret";
-import { ShareDialog, type PlaceOption } from "./slip-actions";
+import { ShareDialog, type PlaceOption, type ShareDialogHandle } from "./slip-actions";
 import type { FormState } from "@/app/actions/slips";
 
 type Attached = { url: string; width: number; height: number; local: boolean };
@@ -76,7 +76,7 @@ export function Composer({
   const { play } = useSound();
   const lastStroke = useRef(0);
   const formRef = useRef<HTMLFormElement>(null);
-  const submitRef = useRef<HTMLButtonElement>(null);
+  const shareRef = useRef<ShareDialogHandle>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const beforeRef = useRef<HTMLTextAreaElement>(null);
   const afterRef = useRef<HTMLTextAreaElement>(null);
@@ -117,14 +117,26 @@ export function Composer({
     setCount(countChars((beforeRef.current?.value ?? "") + (afterRef.current?.value ?? "")));
   }
 
+  /**
+   * 投稿する。グループに入っていれば、投稿先を選ぶモーダルを開く（自分のスペースはいつもチェック）。
+   * どのグループにも入っていなければ、選ぶものが無いのでそのまま送る。
+   */
+  function post() {
+    if (places && places.length > 0) {
+      shareRef.current?.open();
+      return;
+    }
+    play("ink");
+    formRef.current?.requestSubmit();
+  }
+
   function onKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
-    // ⌘/Ctrl + Enter で送る。
+    // ⌘/Ctrl + Enter で投稿する（釦を押したのと同じ）。
     // 変換の確定にも Enter を使うので、変換中は決して送らない。
     if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
       if (event.nativeEvent.isComposing) return;
       event.preventDefault();
-      play("ink");
-      formRef.current?.requestSubmit(submitRef.current ?? undefined);
+      post();
       return;
     }
 
@@ -281,18 +293,19 @@ export function Composer({
         鍵盤が出ても場ごと縮むので、帯はいつも見えている。
       */}
       <div className="compose-foot">
-        <button
-          ref={submitRef}
-          type="submit"
-          className="btn btn-ink"
-          disabled={pending}
-          onClick={() => play("ink")}
-        >
+        {/* 入口は一つ。押すと投稿先を選ぶモーダルが開く。グループの中から書けば、そのグループが先にチェックされている。 */}
+        <button type="button" className="btn btn-ink" disabled={pending} onClick={post}>
           {published ? "保存する" : "投稿する"}
         </button>
-
-        {/* 書き終えたら、最後にグループにも投げるか決める。グループの中から書けば、そのグループが先にチェックされている。 */}
-        {places ? <ShareDialog places={places} checked={defaultPlaceIds} submitLabel={published ? "保存する" : "投げる"} /> : null}
+        {places ? (
+          <ShareDialog
+            ref={shareRef}
+            places={places}
+            checked={defaultPlaceIds}
+            submitLabel={published ? "保存する" : "投稿する"}
+            title={published ? "どこに投稿しておきますか" : "どこに投稿しますか"}
+          />
+        ) : null}
 
         {/* 狭い画面でだけ見える。押せば題の欄が出て、この釦は引っ込む。 */}
         {!titleOpen ? (

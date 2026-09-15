@@ -1533,6 +1533,16 @@ a {
   margin: 0;
 }
 
+/* 自分のスペースはいつもチェック。外せないが、灰色にはしない（薄れて見えると「入っていない」に読める）。 */
+.share-item-self {
+  cursor: default;
+}
+
+.share-item-self input:disabled {
+  opacity: 1;
+  accent-color: var(--sumi);
+}
+
 .share-dialog-foot {
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */
