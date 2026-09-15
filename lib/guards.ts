@@ -61,13 +61,37 @@ export async function requireReadableSlip(slipId: string) {
   });
   if (!slip) notFound();
 
+  const isAuthor = slip.authorId === user.id;
+
+  // 帳面の中（部屋に置いていない）は、書いた本人だけ
+  if (!slip.placeId) {
+    if (!isAuthor) notFound();
+    return { user, slip, membership: null, isAuthor };
+  }
+
   const membership = await prisma.membership.findUnique({
     where: { userId_placeId: { userId: user.id, placeId: slip.placeId } },
   });
   if (!membership) notFound();
-
-  const isAuthor = slip.authorId === user.id;
   if (!slip.published && !isAuthor) notFound();
 
   return { user, slip, membership, isAuthor };
+}
+
+/** 自分の帳面。部屋に置いたものも、置いていないものも、書いた順に。 */
+export async function myNotebook(userId: string) {
+  return prisma.slip.findMany({
+    where: { authorId: userId },
+    include: { author: AUTHOR, photo: PHOTO, place: { select: { id: true, name: true, slug: true } } },
+    orderBy: { createdAt: "asc" },
+  });
+}
+
+/** 自分の入っている部屋。置く先を選ぶときに使う。 */
+export async function myPlaces(userId: string) {
+  return prisma.place.findMany({
+    where: { memberships: { some: { userId } } },
+    select: { id: true, name: true, slug: true },
+    orderBy: { createdAt: "asc" },
+  });
 }

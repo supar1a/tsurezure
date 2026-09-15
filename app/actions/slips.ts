@@ -18,6 +18,12 @@ async function requireMember(placeId: string) {
   return user;
 }
 
+/** 「いつもここに置く」を控える／外す。 */
+async function rememberPlace(userId: string, placeId: string | null, remember: boolean) {
+  if (!remember) return;
+  await prisma.user.update({ where: { id: userId }, data: { defaultPlaceId: placeId } });
+}
+
 /** 自分の投稿は、いつでも編集・削除できる。 */
 async function requireOwnSlip(slipId: string) {
   const user = await requireUser();
@@ -30,12 +36,19 @@ async function requireOwnSlip(slipId: string) {
   return { user, slip };
 }
 
+/**
+ * 書く。まず帳面（自分だけ）に入り、「置く」で部屋に出る。
+ * 部屋の中から書けば、置く先はその部屋。部屋の外から書けば、置く先を選ぶ。
+ */
 export async function writeSlipAction(_prev: FormState, formData: FormData): Promise<FormState> {
-  const placeId = String(formData.get("placeId") ?? "");
-  const user = await requireMember(placeId);
+  const published = formData.get("intent") !== "draft";
+  const wanted = String(formData.get("placeId") ?? "");
+  // 帳面に残すだけなら、部屋は要らない
+  const placeId = published ? wanted : "";
+  const user = placeId ? await requireMember(placeId) : await requireUser();
 
-  const place = await prisma.place.findUnique({ where: { id: placeId } });
-  if (!place) throw new Error("そのグループはありません。");
+  const place = placeId ? await prisma.place.findUnique({ where: { id: placeId } }) : null;
+  if (published && !place) return { error: "置く先のグループを選んでください。" };
 
   // 写真は本文の途中に挟まるので、前と後ろに分かれて届く
   const photo = await readPhoto(formData);
@@ -46,19 +59,20 @@ export async function writeSlipAction(_prev: FormState, formData: FormData): Pro
   );
   if (!body) return { error: "まだ何も書かれていません。" };
 
-  const published = formData.get("intent") !== "draft";
   const title = String(formData.get("title") ?? "").trim();
   if (title.length > TITLE_MAX) return { error: `題は${TITLE_MAX}字までです。` };
 
   const slip = await prisma.slip.create({
-    data: { placeId, authorId: user.id, title: title || null, body, published },
+    data: { placeId: place?.id ?? null, authorId: user.id, title: title || null, body, published },
   });
   if (photo) {
     await prisma.photo.create({ data: { slipId: slip.id, ...photo } });
   }
+  if (place) await rememberPlace(user.id, place.id, formData.get("remember") === "1");
 
-  revalidatePath(`/${place.slug}`);
-  redirect(published ? `/${place.slug}` : `/post/${slip.id}`);
+  if (place) revalidatePath(`/${place.slug}`);
+  revalidatePath("/me");
+  redirect(place ? `/${place.slug}` : `/post/${slip.id}`);
 }
 
 export async function saveSlipAction(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -78,13 +92,15 @@ export async function saveSlipAction(_prev: FormState, formData: FormData): Prom
   );
   if (!body) return { error: "まだ何も書かれていません。" };
 
-  const published = formData.get("intent") === "draft" ? false : slip.published;
+  // 「下書きに保存」なら帳面へ戻す（部屋からも外す）
+  const toNotebook = formData.get("intent") === "draft";
+  const published = toNotebook ? false : slip.published;
 
   const title = String(formData.get("title") ?? "").trim();
   if (title.length > TITLE_MAX) return { error: `題は${TITLE_MAX}字までです。` };
   await prisma.slip.update({
     where: { id: slipId },
-    data: { title: title || null, body, published },
+    data: { title: title || null, body, published, ...(toNotebook ? { placeId: null } : {}) },
   });
 
   // 貼り直したときは、古いほうを消してから入れ替える
@@ -95,21 +111,40 @@ export async function saveSlipAction(_prev: FormState, formData: FormData): Prom
     await prisma.photo.create({ data: { slipId, ...photo } });
   }
 
-  revalidatePath(`/${slip.place.slug}`);
+  if (slip.place) revalidatePath(`/${slip.place.slug}`);
   revalidatePath(`/post/${slipId}`);
+  revalidatePath("/me");
   redirect(`/post/${slipId}`);
 }
 
-/** 公開する／下書きに戻す。 */
-export async function setPublishedAction(formData: FormData) {
+/** 帳面の一篇を、部屋に置く。 */
+export async function placeSlipAction(formData: FormData) {
   const slipId = String(formData.get("slipId") ?? "");
-  const published = formData.get("published") === "true";
+  const placeId = String(formData.get("placeId") ?? "");
+  const { user, slip } = await requireOwnSlip(slipId);
+  await requireMember(placeId);
+  const place = await prisma.place.findUnique({ where: { id: placeId } });
+  if (!place) throw new Error("そのグループはありません。");
+
+  await prisma.slip.update({ where: { id: slipId }, data: { placeId, published: true } });
+  await rememberPlace(user.id, placeId, formData.get("remember") === "1");
+
+  if (slip.place) revalidatePath(`/${slip.place.slug}`);
+  revalidatePath(`/${place.slug}`);
+  revalidatePath(`/post/${slipId}`);
+  revalidatePath("/me");
+}
+
+/** 部屋から下げて、帳面へ戻す。 */
+export async function withdrawSlipAction(formData: FormData) {
+  const slipId = String(formData.get("slipId") ?? "");
   const { slip } = await requireOwnSlip(slipId);
 
-  await prisma.slip.update({ where: { id: slipId }, data: { published } });
+  await prisma.slip.update({ where: { id: slipId }, data: { placeId: null, published: false } });
 
-  revalidatePath(`/${slip.place.slug}`);
+  if (slip.place) revalidatePath(`/${slip.place.slug}`);
   revalidatePath(`/post/${slipId}`);
+  revalidatePath("/me");
 }
 
 export async function deleteSlipAction(formData: FormData) {
@@ -118,6 +153,7 @@ export async function deleteSlipAction(formData: FormData) {
 
   await prisma.slip.delete({ where: { id: slipId } });
 
-  revalidatePath(`/${slip.place.slug}`);
-  redirect(`/${slip.place.slug}`);
+  if (slip.place) revalidatePath(`/${slip.place.slug}`);
+  revalidatePath("/me");
+  redirect(slip.place ? `/${slip.place.slug}` : "/me");
 }

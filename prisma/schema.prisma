@@ -19,6 +19,8 @@ model User {
   id        String   @id @default(cuid())
   name      String
   createdAt DateTime @default(now())
+  /// 「いつもここに置く」部屋。無ければ、置くたびに選ぶ。
+  defaultPlaceId String?
 
   sessions    Session[]
   memberships Membership[]
@@ -66,20 +68,22 @@ model Membership {
   @@index([placeId])
 }
 
+/// 一篇。書いた人の帳面に属する。部屋に置かれていれば placeId を持つ。
 model Slip {
   id        String   @id @default(cuid())
-  placeId   String
+  /// 置いてある部屋。無ければ帳面の中（本人にしか見えない）。
+  placeId   String?
   authorId  String
   /// 題。無くてよい。目次に出すときは、無ければ本文の一行目を借りる。
   title     String?
   body      String
-  /// 公開しているか。下書きは書いた本人にだけ見える。
+  /// 部屋に出しているか。出していないもの（帳面の中）は書いた本人にだけ見える。
   published Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  place  Place @relation(fields: [placeId], references: [id], onDelete: Cascade)
-  author User  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  place  Place? @relation(fields: [placeId], references: [id], onDelete: SetNull)
+  author User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   photo  Photo?
 
   @@index([placeId, createdAt])

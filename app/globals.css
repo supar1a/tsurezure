@@ -922,7 +922,7 @@ a.slip-when:hover {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: clamp(1.6rem, 3vw, 2.8rem);
+  gap: clamp(1.1rem, 2vw, 1.8rem); /* 印と添えの一行は一組 */
   padding-block: 0.5rem;
 }
 
@@ -994,7 +994,7 @@ a.slip-when:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(1.2rem, 2vw, 2.2rem);
+  gap: 1rem; /* 名前と人数・枚数・日付は一組 */
   /* 中身のぶんだけの高さにする。短冊のように、それぞれ長さが違ってよい。 */
   align-self: flex-start;
   min-inline-size: 15rem;
@@ -1032,7 +1032,7 @@ a.slip-when:hover {
 .panel {
   display: flex;
   flex-direction: column;
-  gap: 1.4rem;
+  gap: 1rem; /* 見出し・添え書き・欄は一組。札と札は下の罫と空きで離す。 */
   inline-size: auto;
   max-block-size: 24rem;
   padding-block-end: clamp(2rem, 4vw, 4rem);
@@ -1314,7 +1314,12 @@ a {
 .leaf-section {
   display: flex;
   flex-direction: column;
-  gap: 1.4rem;
+  gap: 1rem;
+}
+
+/* 戸口の断り書きは、書く欄とは別のもの。少し離す。 */
+.gate-form .leaf-lede {
+  margin-block-start: 1rem;
 }
 
 .leaf-lede {
@@ -1327,7 +1332,7 @@ a {
 .row {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.8rem;
   flex-wrap: wrap;
 }
 
@@ -1466,6 +1471,50 @@ a {
   margin-inline-start: 1.4rem;
 }
 
+/* 置く先を選ぶ（部屋の外から書くとき、帳面の一篇を置くとき）。帯の中に縦に並ぶ。 */
+.place-pick {
+  display: flex;
+  flex-direction: row; /* 縦組みでは上から下へ */
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.place-select {
+  inline-size: auto;
+  max-inline-size: 9em;
+  font-size: 0.82rem;
+}
+
+.place-remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--sumi-faint);
+  white-space: nowrap;
+}
+
+.place-form {
+  display: flex;
+  flex-direction: row; /* 縦組みでは上から下へ */
+  align-items: center;
+  gap: 1rem;
+}
+
+/* 帳面（あなたのページ）。目次と同じ一行一篇。 */
+.notebook {
+  display: flex;
+  flex-direction: column; /* 縦組みでは右から左へ */
+  gap: clamp(1.6rem, 2.4vw, 2.6rem);
+}
+
+.entry-place {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  color: var(--sumi-faint);
+}
+
 /* 字数は帯のいちばん下へ。釦の並びから離して、数えているだけの顔にする。 */
 .compose-tally {
   display: flex;
@@ -1498,7 +1547,7 @@ a {
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */
   align-items: flex-start;
-  gap: 1.1rem;
+  gap: 0.8rem; /* 「書く」と添えの一行は一組 */
   inline-size: 100%;
   block-size: 9rem;
   color: var(--sumi-soft);

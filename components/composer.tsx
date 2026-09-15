@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { TITLE_MAX, countChars } from "@/lib/text";
 import { useSound } from "./sound-provider";
 import { DrawnCaret } from "./drawn-caret";
+import { PlacePicker, type PlaceOption } from "./slip-actions";
 import type { FormState } from "@/app/actions/slips";
 
 type Attached = { url: string; width: number; height: number; local: boolean };
@@ -19,9 +20,12 @@ type Props = {
   defaultAfter?: string;
   /** すでに貼ってある一枚（書き直しのとき） */
   defaultPhoto?: { id: string; width: number; height: number } | null;
-  /** すでに公開しているものを編集しているとき */
+  /** すでに部屋に置いてあるものを編集しているとき */
   published?: boolean;
   cancel?: React.ReactNode;
+  /** 部屋の外から書くとき、置く先の候補（hidden に placeId が無いときだけ使う） */
+  places?: PlaceOption[];
+  defaultPlaceId?: string | null;
 };
 
 // 貼った写真は、送る前にここまで縮める
@@ -44,7 +48,11 @@ export function Composer({
   defaultPhoto = null,
   published = false,
   cancel,
+  places,
+  defaultPlaceId,
 }: Props) {
+  // 部屋の中から書いているか（置く先が決まっているか）
+  const inPlace = "placeId" in hidden;
   const [state, formAction, pending] = useActionState(action, null);
   const [photo, setPhoto] = useState<Attached | null>(
     defaultPhoto
@@ -274,16 +282,21 @@ export function Composer({
         鍵盤が出ても場ごと縮むので、帯はいつも見えている。
       */}
       <div className="compose-foot">
+        {/* 部屋の外から書くときは、置く先をここで選ぶ */}
+        {!inPlace && !published && places ? (
+          <PlacePicker places={places} defaultPlaceId={defaultPlaceId} />
+        ) : null}
+
         <button
           ref={submitRef}
           type="submit"
           name="intent"
           value="publish"
           className="btn btn-ink"
-          disabled={pending}
+          disabled={pending || (!inPlace && !published && (places?.length ?? 0) === 0)}
           onClick={() => play("ink")}
         >
-          {published ? "保存する" : "書き残す"}
+          {published ? "保存する" : inPlace ? "書き残す" : "置く"}
         </button>
 
         <button

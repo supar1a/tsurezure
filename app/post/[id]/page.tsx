@@ -5,7 +5,8 @@ import { Masthead } from "@/components/masthead";
 import { HeadAway } from "@/components/head-away";
 import { OpenAt } from "@/components/open-at";
 import { PaperLink } from "@/components/paper-link";
-import { DeleteSlip, PublishToggle } from "@/components/slip-actions";
+import { DeleteSlip, PlaceToggle } from "@/components/slip-actions";
+import { myPlaces } from "@/lib/guards";
 import { SlipText } from "@/components/slip-column";
 
 /*
@@ -19,14 +20,22 @@ export const metadata: Metadata = { title: { absolute: "つれづれ" } };
 
 export default async function SlipPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { slip, isAuthor } = await requireReadableSlip(id);
+  const { user, slip, isAuthor } = await requireReadableSlip(id);
+  const placed = Boolean(slip.place && slip.published);
+  const places = isAuthor && !placed ? await myPlaces(user.id) : [];
 
   return (
     <div className="app">
-      <Masthead sub={slip.place.name}>
-        <PaperLink href={`/${slip.place.slug}`} className="masthead-link">
-          グループへ戻る
-        </PaperLink>
+      <Masthead sub={slip.place?.name ?? "帳面"}>
+        {slip.place ? (
+          <PaperLink href={`/${slip.place.slug}`} className="masthead-link">
+            グループへ戻る
+          </PaperLink>
+        ) : (
+          <PaperLink href="/me" className="masthead-link">
+            帳面へ戻る
+          </PaperLink>
+        )}
       </Masthead>
 
       <div className="stage">
@@ -37,14 +46,18 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
 
               {/* 名前と時刻は同じ一列に。題は題だけで立たせる。 */}
               <div className="sheet-byline">
-                {!slip.published ? <span className="seal">下書き</span> : null}
-                <PaperLink
-                  href={`/${slip.place.slug}/by/${slip.author.id}`}
-                  className="sheet-who"
-                  voice="rustle"
-                >
-                  {slip.author.name}
-                </PaperLink>
+                {!placed ? <span className="seal">帳面</span> : null}
+                {slip.place ? (
+                  <PaperLink
+                    href={`/${slip.place.slug}/by/${slip.author.id}`}
+                    className="sheet-who"
+                    voice="rustle"
+                  >
+                    {slip.author.name}
+                  </PaperLink>
+                ) : (
+                  <span className="sheet-who">{slip.author.name}</span>
+                )}
                 <span>{kanjiDate(slip.createdAt)}</span>
                 <span>{kanjiTime(slip.createdAt)}</span>
               </div>
@@ -66,7 +79,12 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
                 <PaperLink href={`/post/${slip.id}/edit`} className="btn" voice="rustle">
                   編集
                 </PaperLink>
-                <PublishToggle slipId={slip.id} published={slip.published} />
+                <PlaceToggle
+                  slipId={slip.id}
+                  placed={placed}
+                  places={places}
+                  defaultPlaceId={slip.place?.id ?? user.defaultPlaceId}
+                />
                 <DeleteSlip slipId={slip.id} />
               </footer>
             ) : null}

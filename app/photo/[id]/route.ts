@@ -19,11 +19,17 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   const user = await currentUser();
   if (!user) return NOT_FOUND;
 
-  const membership = await prisma.membership.findUnique({
-    where: { userId_placeId: { userId: user.id, placeId: photo.slip.placeId } },
-  });
-  if (!membership) return NOT_FOUND;
-  if (!photo.slip.published && photo.slip.authorId !== user.id) return NOT_FOUND;
+  const isAuthor = photo.slip.authorId === user.id;
+  // 帳面の中（部屋に置いていない）は、書いた本人だけ
+  if (!photo.slip.placeId) {
+    if (!isAuthor) return NOT_FOUND;
+  } else {
+    const membership = await prisma.membership.findUnique({
+      where: { userId_placeId: { userId: user.id, placeId: photo.slip.placeId } },
+    });
+    if (!membership) return NOT_FOUND;
+    if (!photo.slip.published && !isAuthor) return NOT_FOUND;
+  }
 
   return new Response(Buffer.from(photo.data), {
     headers: {
