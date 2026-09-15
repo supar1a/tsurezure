@@ -43,8 +43,9 @@ export const ShareDialog = forwardRef<
         <p className="share-dialog-title">{title}</p>
         <ul className="share-list">
           <li>
-            <label className="share-item share-item-self">
-              <input type="checkbox" checked disabled readOnly />
+            <label className="share-item share-item-self" title="投稿はかならず自分のスペースに残ります">
+              {/* disabled にすると灰色になって「入っていない」に読めるので、押しても外れない印にする */}
+              <input type="checkbox" checked readOnly onClick={(e) => e.preventDefault()} aria-disabled="true" />
               <span>自分のスペース</span>
             </label>
           </li>

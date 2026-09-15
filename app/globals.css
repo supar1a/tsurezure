@@ -1538,9 +1538,8 @@ a {
   cursor: default;
 }
 
-.share-item-self input:disabled {
-  opacity: 1;
-  accent-color: var(--sumi);
+.share-item-self input {
+  cursor: default;
 }
 
 .share-dialog-foot {
