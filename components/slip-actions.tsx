@@ -9,8 +9,8 @@ export type ShareDialogHandle = { open: () => void };
 
 /**
  * 投稿先を選ぶモーダル。置く側の <form> の中に入れる。チェックは placeIds として一緒に送られる。
- * 「自分のスペース」はいつもチェック（外せない。投稿はかならず自分のスペースに残る）。
- * グループはチェックしたものにだけ投げる。「やめる」は開いたときのチェックに戻して閉じる。
+ * 「プライベートスペース」はいつもチェック（外せない。投稿はかならずプライベートスペースに残る）。
+ * スペースはチェックしたものにだけ投げる。「やめる」は開いたときのチェックに戻して閉じる。
  * 入口は持たない。置く側が open() で開く（投稿する釦、⌘+Enter、投稿先を変える釦）。
  */
 export const ShareDialog = forwardRef<
@@ -43,10 +43,10 @@ export const ShareDialog = forwardRef<
         <p className="share-dialog-title">{title}</p>
         <ul className="share-list">
           <li>
-            <label className="share-item share-item-self" title="投稿はかならず自分のスペースに残ります">
+            <label className="share-item share-item-self" title="投稿はかならずプライベートスペースに残ります">
               {/* disabled にすると灰色になって「入っていない」に読めるので、押しても外れない印にする */}
               <input type="checkbox" checked readOnly onClick={(e) => e.preventDefault()} aria-disabled="true" />
-              <span>自分のスペース</span>
+              <span>プライベートスペース</span>
             </label>
           </li>
           {places.map((p) => (

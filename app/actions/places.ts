@@ -17,7 +17,7 @@ export async function createPlaceAction(
   const user = await requireUser();
   const name = String(formData.get("name") ?? "").trim();
   if (name.length < 1 || name.length > PLACE_NAME_MAX) {
-    return { error: `グループ名は1〜${PLACE_NAME_MAX}字で入れてください。` };
+    return { error: `スペース名は1〜${PLACE_NAME_MAX}字で入れてください。` };
   }
 
   const place = await prisma.place.create({
@@ -50,13 +50,13 @@ async function requireOwner(placeId: string) {
     where: { userId_placeId: { userId: user.id, placeId } },
   });
   if (!membership || membership.role !== "owner") {
-    throw new Error("このグループを管理する権限がありません。");
+    throw new Error("このスペースを管理する権限がありません。");
   }
   return user;
 }
 
 /**
- * グループの名前を付けなおす。
+ * スペースの名前を付けなおす。
  *
  * 名前だけを変える。URL（合鍵）はそのままなので、渡してある招待状は切れないし、
  * 中に書かれたものも動かない。
@@ -70,7 +70,7 @@ export async function renamePlaceAction(
 
   const name = String(formData.get("name") ?? "").trim();
   if (name.length < 1 || name.length > PLACE_NAME_MAX) {
-    return { error: `グループ名は1〜${PLACE_NAME_MAX}字で入れてください。` };
+    return { error: `スペース名は1〜${PLACE_NAME_MAX}字で入れてください。` };
   }
 
   const place = await prisma.place.update({ where: { id: placeId }, data: { name } });

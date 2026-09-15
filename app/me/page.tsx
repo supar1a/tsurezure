@@ -21,7 +21,7 @@ export default async function MePage() {
             <section className="panel">
               <h1 className="panel-title">名前</h1>
               <p className="caption">
-                グループの中で、こう呼ばれます。いつでも変えられます。
+                スペースの中で、こう呼ばれます。いつでも変えられます。
               </p>
               <RenameForm action={renameAction} current={user.name} />
             </section>
@@ -37,7 +37,7 @@ export default async function MePage() {
             <section className="panel">
               <h1 className="panel-title">このブラウザから消す</h1>
               <p className="caption">
-                この名前は、このブラウザにだけ残っています。消すと、グループの URL をひらいて
+                この名前は、このブラウザにだけ残っています。消すと、スペースの URL をひらいて
                 名前を選び直すまで戻れません。書いたものはそのまま残ります。
               </p>
               <Forget action={forgetAction} />

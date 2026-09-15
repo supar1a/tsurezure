@@ -20,7 +20,7 @@ const SCROLLER = "scroller";
 /*
  * 分かち合うときに出る名札。
  *
- * グループの名前は、URL を知っている人には元々見せているので出してよい。
+ * スペースの名前は、URL を知っている人には元々見せているので出してよい。
  * 中身（誰が何を書いたか）は出さない。名札は名乗る前でも取りに来られるので、
  * ここに書いたものは URL を受け取った人みんなに見えることになる。
  */
@@ -68,7 +68,7 @@ export default async function PlacePage({
             ) : (
               <>
                 <p className="leaf-lede">
-                  このグループに招待されています。
+                  このスペースに招待されています。
                   <br />
                   呼ばれたい名前をひとつ、決めてください。
                 </p>
@@ -104,7 +104,7 @@ export default async function PlacePage({
           {scroll ? "目次で見る" : "巻物で読む"}
         </PaperLink>
         <PaperLink href={`/${slug}/members`} className="masthead-link" voice="rustle">
-          このグループ
+          このスペース
         </PaperLink>
       </Masthead>
 

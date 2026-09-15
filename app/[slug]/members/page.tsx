@@ -16,7 +16,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const place = await prisma.place.findUnique({ where: { slug }, select: { name: true } });
-  return place ? { title: `このグループ — ${place.name}` } : {};
+  return place ? { title: `このスペース — ${place.name}` } : {};
 }
 
 export default async function MembersPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -39,7 +39,7 @@ export default async function MembersPage({ params }: { params: Promise<{ slug: 
     <div className="app">
       <Masthead sub={place.name}>
         <PaperLink href={`/${slug}`} className="masthead-link">
-          グループへ戻る
+          スペースへ戻る
         </PaperLink>
       </Masthead>
 

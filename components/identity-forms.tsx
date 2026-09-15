@@ -8,7 +8,7 @@ import type { FormState } from "@/app/actions/identity";
 type Action = (prev: FormState, formData: FormData) => Promise<FormState>;
 
 /**
- * はじめまして。グループを作るところから始める。
+ * はじめまして。スペースを作るところから始める。
  * 名前だけ決めても行き先が無いので、名前はこの form のひとつとして聞く。
  */
 export function StartForm({ action }: { action: Action }) {
@@ -88,7 +88,7 @@ export function NameOnlyForm({
   );
 }
 
-/** すでに名乗っている人が、そのままグループに入る。 */
+/** すでに名乗っている人が、そのままスペースに入る。 */
 export function JoinAsMe({
   action,
   slug,

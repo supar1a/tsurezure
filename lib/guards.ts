@@ -7,7 +7,7 @@ const AUTHOR = { select: { id: true, name: true } } as const;
 const PHOTO = { select: { id: true, width: true, height: true } } as const;
 
 /**
- * URL を持っている人のために、グループを開ける。
+ * URL を持っている人のために、スペースを開ける。
  * この URL 自体が招待状なので、まだメンバーでない人にも「あること」は見せる
  * （名前と、ひとことと、誰がいるかまで。中身は見せない）。
  */
@@ -35,8 +35,8 @@ export async function requirePlace(slug: string) {
 const SHARES = { select: { place: { select: { id: true, name: true, slug: true } } } } as const;
 
 /**
- * グループに投げられた一篇を、古い順に（縦組みでは右から左へ流れる向き）。
- * 一篇は複数のグループに投げられていてよい。ここではこのグループに投げられたものだけ。
+ * スペースに投げられた一篇を、古い順に（縦組みでは右から左へ流れる向き）。
+ * 一篇は複数のスペースに投げられていてよい。ここではこのスペースに投げられたものだけ。
  */
 export async function readableSlips(placeId: string, _userId: string, options: { authorId?: string } = {}) {
   return prisma.slip.findMany({
@@ -50,8 +50,8 @@ export async function readableSlips(placeId: string, _userId: string, options: {
 }
 
 /**
- * 一篇を読めるか。書いた本人はいつでも。ほかの人は、投げられたグループのどれかに入っていれば。
- * 読めるときは、その人が入っているグループのうち一つ（柱に出す名前）も返す。
+ * 一篇を読めるか。書いた本人はいつでも。ほかの人は、投げられたスペースのどれかに入っていれば。
+ * 読めるときは、その人が入っているスペースのうち一つ（柱に出す名前）も返す。
  */
 export async function requireReadableSlip(slipId: string) {
   const user = await requireUser();
@@ -75,7 +75,7 @@ export async function requireReadableSlip(slipId: string) {
   return { user, slip, isAuthor, through, shared: slip.shares.length > 0 };
 }
 
-/** 自分のスペース。投げたものも、自分のみのものも、書いた順に。 */
+/** プライベートスペース。投げたものも、自分のみのものも、書いた順に。 */
 export async function myNotebook(userId: string) {
   return prisma.slip.findMany({
     where: { authorId: userId },
@@ -84,7 +84,7 @@ export async function myNotebook(userId: string) {
   });
 }
 
-/** 自分の入っているグループ。投げる先を選ぶときに使う。 */
+/** 自分の入っているスペース。投げる先を選ぶときに使う。 */
 export async function myPlaces(userId: string) {
   return prisma.place.findMany({
     where: { memberships: { some: { userId } } },

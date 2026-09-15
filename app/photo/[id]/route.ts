@@ -19,7 +19,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   const user = await currentUser();
   if (!user) return NOT_FOUND;
 
-  // 書いた本人はいつでも。ほかの人は、投げられたグループのどれかに入っていれば。
+  // 書いた本人はいつでも。ほかの人は、投げられたスペースのどれかに入っていれば。
   if (photo.slip.authorId !== user.id) {
     const placeIds = photo.slip.shares.map((s) => s.placeId);
     if (placeIds.length === 0) return NOT_FOUND;

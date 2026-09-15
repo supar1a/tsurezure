@@ -79,7 +79,7 @@ export function linkify(text: string): Piece[] {
  */
 export const TITLE_MAX = 40;
 
-/** グループの名前の長さの上限。作るときと変えるときで、同じ数を見る。 */
+/** スペースの名前の長さの上限。作るときと変えるときで、同じ数を見る。 */
 export const PLACE_NAME_MAX = 32;
 
 export function countChars(body: string) {

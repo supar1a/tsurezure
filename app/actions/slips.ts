@@ -18,7 +18,7 @@ async function requireOwnSlip(slipId: string) {
   return { user, slip };
 }
 
-/** 投げる先として選ばれたグループ。自分が入っているものだけに絞る。 */
+/** 投げる先として選ばれたスペース。自分が入っているものだけに絞る。 */
 async function chosenPlaces(userId: string, formData: FormData) {
   const wanted = formData.getAll("placeIds").map(String).filter(Boolean);
   if (wanted.length === 0) return [];
@@ -28,15 +28,15 @@ async function chosenPlaces(userId: string, formData: FormData) {
   });
 }
 
-/** 最後に投げたグループを控える。次に書くとき、先にチェックしておくため。 */
+/** 最後に投げたスペースを控える。次に書くとき、先にチェックしておくため。 */
 async function rememberPlaces(userId: string, placeIds: string[]) {
   if (placeIds.length === 0) return;
   await prisma.user.update({ where: { id: userId }, data: { lastPlaceIds: placeIds } });
 }
 
 /**
- * 投稿する。グループが選ばれていればそこにも投げる（複数でよい）。選ばれていなければ自分のみ。
- * 最後に投げたグループは控えておき、次に書くときの初期値にする。
+ * 投稿する。スペースが選ばれていればそこにも投げる（複数でよい）。選ばれていなければ自分のみ。
+ * 最後に投げたスペースは控えておき、次に書くときの初期値にする。
  */
 export async function writeSlipAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const user = await requireUser();
@@ -69,7 +69,7 @@ export async function writeSlipAction(_prev: FormState, formData: FormData): Pro
 
   for (const p of places) revalidatePath(`/${p.slug}`);
   revalidatePath("/");
-  // グループの中から書いたならそのグループへ、自分のスペースから書いたならそこへ
+  // スペースの中から書いたならそのスペースへ、プライベートスペースから書いたならそこへ
   const back = String(formData.get("back") ?? "");
   redirect(back.startsWith("/") ? back : "/");
 }
@@ -122,7 +122,7 @@ export async function saveSlipAction(_prev: FormState, formData: FormData): Prom
   redirect(`/post/${slipId}`);
 }
 
-/** 一篇の投げる先を決め直す。チェックしたグループに投げ、外したものからは引く。 */
+/** 一篇の投げる先を決め直す。チェックしたスペースに投げ、外したものからは引く。 */
 export async function shareSlipAction(formData: FormData) {
   const slipId = String(formData.get("slipId") ?? "");
   const { user } = await requireOwnSlip(slipId);

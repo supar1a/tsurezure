@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
   /*
    * 探しものからは外す。
-   * グループは URL を知っている人だけのものなので、目録に載ってはいけない。
+   * スペースは URL を知っている人だけのものなので、目録に載ってはいけない。
    */
   robots: { index: false, follow: false },
 

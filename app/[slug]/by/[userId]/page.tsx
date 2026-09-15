@@ -45,7 +45,7 @@ export default async function ByPersonPage({
     <div className="app">
       <Masthead sub={`${place.name}　${name}さん`}>
         <PaperLink href={`/${slug}`} className="masthead-link">
-          グループへ戻る
+          スペースへ戻る
         </PaperLink>
       </Masthead>
 

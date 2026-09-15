@@ -7,7 +7,7 @@ import { PaperLink } from "@/components/paper-link";
 
 export const metadata = { title: "スペース" };
 
-/** 入っているグループの一覧。自分のスペースを分かち合う先。 */
+/** 入っているスペースの一覧。プライベートスペースを分かち合う先。 */
 export default async function RoomsPage() {
   const user = await requireUser();
 
@@ -27,7 +27,7 @@ export default async function RoomsPage() {
     : [];
   const tallyOf = new Map(tallies.map((t) => [t.placeId, t]));
 
-  // 自分のスペース（自分のスペース）。グループではないが、投稿先としては同じ並びなので、先頭に置く。
+  // プライベートスペース（プライベートスペース）。スペースではないが、投稿先としては同じ並びなので、先頭に置く。
   const mine = await prisma.slip.aggregate({
     where: { authorId: user.id },
     _count: { _all: true },
@@ -38,7 +38,7 @@ export default async function RoomsPage() {
     <div className="app">
       <Masthead sub="スペース">
         <PaperLink href="/new" className="masthead-link" voice="rustle">
-          グループを作る
+          スペースを作る
         </PaperLink>
       </Masthead>
 
@@ -50,7 +50,7 @@ export default async function RoomsPage() {
                 <div className="book-head">
                   {/* 朱の印。巻物で自分の一枚に「じぶん」が付くのと同じ印。 */}
                   <span className="seal book-seal">じぶん</span>
-                  <h2 className="book-name">自分のスペース</h2>
+                  <h2 className="book-name">プライベートスペース</h2>
                   <div className="book-meta">
                     <span>
                       {mine._count._all > 0 ? `${kanjiNumber(mine._count._all)}枚` : "まだ何もない"}
@@ -80,7 +80,7 @@ export default async function RoomsPage() {
               })}
 
               {/* 名前のもと。読み終えたさきに、奥付のように置く。
-                  頭に置くと、狭い画面では序文だけで埋まってグループに手が届かない。 */}
+                  頭に置くと、狭い画面では序文だけで埋まってスペースに手が届かない。 */}
               <div className="epigraph">
                 {[
                   "つれづれなるままに、",

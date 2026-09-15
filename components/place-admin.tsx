@@ -6,7 +6,7 @@ import { leavePlaceAction, removeMemberAction, renamePlaceAction } from "@/app/a
 import { PLACE_NAME_MAX } from "@/lib/text";
 
 /**
- * グループの名前を付けなおす。
+ * スペースの名前を付けなおす。
  *
  * 名前だけが変わる。URL（合鍵）はそのままなので、渡してある招待状は切れない。
  */
@@ -19,7 +19,7 @@ export function RenamePlace({ placeId, current }: { placeId: string; current: st
       <input type="hidden" name="placeId" value={placeId} />
 
       <label className="field">
-        <span className="field-label">グループ名</span>
+        <span className="field-label">スペース名</span>
         <input
           name="name"
           className="input"
@@ -86,7 +86,7 @@ export function RemoveMember({
     <form
       action={removeMemberAction}
       onSubmit={(event) => {
-        if (!window.confirm(`${name}さんをこのグループから外します。`)) {
+        if (!window.confirm(`${name}さんをこのスペースから外します。`)) {
           event.preventDefault();
           return;
         }
@@ -113,7 +113,7 @@ export function LeavePlace({ placeId }: { placeId: string }) {
     <form
       action={leavePlaceAction}
       onSubmit={(event) => {
-        if (!window.confirm("このグループを抜けます。書いたものは残ります。")) {
+        if (!window.confirm("このスペースを抜けます。書いたものは残ります。")) {
           event.preventDefault();
           return;
         }
@@ -126,7 +126,7 @@ export function LeavePlace({ placeId }: { placeId: string }) {
         className="btn btn-quiet"
         style={{ fontSize: "0.72rem", color: "var(--sumi-ghost)" }}
       >
-        グループを抜ける
+        スペースを抜ける
       </button>
     </form>
   );

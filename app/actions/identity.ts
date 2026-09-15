@@ -12,8 +12,8 @@ function readName(formData: FormData) {
 }
 
 /**
- * はじめまして。名前をひとつ決めれば、自分のスペースが始まる。
- * グループは要らない。分かち合いたくなったら、あとで作るか、招待の URL から入る。
+ * はじめまして。名前をひとつ決めれば、プライベートスペースが始まる。
+ * スペースは要らない。分かち合いたくなったら、あとで作るか、招待の URL から入る。
  */
 export async function startAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const name = readName(formData);
@@ -26,13 +26,13 @@ export async function startAction(_prev: FormState, formData: FormData): Promise
 }
 
 /**
- * 招待された URL から、そのグループに入る。
+ * 招待された URL から、そのスペースに入る。
  * すでに名乗っていればその名前のまま、まだなら名前をきいてから。
  */
 export async function joinAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const slug = String(formData.get("slug") ?? "");
   const place = await prisma.place.findUnique({ where: { slug } });
-  if (!place) return { error: "そのグループは見つかりませんでした。" };
+  if (!place) return { error: "そのスペースは見つかりませんでした。" };
 
   let user = await currentUser();
   if (!user) {
@@ -57,7 +57,7 @@ export async function joinAction(_prev: FormState, formData: FormData): Promise<
  * クッキーを失った人が、メンバーの中から自分を選び直す。
  *
  * 照合するものがないので、これは「なりすましできる」ということでもある。
- * グループの URL を持っている時点で中は読めるので、そこは仲間うちに委ねる。
+ * スペースの URL を持っている時点で中は読めるので、そこは仲間うちに委ねる。
  * せめて、すでに名乗っている人には出さない（まだ誰でもない人の戻り道に留める）。
  */
 export async function iAmAction(formData: FormData) {

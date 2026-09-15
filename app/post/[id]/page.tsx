@@ -14,7 +14,7 @@ import { SlipText } from "@/components/slip-column";
  *
  * 名札は名乗る前でも取りに来られる。LINE や Slack に貼れば、
  * その場の仕組みが名乗らずに読みにくる。中身はメンバーだけのものなので、
- * 題も本文も、どのグループのものかも、ここには書かない。
+ * 題も本文も、どのスペースのものかも、ここには書かない。
  */
 export const metadata: Metadata = { title: { absolute: "つれづれ" } };
 
@@ -23,19 +23,19 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
   const { user, slip, isAuthor, through } = await requireReadableSlip(id);
   const places = isAuthor ? await myPlaces(user.id) : [];
   const sharedTo = slip.shares.map((s) => s.place);
-  // 書いた本人には、どこに投げていようと自分のスペースの一枚。ほかの人には、通ってきたグループの一枚。
+  // 書いた本人には、どこに投げていようとプライベートスペースの一枚。ほかの人には、通ってきたスペースの一枚。
   const via = isAuthor ? null : through;
 
   return (
     <div className="app">
-      <Masthead sub={via?.name ?? "自分のスペース"}>
+      <Masthead sub={via?.name ?? "プライベートスペース"}>
         {via ? (
           <PaperLink href={`/${via.slug}`} className="masthead-link">
-            グループへ戻る
+            スペースへ戻る
           </PaperLink>
         ) : (
           <PaperLink href="/" className="masthead-link">
-            自分のスペースへ戻る
+            プライベートスペースへ戻る
           </PaperLink>
         )}
       </Masthead>
@@ -83,7 +83,7 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
                 </PaperLink>
                 {/* いまの投稿先。ここでだけ、書いた本人にだけ。すぐ下の釦で変えられる。 */}
                 <span className="sheet-shared">
-                  {["自分のスペース", ...sharedTo.map((p) => p.name)].join("・")}
+                  {["プライベートスペース", ...sharedTo.map((p) => p.name)].join("・")}
                 </span>
                 <ShareControl slipId={slip.id} places={places} checked={sharedTo.map((p) => p.id)} />
                 <DeleteSlip slipId={slip.id} />

@@ -9,7 +9,7 @@ export type SlipRow = {
   createdAt: Date;
   author: { id: string; name: string };
   photo: { id: string; width: number; height: number } | null;
-  /** 投げたグループ。無ければ自分のみ。 */
+  /** 投げたスペース。無ければ自分のみ。 */
   shares?: { place: { id: string; name: string; slug: string } }[];
 };
 
@@ -52,7 +52,7 @@ export function SlipColumn({
 }
 
 /**
- * 自分のスペースのなかの一枚。自分のものなので名前は出さず、日付だけ。
+ * プライベートスペースのなかの一枚。自分のものなので名前は出さず、日付だけ。
  * どこに投稿したかは、ここでは出さない（一篇の頁で扱う）。日付を押せば、その一枚をひらく。
  */
 export function DiaryColumn({ slip }: { slip: SlipRow }) {

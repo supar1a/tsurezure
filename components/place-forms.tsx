@@ -13,7 +13,7 @@ export function CreatePlaceForm({ action }: { action: Action }) {
   return (
     <form action={formAction} className="leaf-section">
       <label className="field">
-        <span className="field-label">グループ名</span>
+        <span className="field-label">スペース名</span>
         <input
           name="name"
           className="input"
