@@ -1471,38 +1471,82 @@ a {
   margin-inline-start: 1.4rem;
 }
 
-/* 共有先を選ぶ（書く帯の中と、一篇の頁）。縦に並ぶ。 */
-.share-pick {
+/* 「グループにも投げる」のモーダル。紙の上に、もう一枚小さな紙を置く。 */
+.share-dialog {
+  /* 縦組みの帯の中に置くので、dialog は横組みに戻す。そうしないと真ん中に来ない。中身だけ縦（.tate）。 */
+  writing-mode: horizontal-tb;
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 0;
+  background-color: var(--washi-lit);
+  color: var(--sumi);
+  box-shadow: 0 6px 30px rgba(82, 78, 70, 0.14);
+  max-width: min(92vw, 30rem);
+}
+
+.share-dialog::backdrop {
+  background: rgba(33, 30, 25, 0.28);
+}
+
+.share-dialog-inner {
+  display: flex;
+  flex-direction: column; /* 縦組みでは右から左へ */
+  gap: 1.6rem;
+  padding: clamp(1.6rem, 3vw, 2.4rem) clamp(1.4rem, 3vw, 2.2rem);
+  block-size: auto;
+  inline-size: auto; /* 縦組みでは丈。いちばん長い列（題）に合わせる */
+  max-inline-size: 70vh;
+}
+
+.share-dialog-title {
+  margin: 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.24em;
+  color: var(--sumi-faint);
+}
+
+.share-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column; /* 縦組みでは右から左へ：一つのグループが一列 */
+  gap: 1rem;
+}
+
+.share-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+}
+
+.share-item input {
+  accent-color: var(--sumi);
+  width: 1em;
+  height: 1em;
+  margin: 0;
+}
+
+.share-dialog-foot {
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */
   align-items: center;
   gap: 0.8rem;
 }
 
-.share-select {
-  inline-size: auto;
-  max-inline-size: 9em;
-  font-size: 0.82rem;
-}
-
-
 .share-form {
-  display: flex;
-  flex-direction: row; /* 縦組みでは上から下へ */
-  align-items: center;
-  gap: 1rem;
+  display: contents;
 }
 
-/* 日記の一枚の頭：置いた部屋の名前（戸口）か、「日記」の印 */
-.slip-place {
-  font-size: 0.78rem;
-  letter-spacing: 0.2em;
-  color: var(--sumi-soft);
-  text-decoration: none;
-}
-
-.slip-place-none {
-  color: var(--sumi-ghost);
+/* 一篇の頭に添える、投げてあるグループの名前 */
+.sheet-shared {
+  color: var(--sumi-faint);
 }
 
 /* 日記（あなたのページ）。目次と同じ一行一篇。 */

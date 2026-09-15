@@ -1,73 +1,100 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { useSound } from "./sound-provider";
-import { deleteSlipAction, placeSlipAction, withdrawSlipAction } from "@/app/actions/slips";
+import { deleteSlipAction, shareSlipAction } from "@/app/actions/slips";
 
 export type PlaceOption = { id: string; name: string };
 
 /**
- * 共有先を選ぶ。「共有しない（自分のみ）」か、入っているグループのどれか一つ。
- * defaultPlaceId が null なら「共有しない」、文字列ならそのグループが選ばれた状態で出る。
+ * 「グループにも投げる」。押すとモーダルが開き、グループをチェックで選ぶ（複数でよい）。
+ * 置く側の <form> の中に入れる。チェックは placeIds として一緒に送られる。
+ * モーダルの「投げる」は form を送る。「やめる」は開いたときのチェックに戻して閉じる。
  */
-export function ShareSelect({
+export function ShareDialog({
   places,
-  defaultPlaceId,
-  name = "placeId",
+  checked,
+  submitLabel = "投げる",
 }: {
   places: PlaceOption[];
-  defaultPlaceId?: string | null;
-  name?: string;
-}) {
-  const chosen = places.some((p) => p.id === defaultPlaceId) ? defaultPlaceId! : "";
-  return (
-    <label className="share-pick">
-      <span className="field-label">共有先</span>
-      <select name={name} className="input share-select" defaultValue={chosen}>
-        <option value="">共有しない（自分のみ）</option>
-        {places.map((p) => (
-          <option key={p.id} value={p.id}>
-            {p.name}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}
-
-/** 一篇の共有。共有していれば「共有をやめる」、していなければ共有先を選んで「共有する」。 */
-export function ShareControl({
-  slipId,
-  shared,
-  places,
-  defaultPlaceId,
-}: {
-  slipId: string;
-  shared: boolean;
-  places: PlaceOption[];
-  defaultPlaceId?: string | null;
+  checked: string[];
+  submitLabel?: string;
 }) {
   const { play } = useSound();
+  const ref = useRef<HTMLDialogElement>(null);
+  const snapshot = useRef<string[]>(checked);
+  const [count, setCount] = useState(() => places.filter((p) => checked.includes(p.id)).length);
 
-  if (shared) {
-    return (
-      <form action={withdrawSlipAction}>
-        <input type="hidden" name="slipId" value={slipId} />
-        <button type="submit" className="btn btn-quiet" onClick={() => play("rustle")}>
-          共有をやめる
-        </button>
-      </form>
-    );
+  const boxes = () => [...(ref.current?.querySelectorAll<HTMLInputElement>('input[name="placeIds"]') ?? [])];
+
+  function open() {
+    snapshot.current = boxes().filter((b) => b.checked).map((b) => b.value);
+    play("rustle");
+    ref.current?.showModal();
+  }
+  function cancel() {
+    for (const b of boxes()) b.checked = snapshot.current.includes(b.value);
+    setCount(snapshot.current.length);
+    play("turn");
+    ref.current?.close();
   }
 
   if (places.length === 0) return null;
 
   return (
-    <form action={placeSlipAction} className="share-form">
-      <input type="hidden" name="slipId" value={slipId} />
-      <ShareSelect places={places} defaultPlaceId={defaultPlaceId ?? places[0].id} />
-      <button type="submit" className="btn btn-ink" onClick={() => play("ink")}>
-        共有する
+    <>
+      <button type="button" className="btn share-open" onClick={open}>
+        グループにも投げる{count > 0 ? `（${count}）` : ""}
       </button>
+
+      {/* form の中に置く。閉じていてもチェックは送られる（見えない欄と同じ）。 */}
+      <dialog ref={ref} className="share-dialog" aria-label="投げる先">
+        <div className="share-dialog-inner tate">
+          <p className="share-dialog-title">どのグループに投げますか</p>
+          <ul className="share-list">
+            {places.map((p) => (
+              <li key={p.id}>
+                <label className="share-item">
+                  <input
+                    type="checkbox"
+                    name="placeIds"
+                    value={p.id}
+                    defaultChecked={checked.includes(p.id)}
+                    onChange={() => setCount(boxes().filter((b) => b.checked).length)}
+                  />
+                  <span>{p.name}</span>
+                </label>
+              </li>
+            ))}
+          </ul>
+          <div className="share-dialog-foot">
+            <button type="submit" className="btn btn-ink" onClick={() => play("ink")}>
+              {submitLabel}
+            </button>
+            <button type="button" className="btn btn-quiet" onClick={cancel}>
+              やめる
+            </button>
+          </div>
+        </div>
+      </dialog>
+    </>
+  );
+}
+
+/** 一篇の頁で、投げる先を決め直す。 */
+export function ShareControl({
+  slipId,
+  places,
+  checked,
+}: {
+  slipId: string;
+  places: PlaceOption[];
+  checked: string[];
+}) {
+  return (
+    <form action={shareSlipAction} className="share-form">
+      <input type="hidden" name="slipId" value={slipId} />
+      <ShareDialog places={places} checked={checked} submitLabel="これで決める" />
     </form>
   );
 }

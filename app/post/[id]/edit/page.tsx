@@ -30,7 +30,7 @@ export default async function EditSlipPage({ params }: { params: Promise<{ id: s
           defaultPhoto={slip.photo}
           published={true}
           places={places}
-          defaultPlaceId={slip.published ? slip.placeId : null}
+          defaultPlaceIds={slip.shares.map((s) => s.place.id)}
           cancel={
             <PaperLink href={`/post/${slip.id}`} className="btn btn-quiet" voice="rustle">
               やめる

@@ -6,10 +6,11 @@ export type SlipRow = {
   id: string;
   title: string | null;
   body: string;
-  published: boolean;
   createdAt: Date;
   author: { id: string; name: string };
   photo: { id: string; width: number; height: number } | null;
+  /** 投げたグループ。無ければ自分のみ。 */
+  shares?: { place: { id: string; name: string; slug: string } }[];
 };
 
 /**
@@ -38,7 +39,6 @@ export function SlipColumn({
         </PaperLink>
 
         <div className="slip-meta">
-          {!slip.published ? <span className="seal">下書き</span> : null}
           {mine ? <span className="slip-mine">じぶん</span> : null}
           <PaperLink href={`/post/${slip.id}`} className="slip-when">
             {kanjiDateShort(slip.createdAt)}
@@ -52,22 +52,25 @@ export function SlipColumn({
 }
 
 /**
- * 日記のなかの一枚。自分のものなので名前は出さず、代わりに置いた部屋の名前を添える。
- * 置いていないものには「日記」の印。日付を押せば、その一枚をひらく。
+ * 日記のなかの一枚。自分のものなので名前は出さず、代わりに投げたグループの名前を添える。
+ * どこにも投げていなければ「自分のみ」。日付を押せば、その一枚をひらく。
  */
-export function DiaryColumn({
-  slip,
-}: {
-  slip: SlipRow & { place: { name: string; slug: string } | null };
-}) {
-  const placed = Boolean(slip.place && slip.published);
+export function DiaryColumn({ slip }: { slip: SlipRow }) {
+  const places = (slip.shares ?? []).map((s) => s.place);
   return (
     <article className="slip">
       <header className="slip-head">
-        {placed && slip.place ? (
-          <PaperLink href={`/${slip.place.slug}`} className="slip-place" voice="rustle">
-            {slip.place.name}
-          </PaperLink>
+        {places.length > 0 ? (
+          <span className="slip-place">
+            {places.map((p, i) => (
+              <span key={p.id}>
+                {i > 0 ? "・" : ""}
+                <PaperLink href={`/${p.slug}`} className="slip-place-link" voice="rustle">
+                  {p.name}
+                </PaperLink>
+              </span>
+            ))}
+          </span>
         ) : (
           <span className="slip-place slip-place-none">自分のみ</span>
         )}

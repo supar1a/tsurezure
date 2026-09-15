@@ -18,9 +18,9 @@ export default async function RoomsPage() {
   });
 
   const tallies = places.length
-    ? await prisma.slip.groupBy({
+    ? await prisma.share.groupBy({
         by: ["placeId"],
-        where: { placeId: { in: places.map((p) => p.id) }, published: true },
+        where: { placeId: { in: places.map((p) => p.id) } },
         _count: { _all: true },
         _max: { createdAt: true },
       })

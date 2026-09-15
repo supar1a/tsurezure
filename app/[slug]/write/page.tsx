@@ -30,7 +30,7 @@ export default async function WritePage({ params }: { params: Promise<{ slug: st
           action={writeSlipAction}
           hidden={{ back: `/${slug}` }}
           places={places}
-          defaultPlaceId={place.id}
+          defaultPlaceIds={[place.id]}
           cancel={
             <PaperLink href={`/${slug}`} className="btn btn-quiet" voice="rustle">
               やめる

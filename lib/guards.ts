@@ -32,62 +32,59 @@ export async function requirePlace(slug: string) {
   return { user, place, membership };
 }
 
+const SHARES = { select: { place: { select: { id: true, name: true, slug: true } } } } as const;
+
 /**
- * 読める投稿を、古い順に（縦組みでは右から左へ流れる向き）。
- * 下書きは、書いた本人にだけ見える。
+ * グループに投げられた一篇を、古い順に（縦組みでは右から左へ流れる向き）。
+ * 一篇は複数のグループに投げられていてよい。ここではこのグループに投げられたものだけ。
  */
-export async function readableSlips(
-  placeId: string,
-  userId: string,
-  options: { authorId?: string } = {},
-) {
+export async function readableSlips(placeId: string, _userId: string, options: { authorId?: string } = {}) {
   return prisma.slip.findMany({
     where: {
-      placeId,
+      shares: { some: { placeId } },
       ...(options.authorId ? { authorId: options.authorId } : {}),
-      OR: [{ published: true }, { authorId: userId }],
     },
-    include: { author: AUTHOR, photo: PHOTO },
+    include: { author: AUTHOR, photo: PHOTO, shares: SHARES },
     orderBy: { createdAt: "asc" },
   });
 }
 
+/**
+ * 一篇を読めるか。書いた本人はいつでも。ほかの人は、投げられたグループのどれかに入っていれば。
+ * 読めるときは、その人が入っているグループのうち一つ（柱に出す名前）も返す。
+ */
 export async function requireReadableSlip(slipId: string) {
   const user = await requireUser();
 
   const slip = await prisma.slip.findUnique({
     where: { id: slipId },
-    include: { author: AUTHOR, place: true, photo: PHOTO },
+    include: { author: AUTHOR, photo: PHOTO, shares: SHARES },
   });
   if (!slip) notFound();
 
   const isAuthor = slip.authorId === user.id;
+  const placeIds = slip.shares.map((s) => s.place.id);
+  const memberships = placeIds.length
+    ? await prisma.membership.findMany({ where: { userId: user.id, placeId: { in: placeIds } }, select: { placeId: true } })
+    : [];
+  const mine = new Set(memberships.map((m) => m.placeId));
+  const through = slip.shares.map((s) => s.place).find((p) => mine.has(p.id)) ?? null;
 
-  // 日記の中（部屋に置いていない）は、書いた本人だけ
-  if (!slip.placeId) {
-    if (!isAuthor) notFound();
-    return { user, slip, membership: null, isAuthor };
-  }
+  if (!isAuthor && !through) notFound();
 
-  const membership = await prisma.membership.findUnique({
-    where: { userId_placeId: { userId: user.id, placeId: slip.placeId } },
-  });
-  if (!membership) notFound();
-  if (!slip.published && !isAuthor) notFound();
-
-  return { user, slip, membership, isAuthor };
+  return { user, slip, isAuthor, through, shared: slip.shares.length > 0 };
 }
 
-/** 自分の日記。部屋に置いたものも、置いていないものも、書いた順に。 */
+/** 自分の日記。投げたものも、自分のみのものも、書いた順に。 */
 export async function myNotebook(userId: string) {
   return prisma.slip.findMany({
     where: { authorId: userId },
-    include: { author: AUTHOR, photo: PHOTO, place: { select: { id: true, name: true, slug: true } } },
+    include: { author: AUTHOR, photo: PHOTO, shares: SHARES },
     orderBy: { createdAt: "asc" },
   });
 }
 
-/** 自分の入っている部屋。置く先を選ぶときに使う。 */
+/** 自分の入っているグループ。投げる先を選ぶときに使う。 */
 export async function myPlaces(userId: string) {
   return prisma.place.findMany({
     where: { memberships: { some: { userId } } },

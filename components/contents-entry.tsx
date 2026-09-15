@@ -23,7 +23,6 @@ export function ContentsEntry({
       <span className="entry-title">{headingOf(slip)}</span>
 
       <span className="entry-meta">
-        {!slip.published ? <span className="seal">下書き</span> : null}
         {mine ? <span className="slip-mine">じぶん</span> : null}
         {slip.photo ? <span className="entry-mark">写</span> : null}
         <span>{slip.author.name}</span>

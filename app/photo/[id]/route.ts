@@ -12,23 +12,19 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 
   const photo = await prisma.photo.findUnique({
     where: { id },
-    include: { slip: { select: { placeId: true, authorId: true, published: true } } },
+    include: { slip: { select: { authorId: true, shares: { select: { placeId: true } } } } },
   });
   if (!photo) return NOT_FOUND;
 
   const user = await currentUser();
   if (!user) return NOT_FOUND;
 
-  const isAuthor = photo.slip.authorId === user.id;
-  // 日記の中（部屋に置いていない）は、書いた本人だけ
-  if (!photo.slip.placeId) {
-    if (!isAuthor) return NOT_FOUND;
-  } else {
-    const membership = await prisma.membership.findUnique({
-      where: { userId_placeId: { userId: user.id, placeId: photo.slip.placeId } },
-    });
-    if (!membership) return NOT_FOUND;
-    if (!photo.slip.published && !isAuthor) return NOT_FOUND;
+  // 書いた本人はいつでも。ほかの人は、投げられたグループのどれかに入っていれば。
+  if (photo.slip.authorId !== user.id) {
+    const placeIds = photo.slip.shares.map((s) => s.placeId);
+    if (placeIds.length === 0) return NOT_FOUND;
+    const member = await prisma.membership.findFirst({ where: { userId: user.id, placeId: { in: placeIds } } });
+    if (!member) return NOT_FOUND;
   }
 
   return new Response(Buffer.from(photo.data), {

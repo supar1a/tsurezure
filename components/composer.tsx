@@ -4,7 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { TITLE_MAX, countChars } from "@/lib/text";
 import { useSound } from "./sound-provider";
 import { DrawnCaret } from "./drawn-caret";
-import { ShareSelect, type PlaceOption } from "./slip-actions";
+import { ShareDialog, type PlaceOption } from "./slip-actions";
 import type { FormState } from "@/app/actions/slips";
 
 type Attached = { url: string; width: number; height: number; local: boolean };
@@ -23,9 +23,9 @@ type Props = {
   /** すでに部屋に置いてあるものを編集しているとき */
   published?: boolean;
   cancel?: React.ReactNode;
-  /** 共有先の候補（入っているグループ）と、先に選んでおくグループ（null なら「共有しない」） */
+  /** 投げる先の候補（入っているグループ）と、先にチェックしておくグループ */
   places?: PlaceOption[];
-  defaultPlaceId?: string | null;
+  defaultPlaceIds?: string[];
 };
 
 // 貼った写真は、送る前にここまで縮める
@@ -49,7 +49,7 @@ export function Composer({
   published = false,
   cancel,
   places,
-  defaultPlaceId,
+  defaultPlaceIds = [],
 }: Props) {
 
   const [state, formAction, pending] = useActionState(action, null);
@@ -281,9 +281,6 @@ export function Composer({
         鍵盤が出ても場ごと縮むので、帯はいつも見えている。
       */}
       <div className="compose-foot">
-        {/* 書き終えたら、最後に共有先を選ぶ。グループの中から書けば、そのグループが先に選ばれている。 */}
-        {places ? <ShareSelect places={places} defaultPlaceId={defaultPlaceId} /> : null}
-
         <button
           ref={submitRef}
           type="submit"
@@ -293,6 +290,9 @@ export function Composer({
         >
           {published ? "保存する" : "投稿する"}
         </button>
+
+        {/* 書き終えたら、最後にグループにも投げるか決める。グループの中から書けば、そのグループが先にチェックされている。 */}
+        {places ? <ShareDialog places={places} checked={defaultPlaceIds} submitLabel={published ? "保存する" : "投げる"} /> : null}
 
         {/* 狭い画面でだけ見える。押せば題の欄が出て、この釦は引っ込む。 */}
         {!titleOpen ? (

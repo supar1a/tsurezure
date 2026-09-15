@@ -82,6 +82,7 @@ const SLIPS = [
 
 async function main() {
   await prisma.photo.deleteMany();
+  await prisma.share.deleteMany();
   await prisma.slip.deleteMany();
   await prisma.membership.deleteMany();
   await prisma.session.deleteMany();
@@ -115,13 +116,13 @@ async function main() {
   for (const slip of SLIPS) {
     const created = await prisma.slip.create({
       data: {
-        placeId: place.id,
         authorId: users[slip.who].id,
         title: slip.title ?? null,
         body: slip.body,
-        published: !slip.draft,
         createdAt: at(slip.at),
         updatedAt: at(slip.at),
+        // 投げたものだけグループに出る。draft は自分のみ。
+        ...(slip.draft ? {} : { shares: { create: { placeId: place.id, createdAt: at(slip.at) } } }),
       },
     });
     if (slip.photo) {
