@@ -1,7 +1,6 @@
 import { requireUser } from "@/lib/auth";
 import { forgetAction, renameAction } from "@/app/actions/identity";
 import { Masthead } from "@/components/masthead";
-import { PaperLink } from "@/components/paper-link";
 import { OpenAt } from "@/components/open-at";
 import { RenameForm, Forget } from "@/components/identity-forms";
 import { SoundSetting } from "@/components/sound-setting";
@@ -13,25 +12,23 @@ export default async function MePage() {
 
   return (
     <div className="app">
-      <Masthead sub="設定">
-        <PaperLink href="/" className="masthead-link">
-          トップへ戻る
-        </PaperLink>
-      </Masthead>
+      <Masthead sub="設定" />
 
       <OpenAt edge="right" />
       <div className="stage">
         <div className="scroll-tate">
           <div className="roster tate fade-in" data-stream>
+            <h1 className="contents-title">設定</h1>
+
             <section className="panel">
-              <h1 className="panel-title">名前</h1>
+              <h2 className="panel-title">名前</h2>
               <p className="caption">あなたの名前です。</p>
               <p className="caption">スペースごとの表示名は、別に設定できます。</p>
               <RenameForm action={renameAction} current={user.name} />
             </section>
 
             <section className="panel">
-              <h1 className="panel-title">紙の音</h1>
+              <h2 className="panel-title">紙の音</h2>
               <p className="caption">
                 書くときと、頁を繰るときに鳴ります。ここで止められます。
               </p>
@@ -39,7 +36,7 @@ export default async function MePage() {
             </section>
 
             <section className="panel">
-              <h1 className="panel-title">ログアウト</h1>
+              <h2 className="panel-title">ログアウト</h2>
               <p className="caption">この端末に保存されている名前を消します。</p>
               <p className="caption">
                 これまでに書いたものは、そのまま残ります。

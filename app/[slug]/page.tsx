@@ -106,9 +106,6 @@ export default async function PlacePage({
         <PaperLink href={`/${slug}/members`} className="masthead-link" voice="rustle">
           このスペース
         </PaperLink>
-        <PaperLink href="/" className="masthead-link" voice="rustle">
-          トップ
-        </PaperLink>
       </Masthead>
 
       <div className="stage">

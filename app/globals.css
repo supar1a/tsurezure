@@ -1010,10 +1010,10 @@ a.slip-when:hover {
   align-self: stretch;
   align-items: flex-start;
   gap: clamp(1.6rem, 2.4vw, 2.6rem);
-  /* 札の並びとは別のもの。罫で区切って、しっかり離す。 */
-  padding-block-end: clamp(2rem, 3.6vw, 3.6rem);
-  margin-block-end: clamp(2rem, 3.6vw, 3.6rem);
-  border-block-end: 1px solid var(--rule-soft);
+  /* 札の並びとは別のもの。罫で区切って、しっかり離す（縦組みでは block-start が右）。 */
+  padding-block-start: clamp(2rem, 3.6vw, 3.6rem);
+  margin-block-start: clamp(1rem, 2vw, 2rem);
+  border-block-start: 1px solid var(--rule-soft);
 }
 
 .intro-title {
@@ -1610,11 +1610,41 @@ a {
   cursor: pointer;
 }
 
+/* チェックボックスは自前で。大きめの角丸の箱に、選ぶと墨が満ちて白いレ点。 */
 .share-item input {
-  accent-color: var(--sumi);
-  width: 1em;
-  height: 1em;
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  width: 1.4em;
+  height: 1.4em;
   margin: 0;
+  border: 1.5px solid rgba(33, 30, 25, 0.35);
+  border-radius: 6px;
+  background-color: var(--washi-lit);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.6 2.6L12 5.5' fill='none' stroke='%23faf9f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 72%;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  transition: background-color var(--quick) var(--ease), border-color var(--quick) var(--ease), transform var(--quick) var(--ease);
+}
+
+.share-item input:hover {
+  border-color: var(--sumi-soft);
+}
+
+.share-item input:active {
+  transform: scale(0.92);
+}
+
+.share-item input:checked {
+  background-color: var(--sumi);
+  border-color: var(--sumi);
+}
+
+.share-item input:focus-visible {
+  outline: 1px solid var(--sumi-soft);
+  outline-offset: 3px;
 }
 
 /* ひとりのスペースは確定。チェックボックスではなく、墨で塗った済みの印。 */
@@ -1624,14 +1654,14 @@ a {
 
 .share-fixed {
   display: inline-block;
-  width: 1em;
-  height: 1em;
+  width: 1.4em;
+  height: 1.4em;
   flex: 0 0 auto;
-  border-radius: 2px;
+  border-radius: 6px;
   background-color: var(--sumi);
   /* 済みの印（レ）を白で */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.6 2.6L12 5.5' fill='none' stroke='%23faf9f6' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-size: contain;
+  background-size: 72%;
   background-position: center;
   background-repeat: no-repeat;
 }

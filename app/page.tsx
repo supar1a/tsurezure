@@ -69,8 +69,7 @@ export default async function HomePage() {
 
   return (
     <div className="app">
-      {/* 名乗りそのものが設定への戸口。品書きは、書き散らす・設定。 */}
-      <Masthead sub={`${user.name} さん`} subHref="/me">
+      <Masthead>
         <PaperLink href="/write" className="masthead-link" voice="rustle">
           書き散らす
         </PaperLink>
@@ -83,36 +82,6 @@ export default async function HomePage() {
       <div className="stage">
         <div className="scroll-tate">
           <div className="stream tate fade-in" data-stream>
-            {/*
-              いちばん先（右端）に、これが何かを一息で。見出し → 説明 → 入口、の順。
-            */}
-            <section className="intro">
-              <h1 className="intro-title">思いついたまま、書き散らす。</h1>
-
-              <div className="intro-lede">
-                <p className="intro-text">
-                  つれづれは、日々のことや、ふと思ったことを、
-                  <br />
-                  縦書きで残しておける場所です。
-                </p>
-                <p className="intro-text">
-                  基本は、自分だけのために。
-                  <br />
-                  誰かと残したいときは、スペースをつくって友達と共有できます。
-                </p>
-                <p className="intro-text">いいねも、フォロワーもありません。</p>
-              </div>
-
-              <div className="intro-actions">
-                <PaperLink href="/write" className="btn btn-ink" voice="rustle">
-                  書き散らす
-                </PaperLink>
-                <PaperLink href="/new" className="btn" voice="rustle">
-                  スペースを作る
-                </PaperLink>
-              </div>
-            </section>
-
             <PaperLink href="/private" className="book book-self">
               <div className="book-head">
                 {/* 朱の印。巻物で自分の一枚に「じぶん」が付くのと同じ印。 */}
@@ -145,6 +114,36 @@ export default async function HomePage() {
                 </PaperLink>
               );
             })}
+
+            {/*
+              札の並びの左に、これが何かを一息で。見出し → 説明 → 入口、の順。
+            */}
+            <section className="intro">
+              <h1 className="intro-title">思いついたまま、書き散らす。</h1>
+
+              <div className="intro-lede">
+                <p className="intro-text">
+                  つれづれは、日々のことや、ふと思ったことを、
+                  <br />
+                  縦書きで残しておける場所です。
+                </p>
+                <p className="intro-text">
+                  基本は、自分だけのために。
+                  <br />
+                  誰かと残したいときは、スペースをつくって友達と共有できます。
+                </p>
+                <p className="intro-text">いいねも、フォロワーもありません。</p>
+              </div>
+
+              <div className="intro-actions">
+                <PaperLink href="/write" className="btn btn-ink" voice="rustle">
+                  書き散らす
+                </PaperLink>
+                <PaperLink href="/new" className="btn" voice="rustle">
+                  スペースを作る
+                </PaperLink>
+              </div>
+            </section>
 
             {/* 名前のもと。読み終えたさきに、奥付のように置く。
                 頭に置くと、狭い画面では序文だけで埋まってスペースに手が届かない。 */}
