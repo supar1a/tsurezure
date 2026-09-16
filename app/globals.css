@@ -234,7 +234,7 @@ html::before {
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */
   align-items: center;
-  gap: clamp(0.8rem, 1.4vw, 1.2rem);
+  gap: clamp(1.6rem, 2.8vw, 2.4rem);
 }
 
 .masthead-link {
@@ -579,12 +579,12 @@ html::before {
   letter-spacing: 0.2em;
   color: var(--sumi);
   text-decoration: none;
-  border-block-end: 1px solid transparent;
+  border-block-start: 1px solid transparent;
   transition: border-color var(--quick) var(--ease);
 }
 
 .slip-who:hover {
-  border-block-end-color: var(--rule);
+  border-block-start-color: var(--rule);
 }
 
 .slip-meta {
@@ -611,13 +611,13 @@ html::before {
  * 目次では一行まるごとが戸口なので、日付にだけ線があっても意味がない。
  */
 a.slip-when {
-  border-block-end: 1px solid var(--rule-soft);
+  border-block-start: 1px solid var(--rule-soft);
   padding-block-end: 0.25em;
 }
 
 a.slip-when:hover {
   color: var(--sumi);
-  border-block-end-color: rgba(33, 30, 25, 0.28);
+  border-block-start-color: rgba(33, 30, 25, 0.28);
 }
 
 /* 自分の書いたものだけに付く。ひらけば直せるし消せる、という目印。 */
@@ -1151,7 +1151,7 @@ a.slip-when:hover {
   flex: 0 0 auto;
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */
-  align-items: flex-start;
+  align-items: center;
   gap: 0.8rem;
   align-self: stretch;
   /* できること（編集・戻す・削除）は本文とは別のもの。本文からしっかり離す。 */
@@ -1271,7 +1271,7 @@ a {
   /* 品書きが折り返して崩れるより、指で送れるほうがよい。
      端を薄めて「まだ続く」ことを示す。 */
   .masthead-nav {
-    gap: 0.9rem;
+    gap: 1.8rem;
     overflow-y: auto;
     scrollbar-width: none;
     padding-inline-end: 18px;
@@ -2018,7 +2018,7 @@ a {
 }
 
 .entry:hover .entry-title {
-  border-block-end-color: var(--rule);
+  border-block-start-color: var(--rule);
 }
 
 .entry-meta {

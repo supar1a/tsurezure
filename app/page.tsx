@@ -84,8 +84,6 @@ export default async function HomePage() {
           <div className="stream tate fade-in" data-stream>
             <PaperLink href="/private" className="book book-self">
               <div className="book-head">
-                {/* 朱の印。巻物で自分の一枚に「じぶん」が付くのと同じ印。 */}
-                <span className="seal book-seal">じぶん</span>
                 <h2 className="book-name">ひとりのスペース</h2>
                 <div className="book-meta">
                   <span>
