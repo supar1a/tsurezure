@@ -43,11 +43,12 @@ export const ShareDialog = forwardRef<
         <p className="share-dialog-title">{title}</p>
         <ul className="share-list">
           <li>
-            <label className="share-item share-item-self" title="投稿はかならずひとりのスペースに残ります">
-              {/* disabled にすると灰色になって「入っていない」に読めるので、押しても外れない印にする */}
-              <input type="checkbox" checked readOnly onClick={(e) => e.preventDefault()} aria-disabled="true" />
+            {/* ひとりのスペースは確定。選ぶものではないので、チェックボックスではなく済みの印を置く */}
+            <span className="share-item share-item-self" title="投稿はかならずひとりのスペースに残ります">
+              <span className="share-fixed" aria-hidden="true" />
               <span>ひとりのスペース</span>
-            </label>
+              <span className="share-fixed-note">いつも</span>
+            </span>
           </li>
           {places.map((p) => (
             <li key={p.id}>

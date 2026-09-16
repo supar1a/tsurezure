@@ -1023,7 +1023,9 @@ a.slip-when:hover {
   letter-spacing: 0.22em;
   line-height: 1.8;
   color: var(--sumi);
-  max-inline-size: 16em;
+  /* 一行の見出し。字間のぶんを含めて、途中で折らない */
+  max-inline-size: 100%;
+  white-space: nowrap;
 }
 
 /* 概要の二段落は一組。段落の間は列の間より少しだけ広く。 */
@@ -1574,11 +1576,13 @@ a {
 .share-dialog-inner {
   display: flex;
   flex-direction: column; /* 縦組みでは右から左へ */
-  gap: 1.6rem;
-  padding: clamp(1.6rem, 3vw, 2.4rem) clamp(1.4rem, 3vw, 2.2rem);
+  gap: clamp(1.4rem, 3vw, 2rem);
+  /* 縦組みでは padding の inline が上下、block が左右。上下をゆったり取る */
+  padding: clamp(2.6rem, 6vh, 4rem) clamp(1.4rem, 3.5vw, 2.6rem);
   block-size: auto;
   inline-size: auto; /* 縦組みでは丈。いちばん長い列（題）に合わせる */
-  max-inline-size: 70vh;
+  min-inline-size: min(56vh, 22rem);
+  max-inline-size: 76vh;
 }
 
 .share-dialog-title {
@@ -1594,7 +1598,7 @@ a {
   padding: 0;
   display: flex;
   flex-direction: column; /* 縦組みでは右から左へ：一つのスペースが一列 */
-  gap: 1rem;
+  gap: clamp(1rem, 2.4vw, 1.3rem);
 }
 
 .share-item {
@@ -1613,13 +1617,30 @@ a {
   margin: 0;
 }
 
-/* ひとりのスペースはいつもチェック。外せないが、灰色にはしない（薄れて見えると「入っていない」に読める）。 */
+/* ひとりのスペースは確定。チェックボックスではなく、墨で塗った済みの印。 */
 .share-item-self {
   cursor: default;
 }
 
-.share-item-self input {
-  cursor: default;
+.share-fixed {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
+  border-radius: 2px;
+  background-color: var(--sumi);
+  /* 済みの印（レ）を白で */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.6 2.6L12 5.5' fill='none' stroke='%23faf9f6' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.share-fixed-note {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--sumi-faint);
+  margin-inline-start: 0.4em;
 }
 
 .share-dialog-foot {
@@ -1687,7 +1708,7 @@ a {
   flex-direction: row; /* 縦組みでは上から下へ */
   align-items: flex-start;
   inline-size: 100%;
-  block-size: 9rem;
+  block-size: auto; /* 縦組みでは幅。釦のぶんだけでよい。広く取ると左に空きが残る */
   text-decoration: none;
 }
 
