@@ -1984,9 +1984,8 @@ a {
   line-height: 1.7;
   color: var(--sumi);
   max-inline-size: 12em;
-  margin-block-end: clamp(1.6rem, 2.6vw, 2.8rem);
-  padding-block-end: clamp(1.6rem, 2.6vw, 2.8rem);
-  border-block-end: 1px solid var(--rule-soft);
+  /* 罫は引かない。空きだけで区切る */
+  margin-block-end: clamp(2.4rem, 4vw, 4.4rem);
 }
 
 .entry {
