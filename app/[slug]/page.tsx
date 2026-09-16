@@ -121,9 +121,7 @@ export default async function PlacePage({
                   <br />
                   いちばん最初の一枚をどうぞ。
                 </p>
-              ) : (
-                <p className="stream-end">ここが、はじまり</p>
-              )}
+              ) : null}
 
               {slips.map((slip, index) => (
                 <Fragment key={slip.id}>

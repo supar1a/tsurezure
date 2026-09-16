@@ -218,7 +218,7 @@ export function Forget({ action }: { action: () => Promise<void> }) {
     <form
       action={action}
       onSubmit={(event) => {
-        if (!window.confirm("このブラウザから名前を消します。よろしいですか。")) {
+        if (!window.confirm("この端末に保存されている名前を消します。よろしいですか。")) {
           event.preventDefault();
           return;
         }
@@ -226,7 +226,7 @@ export function Forget({ action }: { action: () => Promise<void> }) {
       }}
     >
       <button type="submit" className="btn" style={{ color: "var(--sumi-soft)" }}>
-        消す
+        ログアウト
       </button>
     </form>
   );

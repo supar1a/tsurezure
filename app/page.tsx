@@ -87,11 +87,7 @@ export default async function HomePage() {
               いちばん先（右端）に、これが何かを一息で。見出し → 説明 → 入口、の順。
             */}
             <section className="intro">
-              <h1 className="intro-title">
-                整えなくていい。
-                <br />
-                思いついたまま、書き散らす。
-              </h1>
+              <h1 className="intro-title">思いついたまま、書き散らす。</h1>
 
               <div className="intro-lede">
                 <p className="intro-text">つれづれは、友達と一緒に、日々のことを書き残す場所です。</p>

@@ -40,10 +40,12 @@ export default async function MePage() {
             </section>
 
             <section className="panel">
-              <h1 className="panel-title">このブラウザから消す</h1>
+              <h1 className="panel-title">ログアウト</h1>
+              <p className="caption">この端末に保存されている名前を消します。</p>
               <p className="caption">
-                この名前は、このブラウザにだけ残っています。消すと、スペースの URL をひらいて
-                名前を選び直すまで戻れません。書いたものはそのまま残ります。
+                これまでに書いたものは、そのまま残ります。
+                <br />
+                また参加するときは、スペースの URL を開いて名前を選び直してください。
               </p>
               <Forget action={forgetAction} />
             </section>

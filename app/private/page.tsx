@@ -37,9 +37,7 @@ export default async function PrivatePage() {
                 <br />
                 いちばん最初の一枚をどうぞ。
               </p>
-            ) : (
-              <p className="stream-end">ここが、はじまり</p>
-            )}
+            ) : null}
 
             {slips.map((slip) => (
               <DiaryColumn key={slip.id} slip={slip} />

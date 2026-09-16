@@ -238,7 +238,7 @@ export function Composer({
           ref={titleRef}
           name="title"
           className="compose-title"
-          placeholder="題名（なくてよい）"
+          placeholder="題名"
           defaultValue={defaultTitle}
           maxLength={TITLE_MAX}
           rows={1}
