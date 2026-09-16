@@ -117,6 +117,9 @@ export default async function HomePage() {
               札の並びの左に、これが何かを一息で。見出し → 説明 → 入口、の順。
             */}
             <section className="intro">
+              {/* 巻いた紙にペン。縦組みの場に合わせて、見出しの右に添える。 */}
+              <img src="/pen.png" alt="" className="intro-mark" width={186} height={155} />
+
               <h1 className="intro-title">思いついたまま、書き散らす。</h1>
 
               <div className="intro-lede">

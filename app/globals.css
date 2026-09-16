@@ -1016,6 +1016,16 @@ a.slip-when:hover {
   border-block-start: 1px solid var(--rule-soft);
 }
 
+/* 巻いた紙とペンの絵。墨だけの線画なので、地に溶けるよう少しだけ薄める。 */
+.intro-mark {
+  inline-size: auto;
+  block-size: auto;
+  width: clamp(5.4rem, 8vw, 7.4rem);
+  height: auto;
+  align-self: flex-start;
+  opacity: 0.86;
+}
+
 .intro-title {
   margin: 0;
   font-size: clamp(1.25rem, 1.9vw, 1.7rem);
