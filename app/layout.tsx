@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* 使う太さだけ（400・500・600）。App Router には当たらない規則（pages/_document 向け）なので外す */}
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;500;600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600&display=swap"
           rel="stylesheet"
         />
       </head>

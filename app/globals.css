@@ -311,7 +311,7 @@ html::before {
    -------------------------------------------------------------------------- */
 
 .display {
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.16em;
   line-height: 1.75;
 }
@@ -567,7 +567,7 @@ html::before {
 .slip-title {
   margin: 0;
   font-size: clamp(1.05rem, 1.4vw, 1.3rem);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.22em;
   line-height: 1.9;
   color: var(--sumi);
@@ -575,7 +575,7 @@ html::before {
 
 .slip-who {
   font-size: clamp(1rem, 1.3vw, 1.2rem);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.2em;
   color: var(--sumi);
   text-decoration: none;
@@ -732,7 +732,7 @@ a.slip-when:hover {
 
 .sheet-title {
   font-size: clamp(1.2rem, 1.7vw, 1.55rem);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.24em;
   line-height: 1.9;
   max-inline-size: 18em;
@@ -1019,7 +1019,7 @@ a.slip-when:hover {
 .intro-title {
   margin: 0;
   font-size: clamp(1.25rem, 1.9vw, 1.7rem);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.22em;
   line-height: 1.8;
   color: var(--sumi);
@@ -1103,7 +1103,7 @@ a.slip-when:hover {
 
 .book-name {
   font-size: clamp(1.1rem, 1.5vw, 1.4rem);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.22em;
   max-inline-size: 14em;
 }
@@ -1930,7 +1930,7 @@ a {
   width: calc(2.6em + clamp(0.8rem, 1.6vw, 1.6rem));
   height: 100%;
   font-size: clamp(1.1rem, 1.5vw, 1.4rem);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.22em;
   line-height: 1.9;
   color: var(--sumi);
@@ -2046,7 +2046,7 @@ a {
 
 .sheet-who {
   font-size: clamp(0.95rem, 1.2vw, 1.1rem);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.22em;
   color: var(--sumi-soft);
   text-decoration: none;
