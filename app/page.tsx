@@ -3,9 +3,7 @@ import { currentUser } from "@/lib/auth";
 import { startAction } from "@/app/actions/identity";
 import { Masthead } from "@/components/masthead";
 import { OpenAt } from "@/components/open-at";
-import { HeadAway } from "@/components/head-away";
-import { DiaryColumn } from "@/components/slip-column";
-import { myNotebook } from "@/lib/guards";
+import { kanjiDateShort, kanjiNumber } from "@/lib/kanji";
 import { PaperLink } from "@/components/paper-link";
 import { GateMark } from "@/components/gate-mark";
 import { DevSwitcher, StartForm } from "@/components/identity-forms";
@@ -45,52 +43,107 @@ export default async function HomePage() {
     );
   }
 
-  // ── プライベートスペース。自分の書いたものが、巻物で並ぶ。左端がいちばん新しい。 ──
-  const slips = await myNotebook(user.id);
+  // ── トップ。書き散らす入口と、プライベートスペース・スペースの札が並ぶ。 ──
+  const places = await prisma.place.findMany({
+    where: { memberships: { some: { userId: user.id } } },
+    include: { _count: { select: { memberships: true } } },
+    orderBy: { createdAt: "asc" },
+  });
+
+  const tallies = places.length
+    ? await prisma.share.groupBy({
+        by: ["placeId"],
+        where: { placeId: { in: places.map((p) => p.id) } },
+        _count: { _all: true },
+        _max: { createdAt: true },
+      })
+    : [];
+  const tallyOf = new Map(tallies.map((t) => [t.placeId, t]));
+
+  // プライベートスペース。スペースではないが、投稿先としては同じ並びなので、先頭に置く。
+  const mine = await prisma.slip.aggregate({
+    where: { authorId: user.id },
+    _count: { _all: true },
+    _max: { createdAt: true },
+  });
 
   return (
     <div className="app">
-      {/* 柱の添え名は「いまどこに居るか」。品書きは、ここでできること → 隣の場所、の順。 */}
-      <Masthead sub="プライベートスペース">
+      {/* 名乗りそのものが設定への戸口。品書きは、書き散らす・設定。 */}
+      <Masthead sub={`${user.name} さん`} subHref="/me">
         <PaperLink href="/write" className="masthead-link" voice="rustle">
           書き散らす
-        </PaperLink>
-        <PaperLink href="/rooms" className="masthead-link" voice="rustle">
-          スペース一覧
         </PaperLink>
         <PaperLink href="/me" className="masthead-link" voice="rustle">
           設定
         </PaperLink>
       </Masthead>
 
+      <OpenAt edge="right" />
       <div className="stage">
-        <div className="scroll-tate" id="scroller">
+        <div className="scroll-tate">
           <div className="stream tate fade-in" data-stream>
-            {slips.length === 0 ? (
-              <p className="waiting">
-                まだ何もありません。
-                <br />
-                いちばん最初の一枚をどうぞ。
-              </p>
-            ) : (
-              <p className="stream-end">ここが、はじまり</p>
-            )}
-
-            {slips.map((slip) => (
-              <DiaryColumn key={slip.id} slip={slip} />
-            ))}
-
-            {/* 巻物の左端。次の一枚が書かれる場所。押せると分かるように、投稿するのと同じ墨の釦にする。 */}
+            {/* いちばん先（右端）に、書き散らす入口。書いたものはプライベートスペースに残り、選べばスペースにも載る。 */}
             <PaperLink href="/write" className="blankpage" voice="rustle">
               <span className="btn btn-ink blankpage-btn">書き散らす</span>
             </PaperLink>
+
+            <PaperLink href="/private" className="book book-self">
+              <div className="book-head">
+                {/* 朱の印。巻物で自分の一枚に「じぶん」が付くのと同じ印。 */}
+                <span className="seal book-seal">じぶん</span>
+                <h2 className="book-name">プライベートスペース</h2>
+                <div className="book-meta">
+                  <span>
+                    {mine._count._all > 0 ? `${kanjiNumber(mine._count._all)}枚` : "まだ何もない"}
+                  </span>
+                  {mine._max.createdAt ? <span>{kanjiDateShort(mine._max.createdAt)}</span> : null}
+                </div>
+              </div>
+            </PaperLink>
+
+            {places.map((place) => {
+              const tally = tallyOf.get(place.id);
+              const written = tally?._count._all ?? 0;
+              const last = tally?._max.createdAt ?? null;
+
+              return (
+                <PaperLink key={place.id} href={`/${place.slug}`} className="book">
+                  <div className="book-head">
+                    <h2 className="book-name">{place.name}</h2>
+                    <div className="book-meta">
+                      <span>{kanjiNumber(place._count.memberships)}人</span>
+                      <span>{written > 0 ? `${kanjiNumber(written)}枚` : "まだ何もない"}</span>
+                      {last ? <span>{kanjiDateShort(last)}</span> : null}
+                    </div>
+                  </div>
+                </PaperLink>
+              );
+            })}
+
+            {/* 札の並びの末尾に、新しいスペースを作る入口。 */}
+            <PaperLink href="/new" className="blankpage" voice="rustle">
+              <span className="btn btn-ink blankpage-btn">スペースを作る</span>
+            </PaperLink>
+
+            {/* 名前のもと。読み終えたさきに、奥付のように置く。
+                頭に置くと、狭い画面では序文だけで埋まってスペースに手が届かない。 */}
+            <div className="epigraph">
+              {[
+                "つれづれなるままに、",
+                "日暮らし、硯に向かひて、",
+                "心にうつりゆくよしなしごとを、",
+                "そこはかとなく書きつくれば、",
+                "あやしうこそものぐるほしけれ。",
+              ].map((line) => (
+                <p key={line} className="epigraph-text">
+                  {line}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
-
-        <OpenAt edge="left" scrollerId="scroller" />
       </div>
-
-      <HeadAway />
     </div>
   );
 }

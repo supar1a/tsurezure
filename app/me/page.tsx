@@ -15,7 +15,7 @@ export default async function MePage() {
     <div className="app">
       <Masthead sub="設定">
         <PaperLink href="/" className="masthead-link">
-          プライベートスペースへ戻る
+          トップへ戻る
         </PaperLink>
       </Masthead>
 

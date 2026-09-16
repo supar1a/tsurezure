@@ -150,5 +150,5 @@ export async function deleteSlipAction(formData: FormData) {
 
   for (const s of shares) revalidatePath(`/${s.place.slug}`);
   revalidatePath("/");
-  redirect("/");
+  redirect("/private");
 }

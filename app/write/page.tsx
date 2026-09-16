@@ -19,11 +19,11 @@ export default async function WritePage() {
       <div className="stage fade-in">
         <Composer
           action={writeSlipAction}
-          hidden={{ back: "/" }}
+          hidden={{ back: "/private" }}
           places={places}
           defaultPlaceIds={[]}
           cancel={
-            <PaperLink href="/" className="btn btn-quiet" voice="rustle">
+            <PaperLink href="/private" className="btn btn-quiet" voice="rustle">
               やめる
             </PaperLink>
           }

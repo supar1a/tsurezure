@@ -13,8 +13,8 @@ export default async function NewPlacePage() {
   return (
     <div className="app">
       <Masthead sub="スペースを作る">
-        <PaperLink href="/rooms" className="masthead-link">
-          スペース一覧へ戻る
+        <PaperLink href="/" className="masthead-link">
+          トップへ戻る
         </PaperLink>
       </Masthead>
 

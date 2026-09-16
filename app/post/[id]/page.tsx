@@ -34,7 +34,7 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
             スペースへ戻る
           </PaperLink>
         ) : (
-          <PaperLink href="/" className="masthead-link">
+          <PaperLink href="/private" className="masthead-link">
             プライベートスペースへ戻る
           </PaperLink>
         )}
