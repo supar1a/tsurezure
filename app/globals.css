@@ -1026,9 +1026,17 @@ a.slip-when:hover {
   max-inline-size: 16em;
 }
 
+/* 概要の二段落は一組。段落の間は列の間より少しだけ広く。 */
+.intro-lede {
+  display: flex;
+  flex-direction: column; /* 縦組みでは右から左へ */
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
 .intro-text {
   margin: 0;
-  max-inline-size: 24em;
+  max-inline-size: 30em;
   font-size: 0.85rem;
   letter-spacing: 0.16em;
   line-height: 2;

@@ -93,11 +93,13 @@ export default async function HomePage() {
                 思いついたまま、書き散らす。
               </h1>
 
-              <p className="intro-text">
-                つれづれは、自分と友達だけで読む、縦書きの書き散らしです。
-                書いたものはプライベートスペースに残り、選んだスペースの友達にだけ届きます。
-                いいねも、フォロワーも、ありません。
-              </p>
+              <div className="intro-lede">
+                <p className="intro-text">つれづれは、友達と一緒に、日々のことを書き残す場所です。</p>
+                <p className="intro-text">
+                  思ったことを縦書きで書き散らして、選んだスペースの友達にだけ共有できます。
+                  いいねも、フォロワーもありません。
+                </p>
+              </div>
 
               <div className="intro-actions">
                 <PaperLink href="/write" className="btn btn-ink" voice="rustle">
