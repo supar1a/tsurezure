@@ -25,9 +25,8 @@ export default async function MePage() {
           <div className="roster tate fade-in" data-stream>
             <section className="panel">
               <h1 className="panel-title">名前</h1>
-              <p className="caption">
-                スペースの中で、こう呼ばれます。いつでも変えられます。
-              </p>
+              <p className="caption">あなたの名前です。</p>
+              <p className="caption">スペースごとの表示名は、別に設定できます。</p>
               <RenameForm action={renameAction} current={user.name} />
             </section>
 
