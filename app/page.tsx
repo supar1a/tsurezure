@@ -84,8 +84,7 @@ export default async function HomePage() {
         <div className="scroll-tate">
           <div className="stream tate fade-in" data-stream>
             {/*
-              いちばん先（右端）に、これが何かを一息で。見出し → 見本の一枚 → 説明 → 入口、の順。
-              見本の一枚は写真の代わり。縦書きの書き散らしがどう見えるかを、そのまま見せる。
+              いちばん先（右端）に、これが何かを一息で。見出し → 説明 → 入口、の順。
             */}
             <section className="intro">
               <h1 className="intro-title">
@@ -93,15 +92,6 @@ export default async function HomePage() {
                 <br />
                 思いついたまま、書き散らす。
               </h1>
-
-              <div className="intro-sample" aria-hidden="true">
-                <span className="intro-sample-when">九月十六日</span>
-                <p className="intro-sample-text">
-                  駅前の古本屋が閉まっていた。
-                  <br />
-                  三日ぶんの珈琲を買って帰る。
-                </p>
-              </div>
 
               <p className="intro-text">
                 つれづれは、自分と友達だけで読む、縦書きの書き散らしです。
