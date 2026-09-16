@@ -563,6 +563,16 @@ html::before {
   gap: 1rem;
 }
 
+/* 題名。名前・日付の次、本文の前に一列。一篇の頁の題と同じ重さで、少し小さく。 */
+.slip-title {
+  margin: 0;
+  font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  line-height: 1.9;
+  color: var(--sumi);
+}
+
 .slip-who {
   font-size: clamp(1rem, 1.3vw, 1.2rem);
   font-weight: 500;

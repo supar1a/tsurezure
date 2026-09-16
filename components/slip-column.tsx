@@ -46,13 +46,16 @@ export function SlipColumn({
         </div>
       </header>
 
+      {/* 題名があれば、本文の前に一列だけ立てる */}
+      {slip.title ? <h3 className="slip-title">{slip.title}</h3> : null}
+
       <SlipText body={slip.body} photo={slip.photo} />
     </article>
   );
 }
 
 /**
- * プライベートスペースのなかの一枚。自分のものなので名前は出さず、日付だけ。
+ * プライベートスペースのなかの一枚。自分のものなので名前は出さず、日付と題名だけ。
  * どこに投稿したかは、ここでは出さない（一篇の頁で扱う）。日付を押せば、その一枚をひらく。
  */
 export function DiaryColumn({ slip }: { slip: SlipRow }) {
@@ -65,6 +68,8 @@ export function DiaryColumn({ slip }: { slip: SlipRow }) {
           </PaperLink>
         </div>
       </header>
+
+      {slip.title ? <h3 className="slip-title">{slip.title}</h3> : null}
 
       <SlipText body={slip.body} photo={slip.photo} />
     </article>

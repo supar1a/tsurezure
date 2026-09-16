@@ -238,7 +238,7 @@ export function Composer({
           ref={titleRef}
           name="title"
           className="compose-title"
-          placeholder="題（なくてよい）"
+          placeholder="題名（なくてよい）"
           defaultValue={defaultTitle}
           maxLength={TITLE_MAX}
           rows={1}
@@ -259,7 +259,7 @@ export function Composer({
           ref={beforeRef}
           name="bodyBefore"
           className="compose-body"
-          placeholder="ここから、書く。"
+          placeholder="本文"
           defaultValue={defaultBefore}
           autoFocus
           spellCheck={false}
@@ -321,7 +321,7 @@ export function Composer({
         {/* 狭い画面でだけ見える。押せば題の欄が出て、この釦は引っ込む。 */}
         {!titleOpen ? (
           <button type="button" className="btn btn-quiet compose-title-open" onClick={openTitle}>
-            題を付ける
+            題名を付ける
           </button>
         ) : null}
 
@@ -330,7 +330,7 @@ export function Composer({
         <span className="compose-tally">
           {/* 題の上限は、ぶつかる手前でだけ言う。ずっと出していると急かしになる。 */}
           {titleLeft <= 10 ? (
-            <span className="compose-count">題はあと{titleLeft}字</span>
+            <span className="compose-count">題名はあと{titleLeft}字</span>
           ) : null}
           <span className="compose-count">{count > 0 ? `${count}字` : "　"}</span>
         </span>
