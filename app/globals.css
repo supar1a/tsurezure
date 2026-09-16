@@ -1197,8 +1197,11 @@ a {
     height: 4.8rem;
   }
 
+  /* 狭い画面でも「いまどこに居るか」は消さない。小さく、表題のすぐ下に。 */
   .masthead-sub {
-    display: none;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    max-block-size: 9rem;
   }
 
   /* 品書きが折り返して崩れるより、指で送れるほうがよい。

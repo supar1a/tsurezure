@@ -8,7 +8,7 @@ export function GateMark() {
         <span className="sr-only">つれづれ</span>
       </h1>
       <p className="gate-mark-note">
-        仲間うちだけの、
+        自分と友達だけの、
         <br />
         縦書きの書き散らし。
       </p>

@@ -5,7 +5,7 @@ import { Masthead } from "@/components/masthead";
 import { OpenAt } from "@/components/open-at";
 import { PaperLink } from "@/components/paper-link";
 
-export const metadata = { title: "スペース" };
+export const metadata = { title: "スペース一覧" };
 
 /** 入っているスペースの一覧。プライベートスペースを分かち合う先。 */
 export default async function RoomsPage() {
@@ -36,7 +36,7 @@ export default async function RoomsPage() {
 
   return (
     <div className="app">
-      <Masthead sub="スペース">
+      <Masthead sub="スペース一覧">
         <PaperLink href="/new" className="masthead-link" voice="rustle">
           スペースを作る
         </PaperLink>
@@ -78,6 +78,11 @@ export default async function RoomsPage() {
                   </PaperLink>
                 );
               })}
+
+              {/* 札の並びの末尾に、新しいスペースを作る入口。巻物の左端の「書き散らす」と同じ置きかた。 */}
+              <PaperLink href="/new" className="blankpage" voice="rustle">
+                <span className="btn btn-ink blankpage-btn">スペースを作る</span>
+              </PaperLink>
 
               {/* 名前のもと。読み終えたさきに、奥付のように置く。
                   頭に置くと、狭い画面では序文だけで埋まってスペースに手が届かない。 */}

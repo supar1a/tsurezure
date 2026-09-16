@@ -1,6 +1,7 @@
 import { requireUser } from "@/lib/auth";
 import { createPlaceAction } from "@/app/actions/places";
 import { Masthead } from "@/components/masthead";
+import { PaperLink } from "@/components/paper-link";
 import { OpenAt } from "@/components/open-at";
 import { CreatePlaceForm } from "@/components/place-forms";
 
@@ -11,7 +12,11 @@ export default async function NewPlacePage() {
 
   return (
     <div className="app">
-      <Masthead />
+      <Masthead sub="スペースを作る">
+        <PaperLink href="/rooms" className="masthead-link">
+          スペース一覧へ戻る
+        </PaperLink>
+      </Masthead>
 
       <OpenAt edge="right" />
       <div className="stage">

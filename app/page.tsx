@@ -50,13 +50,16 @@ export default async function HomePage() {
 
   return (
     <div className="app">
-      {/* 名乗りそのものが、あなたのページへの戸口。品書きに同じ行き先は並べない。 */}
-      <Masthead sub={`${user.name} さん`} subHref="/me">
+      {/* 柱の添え名は「いまどこに居るか」。品書きは、ここでできること → 隣の場所、の順。 */}
+      <Masthead sub="プライベートスペース">
         <PaperLink href="/write" className="masthead-link" voice="rustle">
           書き散らす
         </PaperLink>
         <PaperLink href="/rooms" className="masthead-link" voice="rustle">
-          スペース
+          スペース一覧
+        </PaperLink>
+        <PaperLink href="/me" className="masthead-link" voice="rustle">
+          設定
         </PaperLink>
       </Masthead>
 

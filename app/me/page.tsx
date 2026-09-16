@@ -1,6 +1,7 @@
 import { requireUser } from "@/lib/auth";
 import { forgetAction, renameAction } from "@/app/actions/identity";
 import { Masthead } from "@/components/masthead";
+import { PaperLink } from "@/components/paper-link";
 import { OpenAt } from "@/components/open-at";
 import { RenameForm, Forget } from "@/components/identity-forms";
 import { SoundSetting } from "@/components/sound-setting";
@@ -12,7 +13,11 @@ export default async function MePage() {
 
   return (
     <div className="app">
-      <Masthead sub="設定" />
+      <Masthead sub="設定">
+        <PaperLink href="/" className="masthead-link">
+          プライベートスペースへ戻る
+        </PaperLink>
+      </Masthead>
 
       <OpenAt edge="right" />
       <div className="stage">
