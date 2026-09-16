@@ -53,7 +53,7 @@ export default async function HomePage() {
       {/* 名乗りそのものが、あなたのページへの戸口。品書きに同じ行き先は並べない。 */}
       <Masthead sub={`${user.name} さん`} subHref="/me">
         <PaperLink href="/write" className="masthead-link" voice="rustle">
-          書く
+          書き散らす
         </PaperLink>
         <PaperLink href="/rooms" className="masthead-link" voice="rustle">
           スペース
@@ -79,7 +79,7 @@ export default async function HomePage() {
 
             {/* 巻物の左端。次の一枚が書かれる場所。押せると分かるように、投稿するのと同じ墨の釦にする。 */}
             <PaperLink href="/write" className="blankpage" voice="rustle">
-              <span className="btn btn-ink blankpage-btn">書く</span>
+              <span className="btn btn-ink blankpage-btn">書き散らす</span>
             </PaperLink>
           </div>
         </div>

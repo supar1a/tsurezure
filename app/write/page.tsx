@@ -4,7 +4,7 @@ import { writeSlipAction } from "@/app/actions/slips";
 import { PaperLink } from "@/components/paper-link";
 import { Composer } from "@/components/composer";
 
-export const metadata = { title: "書く" };
+export const metadata = { title: "書き散らす" };
 
 /**
  * 部屋の外から書く。書いたものはまずプライベートスペース（自分だけ）に入り、「置く」で部屋に出る。

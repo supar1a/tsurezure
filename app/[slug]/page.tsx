@@ -94,7 +94,7 @@ export default async function PlacePage({
     <div className="app">
       <Masthead sub={place.name}>
         <PaperLink href={`/${slug}/write`} className="masthead-link" voice="rustle">
-          書く
+          書き散らす
         </PaperLink>
         <PaperLink
           href={scroll ? `/${slug}` : `/${slug}?view=maki`}
@@ -135,7 +135,7 @@ export default async function PlacePage({
 
               {/* 巻物の左端。次の一枚が書かれる場所。押せると分かるように、投稿するのと同じ墨の釦にする。 */}
               <PaperLink href={`/${slug}/write`} className="blankpage" voice="rustle">
-                <span className="btn btn-ink blankpage-btn">書く</span>
+                <span className="btn btn-ink blankpage-btn">書き散らす</span>
               </PaperLink>
             </div>
           ) : (
@@ -160,6 +160,11 @@ export default async function PlacePage({
                   <ContentsEntry slip={slip} mine={slip.author.id === user!.id} />
                 </Fragment>
               ))}
+
+              {/* 目次の末尾にも、このスペースへ直接書き散らす入口。書いたものはプライベートスペースにも残る。 */}
+              <PaperLink href={`/${slug}/write`} className="blankpage" voice="rustle">
+                <span className="btn btn-ink blankpage-btn">書き散らす</span>
+              </PaperLink>
             </div>
           )}
         </div>
