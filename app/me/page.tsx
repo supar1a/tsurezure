@@ -12,7 +12,7 @@ export default async function MePage() {
 
   return (
     <div className="app">
-      <Masthead sub="設定" />
+      <Masthead />
 
       <OpenAt edge="right" />
       <div className="stage">

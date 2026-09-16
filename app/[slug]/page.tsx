@@ -92,7 +92,7 @@ export default async function PlacePage({
 
   return (
     <div className="app">
-      <Masthead sub={place.name}>
+      <Masthead>
         <PaperLink href={`/${slug}/write`} className="masthead-link" voice="rustle">
           書き散らす
         </PaperLink>
@@ -112,6 +112,8 @@ export default async function PlacePage({
         <div className="scroll-tate" id={SCROLLER}>
           {scroll ? (
             <div className="stream tate fade-in" data-stream>
+              <h1 className="contents-title">{place.name}</h1>
+
               {slips.length === 0 ? (
                 <p className="waiting">
                   まだ何もありません。

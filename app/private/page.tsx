@@ -27,7 +27,7 @@ export default async function PrivatePage({
 
   return (
     <div className="app">
-      <Masthead sub="ひとりのスペース">
+      <Masthead>
         <PaperLink href="/write" className="masthead-link" voice="rustle">
           書き散らす
         </PaperLink>
@@ -44,6 +44,8 @@ export default async function PrivatePage({
         <div className="scroll-tate" id={SCROLLER}>
           {scroll ? (
             <div className="stream tate fade-in" data-stream>
+              <h1 className="contents-title">ひとりのスペース</h1>
+
               {slips.length === 0 ? (
                 <p className="waiting">
                   まだ何もありません。

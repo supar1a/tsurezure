@@ -218,7 +218,7 @@ html::before {
 .masthead-sub {
   /* 丈が足りなくなっても、名前は削らない。詰めるのは品書きのほう。 */
   flex: 0 0 auto;
-  font-size: 0.78rem;
+  font-size: 0.905rem;
   letter-spacing: 0.24em;
   color: var(--sumi-faint);
   white-space: nowrap;
@@ -238,7 +238,7 @@ html::before {
 }
 
 .masthead-link {
-  font-size: 0.8rem;
+  font-size: 0.925rem;
   letter-spacing: 0.2em;
   color: var(--sumi-soft);
   text-decoration: none;
@@ -317,7 +317,7 @@ html::before {
 }
 
 .caption {
-  font-size: 0.78rem;
+  font-size: 0.905rem;
   letter-spacing: 0.2em;
   color: var(--sumi-faint);
   line-height: 2;
@@ -329,7 +329,7 @@ html::before {
 
 .btn {
   font: inherit;
-  font-size: 0.85rem;
+  font-size: 0.975rem;
   letter-spacing: 0.22em;
   color: var(--sumi-soft);
   background: transparent;
@@ -404,7 +404,7 @@ html::before {
 }
 
 .field-label {
-  font-size: 0.72rem;
+  font-size: 0.845rem;
   letter-spacing: 0.24em;
   color: var(--sumi-faint);
 }
@@ -457,7 +457,7 @@ html::before {
 }
 
 .notice {
-  font-size: 0.8rem;
+  font-size: 0.925rem;
   letter-spacing: 0.14em;
   color: var(--shu);
   line-height: 1.9;
@@ -592,7 +592,7 @@ html::before {
   flex-direction: row;
   align-items: flex-start;
   gap: 1.2em;
-  font-size: 0.72rem;
+  font-size: 0.845rem;
   letter-spacing: 0.2em;
   color: var(--sumi-faint);
   white-space: nowrap;
@@ -622,7 +622,7 @@ a.slip-when:hover {
 
 /* 自分の書いたものだけに付く。ひらけば直せるし消せる、という目印。 */
 .slip-mine {
-  font-size: 0.66rem;
+  font-size: 0.785rem;
   letter-spacing: 0.14em;
   color: var(--sumi-ghost);
 }
@@ -690,7 +690,7 @@ a.slip-when:hover {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.62rem;
+  font-size: 0.745rem;
   letter-spacing: 0.14em;
   color: var(--shu);
   border: 1px solid rgba(168, 65, 44, 0.35);
@@ -745,7 +745,7 @@ a.slip-when:hover {
   flex-direction: row; /* 縦組みでは上から下へ。名前のあとに日と時刻。 */
   align-items: center;
   gap: 1.2em;
-  font-size: 0.76rem;
+  font-size: 0.885rem;
   letter-spacing: 0.24em;
   color: var(--sumi-soft);
   white-space: nowrap;
@@ -948,7 +948,7 @@ a.slip-when:hover {
 }
 
 .gate-mark-note {
-  font-size: 0.74rem;
+  font-size: 0.865rem;
   letter-spacing: 0.3em;
   color: var(--sumi-faint);
   line-height: 2;
@@ -966,7 +966,7 @@ a.slip-when:hover {
 }
 
 .gate-heading {
-  font-size: 0.8rem;
+  font-size: 0.925rem;
   letter-spacing: 0.32em;
   color: var(--sumi-faint);
 }
@@ -991,7 +991,7 @@ a.slip-when:hover {
 }
 
 .epigraph-text {
-  font-size: 0.82rem;
+  font-size: 0.945rem;
   letter-spacing: 0.22em;
   line-height: 2;
   color: var(--sumi-faint);
@@ -1039,7 +1039,7 @@ a.slip-when:hover {
 .intro-text {
   margin: 0;
   max-inline-size: 36em;
-  font-size: 0.85rem;
+  font-size: 0.975rem;
   letter-spacing: 0.16em;
   line-height: 2;
   color: var(--sumi-soft);
@@ -1058,13 +1058,13 @@ a.slip-when:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem; /* 名前と人数・枚数・日付は一組 */
+  gap: 0.8rem; /* 名前と人数・枚数・日付は一組 */
   /* 中身のぶんだけの高さにする。短冊のように、それぞれ長さが違ってよい。 */
   align-self: flex-start;
-  min-inline-size: 15rem;
+  min-inline-size: 11rem;
   max-inline-size: 100%;
   max-block-size: 22rem;
-  padding: clamp(1.6rem, 2.4vh, 2.4rem) clamp(1.4rem, 2.2vw, 2rem);
+  padding: clamp(1.1rem, 1.8vh, 1.6rem) clamp(0.9rem, 1.5vw, 1.3rem);
   margin-block-end: clamp(1.2rem, 2vw, 2rem);
   border: 1px solid var(--rule);
   border-radius: 2px;
@@ -1102,7 +1102,7 @@ a.slip-when:hover {
 }
 
 .book-name {
-  font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+  font-size: clamp(0.98rem, 1.2vw, 1.12rem);
   font-weight: 600;
   letter-spacing: 0.22em;
   max-inline-size: 14em;
@@ -1127,14 +1127,14 @@ a.slip-when:hover {
 }
 
 .panel-title {
-  font-size: 0.8rem;
+  font-size: 0.925rem;
   letter-spacing: 0.3em;
   color: var(--sumi-faint);
 }
 
 .code {
   font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
-  font-size: 0.82rem;
+  font-size: 0.945rem;
   letter-spacing: 0.14em;
   color: var(--sumi);
   background: rgba(255, 253, 246, 0.6);
@@ -1194,7 +1194,7 @@ a.slip-when:hover {
 }
 
 .person-role {
-  font-size: 0.7rem;
+  font-size: 0.825rem;
   letter-spacing: 0.18em;
   color: var(--sumi-faint);
 }
@@ -1258,12 +1258,12 @@ a {
   }
 
   .masthead-title .logo {
-    height: 4.8rem;
+    height: 6rem;
   }
 
   /* 狭い画面でも「いまどこに居るか」は消さない。小さく、表題のすぐ下に。 */
   .masthead-sub {
-    font-size: 0.68rem;
+    font-size: 0.805rem;
     letter-spacing: 0.18em;
     max-block-size: 9rem;
   }
@@ -1341,7 +1341,7 @@ a {
 
   .masthead-link,
   .masthead-nav .btn {
-    font-size: 0.74rem;
+    font-size: 0.865rem;
     letter-spacing: 0.1em;
   }
 
@@ -1350,7 +1350,7 @@ a {
   }
 
   .compose-foot .btn {
-    font-size: 0.78rem;
+    font-size: 0.905rem;
     letter-spacing: 0.12em;
     padding: 0.7em 0.9em;
   }
@@ -1405,7 +1405,7 @@ a {
 }
 
 .leaf-lede {
-  font-size: 0.86rem;
+  font-size: 0.985rem;
   letter-spacing: 0.1em;
   line-height: 2;
   color: var(--sumi-faint);
@@ -1450,12 +1450,12 @@ a {
 }
 
 .gate-form .caption {
-  font-size: 0.72rem;
+  font-size: 0.845rem;
   line-height: 2;
 }
 
 .gate-form .code {
-  font-size: 0.72rem;
+  font-size: 0.845rem;
   padding: 0.15em 0.4em;
   margin-inline: 0.2em;
 }
@@ -1477,20 +1477,20 @@ a {
 
 .debug-label {
   font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
-  font-size: 0.64rem;
+  font-size: 0.765rem;
   letter-spacing: 0.24em;
   color: var(--shu);
 }
 
 .debug-note {
-  font-size: 0.72rem;
+  font-size: 0.845rem;
   letter-spacing: 0.06em;
   line-height: 1.95;
   color: var(--sumi-faint);
 }
 
 .debug-note .code {
-  font-size: 0.68rem;
+  font-size: 0.805rem;
   padding: 0.1em 0.35em;
   margin-inline: 0.2em;
 }
@@ -1502,7 +1502,7 @@ a {
 }
 
 .debug-btn {
-  font-size: 0.74rem;
+  font-size: 0.865rem;
   letter-spacing: 0.08em;
   padding: 0.5em 0.9em;
   color: var(--shu);
@@ -1529,7 +1529,7 @@ a {
 }
 
 .unread-mark-label {
-  font-size: 0.68rem;
+  font-size: 0.805rem;
   letter-spacing: 0.24em;
   color: var(--shu);
   white-space: nowrap;
@@ -1587,7 +1587,7 @@ a {
 
 .share-dialog-title {
   margin: 0;
-  font-size: 0.82rem;
+  font-size: 0.945rem;
   letter-spacing: 0.24em;
   color: var(--sumi-faint);
 }
@@ -1667,7 +1667,7 @@ a {
 }
 
 .share-fixed-note {
-  font-size: 0.7rem;
+  font-size: 0.825rem;
   letter-spacing: 0.2em;
   color: var(--sumi-faint);
   margin-inline-start: 0.4em;
@@ -1686,7 +1686,7 @@ a {
 
 /* 一篇の帯に添える「投稿先」。釦ではないので薄く小さく。 */
 .sheet-shared {
-  font-size: 0.72rem;
+  font-size: 0.845rem;
   letter-spacing: 0.16em;
   color: var(--sumi-faint);
   white-space: nowrap;
@@ -1700,7 +1700,7 @@ a {
 }
 
 .entry-place {
-  font-size: 0.72rem;
+  font-size: 0.845rem;
   letter-spacing: 0.16em;
   color: var(--sumi-faint);
 }
@@ -1716,7 +1716,7 @@ a {
 
 .compose-count {
   color: var(--sumi-ghost);
-  font-size: 0.78rem;
+  font-size: 0.905rem;
   letter-spacing: 0.12em;
 }
 
@@ -1761,7 +1761,7 @@ a {
   align-items: flex-start;
   inline-size: 100%;
   margin-block-end: clamp(3.4rem, 5.4vw, 6rem);
-  font-size: 0.72rem;
+  font-size: 0.845rem;
   letter-spacing: 0.24em;
   color: var(--sumi-ghost);
   white-space: nowrap;
@@ -1771,7 +1771,7 @@ a {
   inline-size: 100%;
   padding-block-start: clamp(1.4rem, 2.2vw, 2.2rem);
   color: var(--sumi-faint);
-  font-size: 0.82rem;
+  font-size: 0.945rem;
   letter-spacing: 0.18em;
   line-height: 2;
 }
@@ -1799,7 +1799,7 @@ a {
 }
 
 .pickme-people .btn {
-  font-size: 0.78rem;
+  font-size: 0.905rem;
   letter-spacing: 0.1em;
   padding: 0.55em 1em;
 }
@@ -1811,7 +1811,7 @@ a {
  */
 .invite-url {
   font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
-  font-size: 0.74rem;
+  font-size: 0.865rem;
   line-height: 1.9;
   letter-spacing: 0.02em;
   color: var(--sumi);
@@ -1892,7 +1892,7 @@ a {
 }
 
 .compose-photo-off {
-  font-size: 0.72rem;
+  font-size: 0.845rem;
   letter-spacing: 0.1em;
   padding-inline: 0.6em;
   color: var(--sumi-ghost);
@@ -1904,7 +1904,7 @@ a {
   flex-direction: row; /* 縦組みでは上から下へ */
   /* 名前も人数も枚数も日付も、ひとつの縦筋に載せる */
   align-items: center;
-  gap: clamp(1.4rem, 2.2vw, 2.2rem);
+  gap: clamp(1rem, 1.6vw, 1.5rem);
 }
 
 .book-meta {
@@ -1912,7 +1912,7 @@ a {
   flex-direction: row;
   align-items: center;
   gap: 1.2em;
-  font-size: 0.72rem;
+  font-size: 0.845rem;
   letter-spacing: 0.2em;
   color: var(--sumi-faint);
   white-space: nowrap;
@@ -2027,7 +2027,7 @@ a {
   /* 印も名前も日付も、題と同じ縦筋の上に載せる */
   align-items: center;
   gap: 1.1em;
-  font-size: 0.7rem;
+  font-size: 0.825rem;
   letter-spacing: 0.18em;
   color: var(--sumi-faint);
   white-space: nowrap;
@@ -2035,7 +2035,7 @@ a {
 
 /* 写真が入っている印 */
 .entry-mark {
-  font-size: 0.62rem;
+  font-size: 0.745rem;
   letter-spacing: 0.1em;
   color: var(--sumi-ghost);
   border: 1px solid var(--rule);
