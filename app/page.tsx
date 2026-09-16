@@ -83,10 +83,41 @@ export default async function HomePage() {
       <div className="stage">
         <div className="scroll-tate">
           <div className="stream tate fade-in" data-stream>
-            {/* いちばん先（右端）に、書き散らす入口。書いたものはプライベートスペースに残り、選べばスペースにも載る。 */}
-            <PaperLink href="/write" className="blankpage" voice="rustle">
-              <span className="btn btn-ink blankpage-btn">書き散らす</span>
-            </PaperLink>
+            {/*
+              いちばん先（右端）に、これが何かを一息で。見出し → 見本の一枚 → 説明 → 入口、の順。
+              見本の一枚は写真の代わり。縦書きの書き散らしがどう見えるかを、そのまま見せる。
+            */}
+            <section className="intro">
+              <h1 className="intro-title">
+                整えなくていい。
+                <br />
+                思いついたまま、書き散らす。
+              </h1>
+
+              <div className="intro-sample" aria-hidden="true">
+                <span className="intro-sample-when">九月十六日</span>
+                <p className="intro-sample-text">
+                  駅前の古本屋が閉まっていた。
+                  <br />
+                  三日ぶんの珈琲を買って帰る。
+                </p>
+              </div>
+
+              <p className="intro-text">
+                つれづれは、自分と友達だけで読む、縦書きの書き散らしです。
+                書いたものはプライベートスペースに残り、選んだスペースの友達にだけ届きます。
+                いいねも、フォロワーも、ありません。
+              </p>
+
+              <div className="intro-actions">
+                <PaperLink href="/write" className="btn btn-ink" voice="rustle">
+                  書き散らす
+                </PaperLink>
+                <PaperLink href="/new" className="btn" voice="rustle">
+                  スペースを作る
+                </PaperLink>
+              </div>
+            </section>
 
             <PaperLink href="/private" className="book book-self">
               <div className="book-head">
@@ -120,11 +151,6 @@ export default async function HomePage() {
                 </PaperLink>
               );
             })}
-
-            {/* 札の並びの末尾に、新しいスペースを作る入口。 */}
-            <PaperLink href="/new" className="blankpage" voice="rustle">
-              <span className="btn btn-ink blankpage-btn">スペースを作る</span>
-            </PaperLink>
 
             {/* 名前のもと。読み終えたさきに、奥付のように置く。
                 頭に置くと、狭い画面では序文だけで埋まってスペースに手が届かない。 */}

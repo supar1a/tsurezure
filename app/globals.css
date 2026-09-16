@@ -998,6 +998,76 @@ a.slip-when:hover {
   margin: 0;
 }
 
+/* --------------------------------------------------------------------------
+   トップの前口上 — 見出し・見本の一枚・説明・入口
+   -------------------------------------------------------------------------- */
+
+.intro {
+  display: flex;
+  flex-direction: column; /* 縦組みでは右から左へ */
+  align-items: flex-start;
+  align-self: flex-start;
+  gap: clamp(1.6rem, 2.4vw, 2.6rem);
+  /* 札の並びとは別のもの。罫で区切って、しっかり離す。 */
+  padding-block-end: clamp(2rem, 3.6vw, 3.6rem);
+  margin-block-end: clamp(2rem, 3.6vw, 3.6rem);
+  border-block-end: 1px solid var(--rule-soft);
+}
+
+.intro-title {
+  margin: 0;
+  font-size: clamp(1.25rem, 1.9vw, 1.7rem);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  line-height: 2;
+  color: var(--sumi);
+  max-inline-size: 16em;
+}
+
+/* 見本の一枚。スペースの札と同じ紙に、本物と同じ組みで。 */
+.intro-sample {
+  display: flex;
+  flex-direction: column; /* 日付の列、本文の列 */
+  gap: 1rem;
+  align-self: flex-start;
+  padding: clamp(1.4rem, 2.2vh, 2.2rem) clamp(1.2rem, 2vw, 1.8rem);
+  background-color: rgba(255, 253, 246, 0.8);
+  border: 1px solid rgba(33, 30, 25, 0.2);
+  box-shadow: 0 1px 0 rgba(33, 30, 25, 0.06), 0 6px 18px -10px rgba(33, 30, 25, 0.25);
+}
+
+.intro-sample-when {
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--sumi-faint);
+  border-block-end: 1px solid var(--rule-soft);
+  padding-block-end: 0.25em;
+  align-self: flex-start;
+}
+
+.intro-sample-text {
+  margin: 0;
+  font-size: 0.98rem;
+  letter-spacing: 0.1em;
+  line-height: 2.3;
+}
+
+.intro-text {
+  margin: 0;
+  max-inline-size: 22em;
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  line-height: 2.4;
+  color: var(--sumi-soft);
+}
+
+.intro-actions {
+  display: flex;
+  flex-direction: row; /* 縦組みでは上から下へ */
+  align-items: flex-start;
+  gap: 1rem;
+}
+
 /* スペースは「選ぶもの」なので、一枚ずつ囲って輪郭を与える。
    （巻物のほうは「読むもの」なので囲わない。） */
 .book {
