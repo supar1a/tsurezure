@@ -69,7 +69,7 @@ export async function writeSlipAction(_prev: FormState, formData: FormData): Pro
 
   for (const p of places) revalidatePath(`/${p.slug}`);
   revalidatePath("/");
-  // スペースの中から書いたならそのスペースへ、プライベートスペースから書いたならそこへ
+  // スペースの中から書いたならそのスペースへ、ひとりのスペースから書いたならそこへ
   const back = String(formData.get("back") ?? "");
   redirect(back.startsWith("/") ? back : "/");
 }

@@ -25,11 +25,9 @@ export default async function NewPlacePage() {
             <section className="panel">
               <h1 className="panel-title">スペースを作る</h1>
               <p className="caption">
-                作ると招待用の URL ができます。
+                スペースの URL を、LINE などでメンバーにシェアしましょう。
                 <br />
-                それを渡した人だけが入れます。
-                <br />
-                中に書いたものは、そのメンバーだけが読みます。
+                スペースには、URL を知っている人だけがアクセスできます。
               </p>
               <CreatePlaceForm action={createPlaceAction} />
             </section>

@@ -6,10 +6,10 @@ import { DiaryColumn } from "@/components/slip-column";
 import { myNotebook } from "@/lib/guards";
 import { PaperLink } from "@/components/paper-link";
 
-export const metadata = { title: "プライベートスペース" };
+export const metadata = { title: "ひとりのスペース" };
 
 /**
- * プライベートスペース。自分の書いたものが全部、巻物で並ぶ。左端がいちばん新しい。
+ * ひとりのスペース。自分の書いたものが全部、巻物で並ぶ。左端がいちばん新しい。
  * どこに投げたかに関わらず、書いたものはかならずここに残る。
  */
 export default async function PrivatePage() {
@@ -19,7 +19,7 @@ export default async function PrivatePage() {
   return (
     <div className="app">
       {/* 柱の添え名は「いまどこに居るか」。品書きは、ここでできること → 隣の場所、の順。 */}
-      <Masthead sub="プライベートスペース">
+      <Masthead sub="ひとりのスペース">
         <PaperLink href="/write" className="masthead-link" voice="rustle">
           書き散らす
         </PaperLink>

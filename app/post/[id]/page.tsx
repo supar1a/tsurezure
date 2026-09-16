@@ -23,19 +23,19 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
   const { user, slip, isAuthor, through } = await requireReadableSlip(id);
   const places = isAuthor ? await myPlaces(user.id) : [];
   const sharedTo = slip.shares.map((s) => s.place);
-  // 書いた本人には、どこに投げていようとプライベートスペースの一枚。ほかの人には、通ってきたスペースの一枚。
+  // 書いた本人には、どこに投げていようとひとりのスペースの一枚。ほかの人には、通ってきたスペースの一枚。
   const via = isAuthor ? null : through;
 
   return (
     <div className="app">
-      <Masthead sub={via?.name ?? "プライベートスペース"}>
+      <Masthead sub={via?.name ?? "ひとりのスペース"}>
         {via ? (
           <PaperLink href={`/${via.slug}`} className="masthead-link">
             スペースへ戻る
           </PaperLink>
         ) : (
           <PaperLink href="/private" className="masthead-link">
-            プライベートスペースへ戻る
+            ひとりのスペースへ戻る
           </PaperLink>
         )}
       </Masthead>
@@ -83,7 +83,7 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
                 </PaperLink>
                 {/* いまの投稿先。ここでだけ、書いた本人にだけ。すぐ下の釦で変えられる。 */}
                 <span className="sheet-shared">
-                  {["プライベートスペース", ...sharedTo.map((p) => p.name)].join("・")}
+                  {["ひとりのスペース", ...sharedTo.map((p) => p.name)].join("・")}
                 </span>
                 <ShareControl slipId={slip.id} places={places} checked={sharedTo.map((p) => p.id)} />
                 <DeleteSlip slipId={slip.id} />

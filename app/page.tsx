@@ -43,7 +43,7 @@ export default async function HomePage() {
     );
   }
 
-  // ── トップ。書き散らす入口と、プライベートスペース・スペースの札が並ぶ。 ──
+  // ── トップ。書き散らす入口と、ひとりのスペース・スペースの札が並ぶ。 ──
   const places = await prisma.place.findMany({
     where: { memberships: { some: { userId: user.id } } },
     include: { _count: { select: { memberships: true } } },
@@ -60,7 +60,7 @@ export default async function HomePage() {
     : [];
   const tallyOf = new Map(tallies.map((t) => [t.placeId, t]));
 
-  // プライベートスペース。スペースではないが、投稿先としては同じ並びなので、先頭に置く。
+  // ひとりのスペース。スペースではないが、投稿先としては同じ並びなので、先頭に置く。
   const mine = await prisma.slip.aggregate({
     where: { authorId: user.id },
     _count: { _all: true },
@@ -90,11 +90,17 @@ export default async function HomePage() {
               <h1 className="intro-title">思いついたまま、書き散らす。</h1>
 
               <div className="intro-lede">
-                <p className="intro-text">つれづれは、友達と一緒に、日々のことを書き残す場所です。</p>
                 <p className="intro-text">
-                  思ったことを縦書きで書き散らして、選んだスペースの友達にだけ共有できます。
-                  いいねも、フォロワーもありません。
+                  つれづれは、日々のことや、ふと思ったことを、
+                  <br />
+                  縦書きで残しておける場所です。
                 </p>
+                <p className="intro-text">
+                  基本は、自分だけのために。
+                  <br />
+                  誰かと残したいときは、スペースをつくって友達と共有できます。
+                </p>
+                <p className="intro-text">いいねも、フォロワーもありません。</p>
               </div>
 
               <div className="intro-actions">
@@ -111,7 +117,7 @@ export default async function HomePage() {
               <div className="book-head">
                 {/* 朱の印。巻物で自分の一枚に「じぶん」が付くのと同じ印。 */}
                 <span className="seal book-seal">じぶん</span>
-                <h2 className="book-name">プライベートスペース</h2>
+                <h2 className="book-name">ひとりのスペース</h2>
                 <div className="book-meta">
                   <span>
                     {mine._count._all > 0 ? `${kanjiNumber(mine._count._all)}枚` : "まだ何もない"}

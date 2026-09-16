@@ -162,7 +162,7 @@ export default async function PlacePage({
                 </Fragment>
               ))}
 
-              {/* 目次の末尾にも、このスペースへ直接書き散らす入口。書いたものはプライベートスペースにも残る。 */}
+              {/* 目次の末尾にも、このスペースへ直接書き散らす入口。書いたものはひとりのスペースにも残る。 */}
               <PaperLink href={`/${slug}/write`} className="blankpage" voice="rustle">
                 <span className="btn btn-ink blankpage-btn">書き散らす</span>
               </PaperLink>

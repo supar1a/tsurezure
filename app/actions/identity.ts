@@ -12,7 +12,7 @@ function readName(formData: FormData) {
 }
 
 /**
- * はじめまして。名前をひとつ決めれば、プライベートスペースが始まる。
+ * はじめまして。名前をひとつ決めれば、ひとりのスペースが始まる。
  * スペースは要らない。分かち合いたくなったら、あとで作るか、招待の URL から入る。
  */
 export async function startAction(_prev: FormState, formData: FormData): Promise<FormState> {
