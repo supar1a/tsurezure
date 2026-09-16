@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { TITLE_MAX, countChars } from "@/lib/text";
 import { useSound } from "./sound-provider";
 import { DrawnCaret } from "./drawn-caret";
+import { IosRepaint } from "./ios-repaint";
 import { ShareDialog, type PlaceOption, type ShareDialogHandle } from "./slip-actions";
 import type { FormState } from "@/app/actions/slips";
 
@@ -254,6 +255,7 @@ export function Composer({
           }}
         />
         <DrawnCaret target={titleRef} />
+        <IosRepaint />
 
         <textarea
           ref={beforeRef}
