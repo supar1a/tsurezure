@@ -34,7 +34,7 @@ export function StartForm({
           required
           autoFocus
           autoComplete="nickname"
-          placeholder="呼ばれたい名前"
+          placeholder="例：工藤新一・しんいち・江戸川コナン"
         />
       </label>
 
@@ -78,7 +78,7 @@ export function NameOnlyForm({
           required
           autoFocus
           autoComplete="nickname"
-          placeholder="呼ばれたい名前"
+          placeholder="例：工藤新一・しんいち・江戸川コナン"
         />
       </label>
 

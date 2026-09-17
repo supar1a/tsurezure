@@ -47,7 +47,7 @@ export default async function HomePage() {
                 </div>
 
                 <div className="landing-start">
-                  <StartForm action={startAction} label="呼ばれたい名前" submit="ひとりではじめる" />
+                  <StartForm action={startAction} submit="ひとりではじめる" />
                   <p className="landing-note">友達と書きたいときは、あとからスペースを作れます。</p>
                 </div>
                 {isDev ? <DevSwitcher people={people} /> : null}
