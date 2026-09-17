@@ -59,7 +59,9 @@ export default async function MembersPage({ params }: { params: Promise<{ slug: 
               <h1 className="panel-title">招待する</h1>
               <InviteUrl url={inviteUrl} />
               <p className="caption">
-                この URL を渡した人が入れます。ひらくと名前をきかれて、そのまま仲間になります。
+                この URL を渡した人が入れます。
+                <br />
+                ひらくと名前をきかれて、そのまま仲間になります。
               </p>
               {!isOwner ? <LeavePlace placeId={place.id} /> : null}
             </section>

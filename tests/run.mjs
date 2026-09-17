@@ -28,7 +28,7 @@ async function keyFor(name) {
 
 async function slipId() {
   const user = await prisma.user.findFirst({ where: { name: "はなこ" } });
-  const slip = await prisma.slip.findFirst({ where: { published: true, authorId: user.id } });
+  const slip = await prisma.slip.findFirst({ where: { authorId: user.id, shares: { some: {} } } });
   return slip.id;
 }
 
@@ -49,7 +49,7 @@ for (const file of files) {
   if (needs === "rename") args.push(await keyFor("はなこ"), await keyFor("たろう"));
 
   const env = { ...process.env };
-  if (["open", "shortcut"].includes(needs)) env.TOK = await keyFor("はなこ");
+  if (["open", "shortcut", "wrap"].includes(needs)) env.TOK = await keyFor("はなこ");
 
   let out = "";
   try {

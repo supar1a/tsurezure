@@ -41,7 +41,9 @@ export default async function MePage() {
               <p className="caption">
                 これまでに書いたものは、そのまま残ります。
                 <br />
-                また参加するときは、スペースの URL を開いて名前を選び直してください。
+                また参加するときは、スペースの URL を開いて
+                <br />
+                名前を選び直してください。
               </p>
               <Forget action={forgetAction} />
             </section>

@@ -919,9 +919,14 @@ a.slip-when:hover {
   gap: 0.9rem;
 }
 
+/*
+ * 自分たちの文（口上・添え書き・注意）には、字数の上限（max-inline-size: Nem）を付けない。
+ * 縦組みでは字間（letter-spacing）のぶん一字が em より長く、上限を字数で切ると末尾の一〜二字が
+ * 次の列に落ちる。折る位置は <br /> で書き、列の長さは場の丈に任せる。
+ * 上限を付けてよいのは、人が入れる名前や題のように長さが決まらないものだけ。
+ */
 .intro-text {
   margin: 0;
-  max-inline-size: 36em;
   font-size: 0.975rem;
   letter-spacing: 0.16em;
   line-height: 2;
@@ -1300,7 +1305,6 @@ a {
   letter-spacing: 0.16em;
   line-height: 2;
   color: var(--sumi-faint);
-  max-inline-size: 30em;
 }
 
 /* 招待の塊。主の塊とは別のものなので、罫と広い空きで離し、字も薄く。 */
@@ -1316,10 +1320,6 @@ a {
   border-block-start: 1px solid var(--rule-soft);
 }
 
-.landing-invite .caption {
-  max-inline-size: 24em;
-}
-
 .welcome {
   display: flex;
   flex-direction: column; /* 縦組みでは右から左へ */
@@ -1331,10 +1331,6 @@ a {
 
 .welcome .input {
   inline-size: min(100%, 22rem);
-}
-
-.welcome .caption {
-  max-inline-size: 22em;
 }
 
 /*
