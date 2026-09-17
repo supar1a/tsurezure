@@ -1229,6 +1229,17 @@ a {
   margin-block-start: clamp(1.6rem, 3vw, 3rem);
 }
 
+/* 絵。札の右上。墨だけの線画なので、地に溶けるよう少しだけ薄める */
+.about-mark {
+  inline-size: auto;
+  block-size: auto;
+  width: clamp(5.6rem, 8vw, 7.4rem);
+  height: auto;
+  align-self: flex-start;
+  margin-block-end: 0.6rem; /* 添えとの間（左） */
+  opacity: 0.86;
+}
+
 .about-head {
   display: flex;
   flex-direction: column; /* 右から左へ：添え、見出し */
