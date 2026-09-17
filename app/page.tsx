@@ -5,7 +5,7 @@ import { Masthead } from "@/components/masthead";
 import { OpenAt } from "@/components/open-at";
 import { kanjiDateShort, kanjiNumber } from "@/lib/kanji";
 import { PaperLink } from "@/components/paper-link";
-import { Intro, Epigraph } from "@/components/intro";
+import { Intro } from "@/components/intro";
 import { DevSwitcher, StartForm } from "@/components/identity-forms";
 
 const isDev = process.env.NODE_ENV !== "production";
@@ -43,8 +43,6 @@ export default async function HomePage() {
                 </p>
                 {isDev ? <DevSwitcher people={people} /> : null}
               </section>
-
-              <Epigraph />
             </div>
           </div>
         </div>
@@ -124,8 +122,6 @@ export default async function HomePage() {
 
             {/* 札の並びの左に、これが何かを一息で。名乗った人には入口の釦も。 */}
             <Intro actions />
-
-            <Epigraph />
           </div>
         </div>
       </div>

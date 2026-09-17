@@ -41,22 +41,3 @@ export function Intro({ actions = false }: { actions?: boolean }) {
     </section>
   );
 }
-
-/** 名前のもとになった一節。読み終えたさきに、奥付のように置く。 */
-export function Epigraph() {
-  return (
-    <div className="epigraph">
-      {[
-        "つれづれなるままに、",
-        "日暮らし、硯に向かひて、",
-        "心にうつりゆくよしなしごとを、",
-        "そこはかとなく書きつくれば、",
-        "あやしうこそものぐるほしけれ。",
-      ].map((line) => (
-        <p key={line} className="epigraph-text">
-          {line}
-        </p>
-      ))}
-    </div>
-  );
-}

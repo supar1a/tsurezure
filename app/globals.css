@@ -864,29 +864,6 @@ a.slip-when:hover {
    ノート
    -------------------------------------------------------------------------- */
 
-/*
- * 名前のもとになった一節。
- * 読むものではなく、そこに在るものなので、囲わず、薄く、選べる並びの外に置く。
- */
-.epigraph {
-  display: flex;
-  flex-direction: column; /* 縦組みでは右から左へ */
-  align-items: flex-start;
-  gap: clamp(0.9rem, 1.4vw, 1.4rem);
-  align-self: flex-start;
-  padding-block-start: clamp(2rem, 4vw, 4rem);
-  margin-block-start: clamp(2rem, 4vw, 4rem);
-  border-block-start: 1px solid var(--rule-soft);
-}
-
-.epigraph-text {
-  font-size: 0.945rem;
-  letter-spacing: 0.22em;
-  line-height: 2;
-  color: var(--sumi-faint);
-  margin: 0;
-}
-
 /* --------------------------------------------------------------------------
    トップの前口上 — 見出し・見本の一枚・説明・入口
    -------------------------------------------------------------------------- */

@@ -12,7 +12,7 @@ import { SlipColumn } from "@/components/slip-column";
 import { ContentsEntry } from "@/components/contents-entry";
 import { MarkAsRead } from "@/components/mark-as-read";
 import { OpenAt } from "@/components/open-at";
-import { Intro, Epigraph } from "@/components/intro";
+import { Intro } from "@/components/intro";
 import { JoinAsMe, NameOnlyForm, PickMe } from "@/components/identity-forms";
 
 const SCROLLER = "scroller";
@@ -87,8 +87,6 @@ export default async function PlacePage({
                   </>
                 )}
               </section>
-
-              <Epigraph />
             </div>
           </div>
         </div>
