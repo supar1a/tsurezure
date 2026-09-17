@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: "#f3f2ee",
+  themeColor: "#f7f7f5",
   width: "device-width",
   initialScale: 1,
   // 鍵盤が出たら版面のほうを縮める。縦組みでは、覆われた先に字が流れてしまうので。

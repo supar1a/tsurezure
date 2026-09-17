@@ -15,10 +15,10 @@
 
 :root {
   /* 墨と紙 */
-  /* 生成りの黄みは控えめに。紙ではあるが、染まっては見えないところ。 */
-  --washi: #f3f2ee;
-  --washi-lit: #faf9f6;
-  --washi-deep: #eceae4;
+  /* 白に寄せた紙。黄みはほとんど無く、粒と斑で紙に見せる。 */
+  --washi: #f7f7f5;
+  --washi-lit: #fcfcfb;
+  --washi-deep: #f0f0ee;
   --sumi: #1e1b16;
   --sumi-soft: #5f574c;
   --sumi-faint: #736a5e; /* 地に対して 4.7:1。小さな字でも読める */
@@ -1343,7 +1343,7 @@ a {
   display: flex;
   flex-direction: column; /* 右から左へ */
   align-items: flex-start;
-  align-self: flex-end; /* 縦組みの流れの中では、下 */
+  align-self: flex-start; /* 頭（上）を本文と揃える */
   gap: 1.2rem;
   margin-block-start: clamp(1.2rem, 2vw, 2rem); /* 本文の列から離す（右側） */
 }
