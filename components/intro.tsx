@@ -1,38 +1,45 @@
 import { PaperLink } from "./paper-link";
 
 /**
- * これが何かを一息で。絵、見出し、概要。
+ * つれづれとは。細い枠で囲った一枚の札。
  *
- * トップに来た人みんなに見せる。まだ名乗っていない人にはこれが戸口の口上になり、
- * 名乗った人には札の並びの左に添え書きとして残る。
- * 釦（書き散らす・スペースを作る）は名乗った人にだけ。名乗る前は、名乗る欄がその役目。
+ * 上に横組みで小さく「つれづれとは」と大きな見出し、その下に縦組みの本文、
+ * 左下に縦の戸口（書き散らす）。宿の案内板のような組み。
+ * トップに来た人みんなに見せる。名乗る前の人にはこれが口上、名乗った人には札の並びの左の添え。
+ * 戸口は名乗った人にだけ。名乗る前は、この札の左に名乗る欄が続く。
  */
 export function Intro({ actions = false }: { actions?: boolean }) {
   return (
-    <section className="intro">
-      <img src="/dance.png" alt="" className="intro-mark" width={246} height={260} />
+    <section className="about">
+      <header className="about-head">
+        <p className="about-kicker">つれづれとは</p>
+        <h1 className="about-title">
+          思いつくまま、
+          <br />
+          書き散らす。
+        </h1>
+      </header>
 
-      <h1 className="intro-title">思いつくまま、書き散らす。</h1>
-
-      <div className="intro-lede">
-        <p className="intro-text">
+      <div className="about-body">
+        <p className="about-text">
           日々のことや、ふと思ったことを、
           <br />
           縦書きで残しておける場所です。
         </p>
-        <p className="intro-text">ひとりでも、友達とも。</p>
-      </div>
+        <p className="about-text">ひとりでも、友達とも。</p>
 
-      {actions ? (
-        <div className="intro-actions">
-          <PaperLink href="/write" className="btn btn-ink" voice="rustle">
-            書き散らす
-          </PaperLink>
-          <PaperLink href="/new" className="btn" voice="rustle">
-            スペースを作る
-          </PaperLink>
-        </div>
-      ) : null}
+        {/* 戸口は本文と同じ縦の流れの末尾（左）に、下に寄せて置く。別の段にすると本文の丈が足りなくなる。 */}
+        {actions ? (
+          <footer className="about-foot">
+            <PaperLink href="/write" className="about-link" voice="rustle">
+              書き散らす
+            </PaperLink>
+            <PaperLink href="/new" className="about-link" voice="rustle">
+              スペースを作る
+            </PaperLink>
+          </footer>
+        ) : null}
+      </div>
     </section>
   );
 }

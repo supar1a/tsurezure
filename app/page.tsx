@@ -31,25 +31,13 @@ export default async function HomePage() {
         <div className="stage">
           <div className="scroll-tate">
             <div className="stream tate fade-in" data-stream>
-              {/* 主の塊：これが何か → ひとりではじめる。全部ひと続きに。 */}
-              <section className="intro landing">
-                <img src="/dance.png" alt="" className="intro-mark" width={246} height={260} />
+              {/* つれづれとは。枠で囲った一枚の札。 */}
+              <Intro />
 
-                <h1 className="intro-title">思いつくまま、書き散らす。</h1>
-
-                <div className="intro-lede">
-                  <p className="intro-text">
-                    日々のことや、ふと思ったことを、
-                    <br />
-                    縦書きで残しておける場所です。
-                  </p>
-                  <p className="intro-text">ひとりでも、友達とも。</p>
-                </div>
-
-                <div className="landing-start">
-                  <StartForm action={startAction} submit="ひとりではじめる" />
-                  <p className="landing-note">友達と書きたいときは、あとからスペースを作れます。</p>
-                </div>
+              {/* 名乗る欄。札のすぐ左に、ひと続きで。 */}
+              <section className="landing-start">
+                <StartForm action={startAction} submit="ひとりではじめる" />
+                <p className="landing-note">友達と書きたいときは、あとからスペースを作れます。</p>
                 {isDev ? <DevSwitcher people={people} /> : null}
               </section>
 

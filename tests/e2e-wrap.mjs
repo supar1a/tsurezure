@@ -27,7 +27,7 @@ const check = (label, cond, extra = "") => (cond ? ok : bad).push(label + (cond 
 
 // 見張る要素。人が入れた名前や題（長さが決まらないもの）は含めない。
 const OURS = [
-  ".intro-title", ".intro-text", ".landing-note", ".landing-invite .caption", ".welcome .caption",
+  ".about-kicker", ".about-title", ".about-text", ".about-link", ".landing-note", ".landing-invite .caption", ".welcome .caption",
   ".panel-title", ".caption", ".masthead-link", ".btn", ".waiting", ".share-dialog-title",
 ];
 

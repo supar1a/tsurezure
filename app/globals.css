@@ -864,82 +864,6 @@ a.slip-when:hover {
    ノート
    -------------------------------------------------------------------------- */
 
-/* --------------------------------------------------------------------------
-   トップの前口上 — 見出し・見本の一枚・説明・入口
-   -------------------------------------------------------------------------- */
-
-.intro {
-  display: flex;
-  flex-direction: column; /* 縦組みでは右から左へ */
-  /* 丈は場いっぱい（.stream の丈）。各要素の字の長さは max-inline-size で決める。
-     flex-start にすると、いちばん短い要素に丈が引っ張られて、文が細切れに折り返す。 */
-  align-self: stretch;
-  align-items: flex-start;
-  gap: clamp(1.6rem, 2.4vw, 2.6rem);
-  /* 札の並びとは別のもの。罫で区切って、しっかり離す（縦組みでは block-start が右）。 */
-  padding-block-start: clamp(2rem, 3.6vw, 3.6rem);
-  margin-block-start: clamp(1rem, 2vw, 2rem);
-  border-block-start: 1px solid var(--rule-soft);
-}
-
-/* 紙に向かって書く人の絵。墨だけの線画なので、地に溶けるよう少しだけ薄める。 */
-.intro-mark {
-  inline-size: auto;
-  block-size: auto;
-  width: clamp(7rem, 11vw, 10rem);
-  height: auto;
-  align-self: flex-start;
-  opacity: 0.86;
-}
-
-/* 口上が先頭（名乗る前）のときは、右に区切る相手がいない */
-.stream > .intro:first-child {
-  border-block-start: 0;
-  padding-block-start: 0;
-  margin-block-start: 0;
-}
-
-.intro-title {
-  margin: 0;
-  font-size: clamp(1.25rem, 1.9vw, 1.7rem);
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  line-height: 1.8;
-  color: var(--sumi);
-  /* 一行の見出し。字間のぶんを含めて、途中で折らない */
-  max-inline-size: 100%;
-  white-space: nowrap;
-}
-
-/* 概要の二段落は一組。段落の間は列の間より少しだけ広く。 */
-.intro-lede {
-  display: flex;
-  flex-direction: column; /* 縦組みでは右から左へ */
-  align-items: flex-start;
-  gap: 0.9rem;
-}
-
-/*
- * 自分たちの文（口上・添え書き・注意）には、字数の上限（max-inline-size: Nem）を付けない。
- * 縦組みでは字間（letter-spacing）のぶん一字が em より長く、上限を字数で切ると末尾の一〜二字が
- * 次の列に落ちる。折る位置は <br /> で書き、列の長さは場の丈に任せる。
- * 上限を付けてよいのは、人が入れる名前や題のように長さが決まらないものだけ。
- */
-.intro-text {
-  margin: 0;
-  font-size: 0.975rem;
-  letter-spacing: 0.16em;
-  line-height: 2;
-  color: var(--sumi-soft);
-}
-
-.intro-actions {
-  display: flex;
-  flex-direction: row; /* 縦組みでは上から下へ */
-  align-items: flex-start;
-  gap: 1rem;
-}
-
 /* スペースは「選ぶもの」なので、一枚ずつ囲って輪郭を与える。
    （巻物のほうは「読むもの」なので囲わない。） */
 .book {
@@ -1144,6 +1068,11 @@ a {
     height: 6rem;
   }
 
+  .about {
+    width: 16rem;
+    padding: 1.4rem 1.1rem;
+  }
+
   /* 狭い画面でも「いまどこに居るか」は消さない。小さく、表題のすぐ下に。 */
   .masthead-sub {
     font-size: 0.805rem;
@@ -1285,14 +1214,115 @@ a {
 }
 
 /* 名乗る欄（トップ・招待状）。口上の左に、札ひとつぶんの丈で。 */
-/* 名乗る前のトップ。主の塊は口上と同じ組みで、名乗る欄までひと続き。 */
-.landing-start {
+/* --------------------------------------------------------------------------
+   つれづれとは — 細い枠の札。上は横組み（小さな添えと見出し）、下は縦組みの本文、左下に戸口
+   -------------------------------------------------------------------------- */
+
+.about {
+  /* 札そのものは横組み。上から下へ積む。縦組みの流れの中では、丈が場いっぱい、幅は決め打ち。 */
+  writing-mode: horizontal-tb;
+  flex: 0 0 auto;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  width: clamp(17rem, 24vw, 22rem);
+  padding: clamp(1.8rem, 3vh, 2.6rem) clamp(1.4rem, 2vw, 2rem);
+  border: 1px solid var(--rule);
+  /* 札の並びとは別のもの。空きで離す */
+  margin-inline-start: clamp(1.6rem, 3vw, 3rem);
+}
+
+.about-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  text-align: center;
+}
+
+.about-kicker {
+  margin: 0;
+  font-size: 0.845rem;
+  letter-spacing: 0.4em;
+  text-indent: 0.4em; /* 字間のぶん右に寄るのを戻して真ん中に */
+  color: var(--sumi-faint);
+}
+
+.about-title {
+  margin: 0;
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-indent: 0.24em;
+  line-height: 1.7;
+  color: var(--sumi);
+  white-space: nowrap;
+}
+
+/* 本文は縦組み。残った丈をぜんぶ使い、右上から流す */
+.about-body {
+  writing-mode: vertical-rl;
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column; /* 縦組みでは右から左へ */
   align-items: flex-start;
   gap: 1rem;
-  /* 口上の文からは一段空ける。ここから「する」ことになる */
-  margin-block-start: 0.6rem;
+  margin-block-start: clamp(1.4rem, 2.6vh, 2rem);
+  /* 段落の右端は札の中で少し内側に */
+  padding-inline-start: 0.4rem;
+}
+
+.about-text {
+  margin: 0;
+  font-size: 0.975rem;
+  letter-spacing: 0.16em;
+  line-height: 2.1;
+  color: var(--sumi-soft);
+}
+
+/* 左下の戸口。本文の列の左に、下に寄せて。縦の一行ずつ、左に細い罫。案内板の「読む」と同じ置きかた */
+.about-foot {
+  display: flex;
+  flex-direction: column; /* 右から左へ */
+  align-items: flex-start;
+  align-self: flex-end; /* 縦組みの流れの中では、下 */
+  gap: 1.2rem;
+  margin-block-start: clamp(1.2rem, 2vw, 2rem); /* 本文の列から離す（右側） */
+}
+
+.about-link {
+  position: relative;
+  padding-block-end: 0.9rem; /* 縦組みでは左。罫のぶん */
+  font-size: 0.925rem;
+  letter-spacing: 0.24em;
+  color: var(--sumi);
+  text-decoration: none;
+  transition: color var(--quick) var(--ease);
+}
+
+.about-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -0.4rem;
+  bottom: -0.4rem;
+  width: 1px;
+  background: var(--sumi-soft);
+}
+
+.about-link:hover {
+  color: var(--sumi-soft);
+}
+
+/* 名乗る前のトップ。札の左に、名乗る欄。 */
+.landing-start {
+  display: flex;
+  flex-direction: column; /* 縦組みでは右から左へ */
+  align-items: flex-start;
+  align-self: flex-start;
+  gap: 1rem;
+  margin-block-start: clamp(1.6rem, 3vw, 3rem);
 }
 
 /* 例（18字）が切れない丈に。縦組みでは inline-size が丈。
