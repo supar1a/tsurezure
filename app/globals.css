@@ -1229,14 +1229,14 @@ a {
   margin-block-start: clamp(1.6rem, 3vw, 3rem);
 }
 
-/* 絵。札の右上。墨だけの線画なので、地に溶けるよう少しだけ薄める */
+/* 絵。見出しの左、本文の右。墨だけの線画なので、地に溶けるよう少しだけ薄める */
 .about-mark {
   inline-size: auto;
   block-size: auto;
   width: clamp(5.6rem, 8vw, 7.4rem);
   height: auto;
   align-self: flex-start;
-  margin-block-end: 0.6rem; /* 添えとの間（左） */
+  margin-block: 0.4rem 0.2rem; /* 見出しとの間（右）、本文との間（左） */
   opacity: 0.86;
 }
 

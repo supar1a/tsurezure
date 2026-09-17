@@ -11,13 +11,13 @@ import { PaperLink } from "./paper-link";
 export function Intro({ actions = false }: { actions?: boolean }) {
   return (
     <section className="about">
-      {/* 紙に向かって書く人の絵。右上に、判のように */}
-      <img src="/dance.png" alt="" className="about-mark" width={246} height={260} />
-
       <header className="about-head">
         <p className="about-kicker">つれづれとは</p>
         <h1 className="about-title">思いつくまま、書き散らす。</h1>
       </header>
+
+      {/* 紙に向かって書く人の絵。見出しの左に */}
+      <img src="/dance.png" alt="" className="about-mark" width={246} height={260} />
 
       <div className="about-body">
         <p className="about-text">
