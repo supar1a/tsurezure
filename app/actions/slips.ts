@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 import { readPhoto } from "@/lib/photo";
+import { toggleCheck } from "@/lib/marks";
 import { TITLE_MAX, composeBody } from "@/lib/text";
 
 export type FormState = { error?: string } | null;
@@ -151,4 +152,16 @@ export async function deleteSlipAction(formData: FormData) {
   for (const s of shares) revalidatePath(`/${s.place.slug}`);
   revalidatePath("/");
   redirect("/private");
+}
+
+/** 本文のチェック（☐／☑）を、その行だけ反転する。書いた本人だけ。 */
+export async function toggleCheckAction(slipId: string, lineIndex: number) {
+  const { slip } = await requireOwnSlip(slipId);
+  const body = toggleCheck(slip.body, lineIndex);
+  if (body === slip.body) return;
+  await prisma.slip.update({ where: { id: slipId }, data: { body } });
+  const shares = await prisma.share.findMany({ where: { slipId }, include: { place: { select: { slug: true } } } });
+  for (const s of shares) revalidatePath(`/${s.place.slug}`);
+  revalidatePath(`/post/${slipId}`);
+  revalidatePath("/private");
 }

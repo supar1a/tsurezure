@@ -1,3 +1,5 @@
+import { markOf, type Mark } from "./marks";
+
 /** 一覧に出す抜粋。改行は「一字あけ」に潰して縦の列を整える。 */
 export function excerpt(body: string, max = 110) {
   const flat = body.replace(/\s*\n+\s*/g, "　").trim();
@@ -15,24 +17,39 @@ export function excerpt(body: string, max = 110) {
  * 空行そのものは落としつつ、「前に空きがあった」ことだけを覚えておいて、
  * あとで少しだけ間を足す。丸ごと一行空けると流れが切れすぎる。
  */
-export type Line = { text: string; afterBlank: boolean; rule: boolean };
+export type Line = {
+  text: string;
+  afterBlank: boolean;
+  rule: boolean;
+  /** 行頭の印（箇条書き・番号・チェック）。無ければ null。text は印を除いたもの。 */
+  mark: Mark | null;
+  /** 本文の生の行番号。チェックを反転するときに、その行を指すため。 */
+  index: number;
+};
 
-/** 三つ以上のハイフンだけの行は、区切りの線として扱う。 */
-const RULE = /^-{3,}$/;
+/** 三つ以上のハイフン（または長い横棒）だけの行は、区切りの線として扱う。 */
+const RULE = /^(-{3,}|[―—]{3,})$/;
 
 export function paragraphs(body: string): Line[] {
   const out: Line[] = [];
   let blank = false;
-  for (const raw of body.split("\n")) {
+  body.split("\n").forEach((raw, index) => {
     const text = raw.trim();
     if (!text) {
       // 先頭の空行は、間の取りようがないので数えない
       if (out.length > 0) blank = true;
-      continue;
+      return;
     }
-    out.push({ text, afterBlank: blank, rule: RULE.test(text) });
+    const found = markOf(text);
+    out.push({
+      text: found ? found.rest.trim() : text,
+      afterBlank: blank,
+      rule: RULE.test(text),
+      mark: found?.mark ?? null,
+      index,
+    });
     blank = false;
-  }
+  });
   return out;
 }
 
@@ -119,7 +136,8 @@ export function splitAroundPhoto(body: string) {
 export function composeBody(before: string, after: string, withPhoto: boolean) {
   const parts = withPhoto ? [before, PHOTO_MARK, after] : [before, after];
   return parts
-    .map((part) => part.trim())
+    // form で届く改行は CRLF になる。行で数えるものがあるので LF に揃える
+    .map((part) => part.replace(/\r\n?/g, "\n").trim())
     .filter(Boolean)
     .join("\n\n");
 }

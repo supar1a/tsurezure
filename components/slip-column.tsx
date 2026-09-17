@@ -1,6 +1,8 @@
 import { kanjiDateShort } from "@/lib/kanji";
 import { linkify, paragraphs, splitAroundPhoto } from "@/lib/text";
+import { glyphOf } from "@/lib/marks";
 import { PaperLink } from "./paper-link";
+import { CheckMark } from "./check-mark";
 
 export type SlipRow = {
   id: string;
@@ -109,35 +111,55 @@ export function SlipText({
   photo,
   bodyClassName = "slip-body",
   photoClassName = "slip-photo",
+  toggleId,
 }: {
   body: string;
   photo: { id: string; width: number; height: number } | null;
   bodyClassName?: string;
   photoClassName?: string;
+  /** 書いた本人が読んでいるとき、チェックを押して反転できる。その一篇の id。 */
+  toggleId?: string;
 }) {
   if (!photo) {
-    return <Prose body={body} className={bodyClassName} />;
+    return <Prose body={body} className={bodyClassName} toggleId={toggleId} />;
   }
 
   const { before, after } = splitAroundPhoto(body);
+  // 写真のあとの本文は、生の行番号が写真の前のぶんだけずれる
+  const offset = before ? before.split("\n").length + 1 : 0;
 
   return (
     <>
-      {before ? <Prose body={before} className={bodyClassName} /> : null}
+      {before ? <Prose body={before} className={bodyClassName} toggleId={toggleId} /> : null}
       <SlipPhoto photo={photo} className={photoClassName} />
-      {after ? <Prose body={after} className={bodyClassName} /> : null}
+      {after ? <Prose body={after} className={bodyClassName} toggleId={toggleId} offset={offset} /> : null}
     </>
   );
 }
 
-function Prose({ body, className }: { body: string; className: string }) {
+function Prose({
+  body,
+  className,
+  toggleId,
+  offset = 0,
+}: {
+  body: string;
+  className: string;
+  toggleId?: string;
+  offset?: number;
+}) {
   return (
     <div className={className}>
       {paragraphs(body).map((line, index) =>
         line.rule ? (
           <hr key={index} className="line-rule" />
         ) : (
-        <p key={index} className={line.afterBlank ? "line line-apart" : "line"}>
+        <p key={index} className={[line.afterBlank ? "line line-apart" : "line", line.mark ? "line-marked" : ""].join(" ").trim()}>
+          {line.mark?.kind === "check" ? (
+            <CheckMark done={line.mark.done} slipId={toggleId} lineIndex={offset + line.index} />
+          ) : line.mark ? (
+            <span className="line-mark">{glyphOf(line.mark)}</span>
+          ) : null}
           {linkify(line.text).map((piece, i) =>
             piece.link ? (
               <a key={i} className="link" href={piece.value} target="_blank" rel="noreferrer">

@@ -49,7 +49,7 @@ for (const file of files) {
   if (needs === "rename") args.push(await keyFor("はなこ"), await keyFor("たろう"));
 
   const env = { ...process.env };
-  if (["open", "shortcut", "wrap"].includes(needs)) env.TOK = await keyFor("はなこ");
+  if (["open", "shortcut", "wrap", "marks"].includes(needs)) env.TOK = await keyFor("はなこ");
 
   let out = "";
   try {

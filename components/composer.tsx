@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { TITLE_MAX, countChars } from "@/lib/text";
+import { autoMark, continueMark } from "@/lib/marks";
 import { useSound } from "./sound-provider";
 import { DrawnCaret } from "./drawn-caret";
 import { IosRepaint } from "./ios-repaint";
@@ -142,6 +143,23 @@ export function Composer({
     formRef.current?.requestSubmit();
   }
 
+  /** 欄の中身を差し替えて、React にも気づかせる。 */
+  function rewrite(el: HTMLTextAreaElement, value: string, caret: number) {
+    const set = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")?.set;
+    set?.call(el, value);
+    el.setSelectionRange(caret, caret);
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+
+  /** 打ったばかりの「- 」「1. 」「[ ] 」を、その場で ・ 一、 ☐ に置き換える。 */
+  function onBodyInput(event: React.FormEvent<HTMLTextAreaElement>) {
+    const el = event.currentTarget;
+    if ((event.nativeEvent as InputEvent).isComposing) return;
+    const edit = autoMark(el.value, el.selectionStart ?? el.value.length);
+    if (edit) rewrite(el, edit.value, edit.caret);
+    tally();
+  }
+
   function onKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
     // ⌘/Ctrl + Enter で投稿する（釦を押したのと同じ）。
     // 変換の確定にも Enter を使うので、変換中は決して送らない。
@@ -150,6 +168,18 @@ export function Composer({
       event.preventDefault();
       post();
       return;
+    }
+
+    // 箇条書きの行で Enter：次の行にも印を立てる。空の項目なら印を消して終える。
+    if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
+      const el = event.currentTarget;
+      if (el.classList.contains("compose-body")) {
+        const edit = continueMark(el.value, el.selectionStart ?? el.value.length);
+        if (edit) {
+          event.preventDefault();
+          rewrite(el, edit.value, edit.caret);
+        }
+      }
     }
 
     // 打鍵のたびに筆の音。連打で音が濁らないよう、間隔を空ける。
@@ -267,7 +297,7 @@ export function Composer({
           spellCheck={false}
           onKeyDown={onKeyDown}
           onPaste={onPaste}
-          onChange={tally}
+          onInput={onBodyInput}
         />
         <DrawnCaret target={beforeRef} />
 
@@ -291,7 +321,7 @@ export function Composer({
               spellCheck={false}
               onKeyDown={onKeyDown}
               onPaste={onPaste}
-              onChange={tally}
+              onInput={onBodyInput}
             />
             <DrawnCaret key={`caret-${afterKey}`} target={afterRef} />
           </>

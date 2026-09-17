@@ -646,6 +646,49 @@ a.slip-when:hover {
 }
 
 /*
+ * 印のある行（箇条書き・番号・チェック）。
+ * 一字下げはせず、折り返した先を印のぶんだけ下げる（ぶら下げ）。
+ * 縦組みでは inline が上下なので、padding-inline-start が「上」。
+ */
+.slip-body p.line-marked,
+.sheet-body p.line-marked {
+  text-indent: -1.4em;
+  padding-inline-start: 1.4em;
+}
+
+.line-mark {
+  display: inline-block;
+  min-inline-size: 1.4em;
+  text-indent: 0;
+  color: var(--sumi-soft);
+}
+
+/* チェック。本人には釦。押せることは触れたときの濃さで返す。 */
+button.line-check {
+  font: inherit;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sumi);
+  cursor: pointer;
+  transition: color var(--quick) var(--ease), transform var(--quick) var(--ease);
+}
+
+button.line-check:hover {
+  color: var(--shu);
+}
+
+button.line-check:active {
+  transform: scale(0.92);
+}
+
+button.line-check:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/*
  * 空行を続けて置いたところは、半行ぶん空ける（列と列の間隔の半分）。
  * 半字ぶん（0.6em）では携帯の列の間隔に紛れて空きに見えず、丸ごと一行では流れが切れすぎる。
  * 空行を何行続けても、この半行ぶん。

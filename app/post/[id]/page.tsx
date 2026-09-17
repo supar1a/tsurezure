@@ -70,6 +70,7 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
               photo={slip.photo}
               bodyClassName="sheet-body"
               photoClassName="sheet-photo"
+              toggleId={isAuthor ? slip.id : undefined}
             />
 
             {/*
