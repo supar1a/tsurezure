@@ -192,7 +192,7 @@ export function RenameForm({ action, current }: { action: Action; current: strin
   return (
     <form action={formAction} className="leaf-section">
       <label className="field">
-        <span className="field-label">名前</span>
+        <span className="field-label">あなたの名前</span>
         <input
           name="name"
           className="input"
@@ -200,6 +200,7 @@ export function RenameForm({ action, current }: { action: Action; current: strin
           required
           defaultValue={current}
           autoComplete="nickname"
+          placeholder="例：工藤新一・しんいち・江戸川コナン"
         />
       </label>
 
