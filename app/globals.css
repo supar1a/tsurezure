@@ -1295,8 +1295,10 @@ a {
   margin-block-start: 0.6rem;
 }
 
+/* 例（18字）が切れない丈に。縦組みでは inline-size が丈。
+   % は器が中身に合わせて縮むところでは中身の寸法に化けるので使わない。 */
 .landing-start .input {
-  inline-size: min(100%, 22rem);
+  inline-size: min(58vh, 28rem);
 }
 
 .landing-note {
@@ -1330,7 +1332,7 @@ a {
 }
 
 .welcome .input {
-  inline-size: min(100%, 22rem);
+  inline-size: min(58vh, 28rem);
 }
 
 /*
