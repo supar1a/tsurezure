@@ -31,17 +31,14 @@ export default async function HomePage() {
         <div className="stage">
           <div className="scroll-tate">
             <div className="stream tate fade-in" data-stream>
-              {/* つれづれとは。枠で囲った一枚の札。 */}
-              <Intro />
-
-              {/* 名乗る欄。札のすぐ左に、ひと続きで。 */}
+              {/* まず名乗る欄。ここから始められる。 */}
               <section className="landing-start">
                 <StartForm action={startAction} submit="ひとりではじめる" />
                 <p className="landing-note">友達と書きたいときは、あとからスペースを作れます。</p>
                 {isDev ? <DevSwitcher people={people} /> : null}
               </section>
 
-              {/* 招待の塊：主の塊から離して、控えめに。 */}
+              {/* 招待の塊：名乗る欄から離して、控えめに。 */}
               <aside className="landing-invite">
                 <h2 className="panel-title">招待されていますか？</h2>
                 <p className="caption">
@@ -50,6 +47,9 @@ export default async function HomePage() {
                   アカウント登録は必要ありません。
                 </p>
               </aside>
+
+              {/* つれづれとは。読み終えたさき（左端）に、枠で囲った一枚の札。 */}
+              <Intro />
             </div>
           </div>
         </div>
