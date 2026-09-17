@@ -645,7 +645,7 @@ a.slip-when:hover {
    * margin ではなく padding。隣り合う余白は環境によって潰れることがあり、
    * padding なら潰れようがない。
    */
-  padding-block-start: 1.4em;
+  padding-block-start: 1.2em; /* line-height 2.4 の半分 */
   padding-block-start: 0.5lh;
 }
 

@@ -25,7 +25,8 @@ await wait(3000);
 await ev(`document.querySelector(".compose-body").focus()`);
 await send("Input.insertText", { text: "はじめの行。\n次の行。\n三つめの行。\n\n空きのあとの行。 https://example.com/a?b=1 。おわり。\n---\n線のあとの行。" }, sessionId);
 await wait(400);
-await ev(`[...document.querySelectorAll("button")].find(b => b.textContent.includes("書き残す")).click()`);
+await ev(`document.querySelector(".compose-foot > button").click()`); await wait(400);
+await ev(`document.querySelector("dialog[open] button[type=submit]")?.click()`);
 await wait(4500);
 
 await send("Page.navigate", { url: "http://localhost:3000/sannin?view=maki" }, sessionId);
@@ -80,11 +81,11 @@ check("どの行にも一字下げが付く",
   const a = JSON.parse(apart);
   check("空行のあとの行だけに、間の印が付く",
     JSON.stringify(a.印) === JSON.stringify([false, false, false, true, false]), apart);
-  // 半行ぶん＝列と列の間隔（line-height 2.8）の半分。見えるが、一行は空かない。
-  const fs = parseFloat(await ev(`getComputedStyle([...document.querySelectorAll(".slip-body")].find((b) => b.textContent.includes("はじめの行"))).fontSize`));
+  // 半行ぶん＝列と列の間隔（line-height）の半分。見えるが、一行は空かない。
+  const lh = parseFloat(await ev(`getComputedStyle([...document.querySelectorAll(".slip-body")].find((b) => b.textContent.includes("はじめの行"))).lineHeight`));
   check("その間は、半行ぶん（見えるが、一行は空かない）",
-    Math.abs(parseFloat(a.間[3]) - fs * 1.4) < 2 && parseFloat(a.間[0]) === 0,
-    `${JSON.stringify(a.間)} / 字 ${fs}px`);
+    Math.abs(parseFloat(a.間[3]) - lh / 2) < 2 && parseFloat(a.間[0]) === 0,
+    `${JSON.stringify(a.間)} / 列の間 ${lh}px`);
   check("空行そのものは、行として残らない", a.印.length === 5, String(a.印.length));
 }
 

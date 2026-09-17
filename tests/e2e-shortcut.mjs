@@ -36,6 +36,8 @@ const put = (sel, v) => ev(`(() => {
   el.focus();
   return el.value;
 })()`);
+// ⌘+Enter は投稿先の窓を開く。そこで投稿するを押して、はじめて送られる
+const confirm = async () => { await wait(400); await ev(`document.querySelector("dialog[open] button[type=submit]")?.click()`); };
 // 鍵を叩いたことにする。返るのは「既定の動きを止めたか」（＝送りにいったか）
 const key = (sel, init) => ev(`(() => {
   const el = document.querySelector(${JSON.stringify(sel)});
@@ -51,8 +53,9 @@ check("書く頁に ⌘ や Ctrl の説明は出ていない", !/⌘|Ctrl|Enter/
 // ── ⌘ + Enter で送る ──
 await put(".compose-body", "近道で書いた一枚");
 check("⌘+Enter は送りにいく（改行にしない）", await key(".compose-body", { key: "Enter", metaKey: true }));
+await confirm();
 await wait(3200);
-check("送るとグループへ戻る", (await path()) === "/sannin", await path());
+check("送るとスペースへ戻る", (await path()) === "/sannin", await path());
 check("書いたものが目次に載る", (await text()).includes("近道で書いた一枚"), (await text()).slice(0, 120));
 
 // 送られたのは下書きではなく公開
@@ -69,6 +72,7 @@ check("書いたものが目次に載る", (await text()).includes("近道で書
 await goto(W);
 await put(".compose-body", "Ctrl でも送れる一枚");
 check("Ctrl+Enter も送りにいく", await key(".compose-body", { key: "Enter", ctrlKey: true }));
+await confirm();
 await wait(3200);
 check("Ctrl でも送れている", (await path()) === "/sannin" && (await text()).includes("Ctrl でも送れる一枚"), await path());
 
@@ -93,6 +97,7 @@ check("題の欄の Enter は改行にならない", await key(".compose-title",
 await wait(1200);
 check("題の欄の Enter では送らない", (await path()) === "/sannin/write", await path());
 check("題の欄からの ⌘+Enter は送りにいく", await key(".compose-title", { key: "Enter", metaKey: true }));
+await confirm();
 await wait(3200);
 check("題と本文がそろって載る", (await path()) === "/sannin" && (await text()).includes("近道の題"), (await text()).slice(0, 120));
 
@@ -110,6 +115,7 @@ check("空のままの ⌘+Enter は断られる", (await path()) === "/sannin/w
   await goto(B + href + "/edit");
   await put(".compose-body", "近道で書き直した一枚");
   check("書き直しでも ⌘+Enter が効く", await key(".compose-body", { key: "Enter", metaKey: true }));
+  await confirm();
   await wait(3200);
   check("保存されて一篇の頁に戻る", (await path()) === href && (await text()).includes("近道で書き直した一枚"), await path());
 }

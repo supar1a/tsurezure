@@ -59,7 +59,7 @@ check("起こしただけでは鳴らない", (await tally()).bursts === 0, JSON
 
 // ── 頁を繰ると鳴る。声は行き先で違う ──
 {
-  const h = await heard(click(`a => a.classList.contains("masthead-link") && a.textContent.trim() === "グループを作る"`));
+  const h = await heard(click(`a => a.classList.contains("about-link") && a.textContent.trim() === "スペースを作る"`));
   check("戸口を押すと紙の音（撫でる：ひと掴み）", h.bursts === 1 && h.thuds === 0, JSON.stringify(h));
   await wait(1800);
   check("そのまま移っている", (await path()) === "/new", await path());
@@ -85,11 +85,16 @@ await goto(`${B}/sannin/write`);
   await wait(120);
   check("⌘ を添えた鍵では鳴らない（手癖の操作）", (await heard(key(".compose-body", { key: "s", metaKey: true }))).bursts === 0);
   await wait(120);
-  const ink = await heard(key(".compose-body", { key: "Enter", metaKey: true }));
-  check("⌘+Enter は墨を置く音（低い一打と掠れ）", ink.thuds === 1 && ink.bursts === 1, JSON.stringify(ink));
+  const open = await heard(key(".compose-body", { key: "Enter", metaKey: true }));
+  check("⌘+Enter は投稿先の窓を開くだけ（まだ鳴らない）", open.bursts === 0 && open.thuds === 0, JSON.stringify(open));
+  await wait(400);
+  const back = await heard(click(`b => b.closest("dialog") && b.textContent.trim() === "やめる"`));
+  check("窓のやめるは頁をめくる音", back.bursts === 2 && back.thuds === 0, JSON.stringify(back));
+  await wait(400);
+  await key(".compose-body", { key: "Enter", metaKey: true }); await wait(400);
+  const ink = await heard(click(`b => b.closest("dialog") && b.textContent.trim() === "投稿する"`));
+  check("投稿するは墨を置く音（低い一打と掠れ）", ink.thuds === 1 && ink.bursts === 1, JSON.stringify(ink));
   await wait(2200);
-  const d = await heard(click(`b => b.textContent.trim() === "下書きに保存"`));
-  check("下書きの釦は撫でる音", d.bursts === 1 && d.thuds === 0, JSON.stringify(d));
 }
 
 // ── 止める。止めたことは、このブラウザに残る ──

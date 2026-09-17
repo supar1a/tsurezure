@@ -54,7 +54,8 @@ const WANT = [
 // ── 自分の一枚を書き直して、URL を並べる ──
 await goto(`${B}/post/${slipId}/edit`);
 await put(".compose-body", BODY);
-await ev(`[...document.querySelectorAll("button")].find(b => b.textContent.trim() === "保存する").click()`);
+await ev(`document.querySelector(".compose-foot > button").click()`); await wait(400);
+await ev(`document.querySelector("dialog[open] button[type=submit]")?.click()`);
 await wait(3000);
 check("書き直せている", (await path()) === `/post/${slipId}`, await path());
 

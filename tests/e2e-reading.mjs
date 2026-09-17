@@ -50,26 +50,26 @@ const drag = async (dx) => {
   await wait(400);
 };
 
-// ── 携帯で、グループの囲いに手が届く ──
+// ── 携帯で、スペースの囲いに手が届く ──
 await send("Page.navigate", { url: "http://localhost:3000/" }, sessionId);
 await wait(3000);
 {
   const reach = await ev(`(() => {
     const s = document.querySelector(".scroll-tate");
-    const b = document.querySelector(".book");
+    const b = document.querySelector(".book:not(.book-self)");
     if (!b) return "囲いが無い";
     const v = s.getBoundingClientRect(), r = b.getBoundingClientRect();
     const seen = Math.min(r.right, v.right) - Math.max(r.left, v.left);
     return String(Math.round(seen));
   })()`);
-  check("携帯でも、グループの囲いが画面に出ている", Number(reach) > 60, `見えている幅 ${reach}px`);
+  check("携帯でも、スペースの囲いが画面に出ている", Number(reach) > 60, `見えている幅 ${reach}px`);
   // 実際に指で押して入れる
-  const box = JSON.parse(await ev(`(() => { const r = document.querySelector(".book").getBoundingClientRect();
+  const box = JSON.parse(await ev(`(() => { const r = document.querySelector(".book:not(.book-self)").getBoundingClientRect();
     return JSON.stringify({ x: Math.round(r.x + r.width/2), y: Math.round(r.y + 60) }); })()`));
   await send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [box] }, sessionId);
   await send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] }, sessionId);
   await wait(3000);
-  check("指で押すと、そのグループへ入れる", (await ev(`location.pathname`)) === "/sannin", await ev(`location.pathname`));
+  check("指で押すと、そのスペースへ入れる", (await ev(`location.pathname`)) === "/sannin", await ev(`location.pathname`));
 }
 
 // ── 携帯で、柱の上下が中身に揃っている ──

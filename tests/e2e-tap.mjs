@@ -90,7 +90,7 @@ await goto(`${B}/post/${slipId}`);
 }
 
 // ── 名簿やあなたの頁も、右端（はじまり）でひらく ──
-for (const [label, u] of [["このグループ", `${B}/sannin/members`], ["あなたのページ", `${B}/me`], ["グループの一覧", `${B}/`]]) {
+for (const [label, u] of [["このスペース", `${B}/sannin/members`], ["設定", `${B}/me`], ["トップ", `${B}/`]]) {
   await goto(u);
   const g = await geo();
   check(`${label}は右端（はじまり）でひらく`, Math.abs(g.right) < 3 && g.sl >= 0, JSON.stringify(g));
@@ -104,10 +104,10 @@ for (const w of [390, 375]) {
   await ev(`(() => { const st = document.createElement("style"); st.textContent = ".debug{display:none!important}"; document.head.appendChild(st); })()`);
   await wait(200);
   const g = await ev(`(() => { const R = (el) => { const r = el.getBoundingClientRect(); return [Math.round(r.left), Math.round(r.right)]; };
-    const lede = document.querySelector(".leaf-lede"), form = document.querySelector(".gate-form"), gate = document.querySelector(".gate");
-    return { docW: document.documentElement.scrollWidth, vw: innerWidth, lede: R(lede), form: R(form), scrollable: gate.scrollWidth > gate.clientWidth, sl: Math.round(gate.scrollLeft) }; })()`);
+    const s = document.querySelector(".scroll-tate"), start = document.querySelector(".landing-start"), invite = document.querySelector(".landing-invite");
+    return { docW: document.documentElement.scrollWidth, vw: innerWidth, start: R(start), invite: R(invite), scrollable: s.scrollWidth > s.clientWidth }; })()`);
   check(`${w}px：戸口の頁が横に広がっていない（縮小表示にならない）`, g.docW <= g.vw && g.vw === w, JSON.stringify(g));
-  check(`${w}px：断り書きまで画面の中に収まる（または右から送れる）`, (g.lede[0] >= 0 && g.lede[1] <= w) || g.scrollable, JSON.stringify(g));
+  check(`${w}px：名乗る欄まで画面の中に収まる（または送れば届く）`, (g.start[0] >= 0 && g.start[1] <= w) || g.scrollable, JSON.stringify(g));
 }
 
 await send("Target.closeTarget", { targetId }); ws.close();

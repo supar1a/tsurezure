@@ -58,14 +58,14 @@ check("自分の短冊をひらける", href.startsWith("/post/"), href);
 await goto("http://localhost:3000" + href); await settle();
 // 一篇にできることは、柱ではなく読み終えた先（本文の末）に置いてある
 const foot = await evalJs(`[...document.querySelectorAll('.sheet-foot button, .sheet-foot a')].map(e => e.textContent.trim())`);
-check("自分の投稿には、読み終えた先に 編集・下書きに戻す・削除 がある",
-  foot.includes("削除") && foot.includes("編集") && foot.includes("下書きに戻す"), JSON.stringify(foot));
+check("自分の投稿には、読み終えた先に 編集・投稿先を変える・削除 がある",
+  foot.includes("削除") && foot.includes("編集") && foot.includes("投稿先を変える"), JSON.stringify(foot));
 const nav = await evalJs(`[...document.querySelectorAll('.masthead-nav button, .masthead-nav a')].map(e => e.textContent.trim())`);
-check("柱には、いま居るところへの道だけ", JSON.stringify(nav) === JSON.stringify(["グループへ戻る"]), JSON.stringify(nav));
+check("柱には、いま居るところへの道だけ（本人にはひとりのスペース）", JSON.stringify(nav) === JSON.stringify(["ひとりのスペースへ戻る"]), JSON.stringify(nav));
 
 await evalJs(`[...document.querySelectorAll('button')].find(b => b.textContent.trim() === '削除').click()`);
 await settle(3000);
-check("削除するとグループに戻る", (await path()) === "/sannin", await path());
+check("削除するとひとりのスペースに戻る", (await path()) === "/private", await path());
 check("消えている", !(await text()).includes("豆を切らして"), (await text()).slice(0, 120));
 check("開き直しても消えたまま", await (async () => {
   await goto(MAKI); await settle(1400);

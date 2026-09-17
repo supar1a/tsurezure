@@ -100,7 +100,8 @@ await wait(2600);
 await ev(`document.querySelector(".compose-body").focus()`);
 await send("Input.insertText", { text: "書き残したあと、どこがひらくか。" }, sessionId);
 await wait(400);
-await ev(`[...document.querySelectorAll("button")].find(b => b.textContent.includes("書き残す")).click()`);
+await ev(`document.querySelector(".compose-foot > button").click()`); await wait(400);
+await ev(`document.querySelector("dialog[open] button[type=submit]")?.click()`);
 await wait(5500);
 // 送ったあとは行き先が入れ替わる。まだ入れ替わりの途中だと測れないので、
 // 数を一度だけ取り、取れなければ少し待って取りなおす。

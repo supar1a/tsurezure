@@ -64,7 +64,7 @@ await ev(`document.querySelector(".compose-body").blur()`); await wait(200);
 check("焦点を失えば消える", (await caret()) === null);
 
 // 題の欄にも
-await ev(`[...document.querySelectorAll(".compose-foot button")].find(b => b.textContent.trim() === "題を付ける")?.click()`); await wait(400);
+await ev(`[...document.querySelectorAll(".compose-foot button")].find(b => b.textContent.trim() === "題名を付ける")?.click()`); await wait(400);
 await ev(`document.querySelector(".compose-title").focus()`); await wait(300);
 const title = await box(".compose-title");
 const ct = await caret();

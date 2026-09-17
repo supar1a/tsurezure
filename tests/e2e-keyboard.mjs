@@ -55,12 +55,12 @@ check("入力欄の字は 16px を割らない（iOS が触れた瞬間に拡大
   check("釦の帯は本文の左に立つ（下ではない）", r.footRight <= r.bodyLeft && Math.abs(r.footTop - r.bodyTop) < 4, JSON.stringify(r));
 }
 check("題の欄は、はじめは出ていない", (await ev(`getComputedStyle(document.querySelector(".compose-title")).display`)) === "none");
-check("帯に「題を付ける」がある", await ev(`[...document.querySelectorAll(".compose-foot button")].some(b => b.textContent.trim() === "題を付ける")`));
-await ev(`[...document.querySelectorAll(".compose-foot button")].find(b => b.textContent.trim() === "題を付ける").click()`);
+check("帯に「題を付ける」がある", await ev(`[...document.querySelectorAll(".compose-foot button")].some(b => b.textContent.trim() === "題名を付ける")`));
+await ev(`[...document.querySelectorAll(".compose-foot button")].find(b => b.textContent.trim() === "題名を付ける").click()`);
 await wait(300);
 check("押せば題の欄が出て、そこから書ける", (await ev(`getComputedStyle(document.querySelector(".compose-title")).display`)) !== "none"
   && (await ev(`document.activeElement?.classList.contains("compose-title")`)));
-check("釦は引っ込む", !(await ev(`[...document.querySelectorAll(".compose-foot button")].some(b => b.textContent.trim() === "題を付ける")`)));
+check("釦は引っ込む", !(await ev(`[...document.querySelectorAll(".compose-foot button")].some(b => b.textContent.trim() === "題名を付ける")`)));
 
 check("鍵盤が無いうちは、差し引かない", (await inset()) === "0px", await inset());
 const openCol = await column(), openApp = await appHeight();
@@ -77,7 +77,7 @@ check("書く欄も一緒に縮む（字が鍵盤の裏へ流れない）", shru
 {
   // 帯も鍵盤の上に残る。下に置いていたころは、送るたびに鍵盤をしまう必要があった。
   const r = await ev(`(() => { const f = document.querySelector(".compose-foot").getBoundingClientRect(), a = document.querySelector(".app").getBoundingClientRect();
-    return { footBottom: Math.round(f.bottom), appBottom: Math.round(a.bottom), submit: Math.round(document.querySelector('button[value="publish"]').getBoundingClientRect().bottom) }; })()`);
+    return { footBottom: Math.round(f.bottom), appBottom: Math.round(a.bottom), submit: Math.round(document.querySelector(".compose-foot > button").getBoundingClientRect().bottom) }; })()`);
   check("鍵盤が出ても、釦の帯は鍵盤の上に見えている", r.footBottom <= r.appBottom + 1 && r.submit <= r.appBottom, JSON.stringify(r));
 }
 

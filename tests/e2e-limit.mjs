@@ -37,21 +37,23 @@ const put = (sel, v, { loosen = false } = {}) => ev(`(() => {
   return el.value;
 })()`);
 const press = (label) => ev(`[...document.querySelectorAll("button")].find(b => b.textContent.trim() === ${JSON.stringify(label)}).click()`);
+// 投稿する → 投稿先の窓 → 投稿する。何も書いていなければ窓は開かず、その場で注意が出る
+const post = async () => { await press("投稿する"); await wait(400); await ev(`document.querySelector("dialog[open] button[type=submit]")?.click()`); };
 const counts = () => ev(`[...document.querySelectorAll(".compose-count")].map(e => e.textContent)`);
 const notice = () => ev(`[...document.querySelectorAll(".notice")].map(e => e.textContent).join(" / ")`);
 
 // ── 題：打ち込みの上限と、残りの見せかた ──
 await goto(W);
 check("題の欄の打ち込みは 40 字まで", (await ev(`document.querySelector(".compose-title").maxLength`)) === 40);
-check("はじめは残り字数を出さない（急かさない）", !(await counts()).some((c) => c.includes("題はあと")), JSON.stringify(await counts()));
+check("はじめは残り字数を出さない（急かさない）", !(await counts()).some((c) => c.includes("題名はあと")), JSON.stringify(await counts()));
 await put(".compose-title", "あ".repeat(29));
-check("29 字でもまだ出さない", !(await counts()).some((c) => c.includes("題はあと")), JSON.stringify(await counts()));
+check("29 字でもまだ出さない", !(await counts()).some((c) => c.includes("題名はあと")), JSON.stringify(await counts()));
 await put(".compose-title", "あ".repeat(30));
-check("残り 10 字になったら「題はあと10字」", (await counts()).includes("題はあと10字"), JSON.stringify(await counts()));
+check("残り 10 字になったら「題名はあと10字」", (await counts()).includes("題名はあと10字"), JSON.stringify(await counts()));
 await put(".compose-title", "あ".repeat(40));
-check("いっぱいで「題はあと0字」", (await counts()).includes("題はあと0字"), JSON.stringify(await counts()));
+check("いっぱいで「題名はあと0字」", (await counts()).includes("題名はあと0字"), JSON.stringify(await counts()));
 await put(".compose-title", "短い題");
-check("短くすればまた消える", !(await counts()).some((c) => c.includes("題はあと")), JSON.stringify(await counts()));
+check("短くすればまた消える", !(await counts()).some((c) => c.includes("題名はあと")), JSON.stringify(await counts()));
 
 // ── 本文の字数：空白は数えない ──
 check("何も書いていなければ字数は出さない", !(await counts()).some((c) => /\d+字$/.test(c)), JSON.stringify(await counts()));
@@ -63,7 +65,7 @@ check("絵文字も一字と数える", (await counts()).includes("5字"), JSON.
 // ── 題：受け側でも 40 字を検める（打ち込みの上限をすり抜けても） ──
 await put(".compose-title", "い".repeat(41), { loosen: true });
 await put(".compose-body", "長すぎる題の本文");
-await press("書き残す");
+await post();
 await wait(2800);
 check("41 字の題は受け側で断る", (await path()) === "/sannin/write" && (await notice()).includes("題は40字までです"), `${await path()} ${await notice()}`);
 await goto(`${B}/sannin`);
@@ -73,51 +75,46 @@ check("断られたものは残っていない", !(await text()).includes("長�
 await goto(W);
 await put(".compose-title", "う".repeat(40));
 await put(".compose-body", "ちょうどの題の本文");
-await press("書き残す");
+await post();
 await wait(3000);
 check("40 字ちょうどの題は通る", (await path()) === "/sannin" && (await text()).includes("う".repeat(40)), `${await path()}`);
 
 // ── 本文：空のままは受け取らない ──
 await goto(W);
-await press("書き残す");
+await post();
 await wait(2500);
 check("空のまま送ると「まだ何も書かれていません」", (await path()) === "/sannin/write" && (await notice()).includes("まだ何も書かれていません"), `${await path()} ${await notice()}`);
 await put(".compose-body", " \n　\n ");
-await press("書き残す");
+await post();
 await wait(2500);
 check("空白だけでも同じ", (await path()) === "/sannin/write" && (await notice()).includes("まだ何も書かれていません"), `${await path()} ${await notice()}`);
 await put(".compose-title", "題だけ");
 await put(".compose-body", "");
-await press("書き残す");
+await post();
 await wait(2500);
 check("題だけでも、本文が無ければ受け取らない", (await path()) === "/sannin/write" && (await notice()).includes("まだ何も書かれていません"), `${await path()} ${await notice()}`);
 await goto(`${B}/sannin`);
 check("題だけのものは残っていない", !(await text()).includes("題だけ"), (await text()).slice(0, 120));
 
-// 下書きも同じく空は受け取らない
-await goto(W);
-await press("下書きに保存");
-await wait(2500);
-check("下書きでも空は受け取らない", (await path()) === "/sannin/write" && (await notice()).includes("まだ何も書かれていません"), `${await path()}`);
 
 // ── グループ名：32 字 ──
 const NEW = `${B}/new`;
 await goto(NEW);
-check("グループ名の打ち込みは 32 字まで", (await ev(`document.querySelector('input[name="name"]').maxLength`)) === 32);
+check("スペース名の打ち込みは 32 字まで", (await ev(`document.querySelector('input[name="name"]').maxLength`)) === 32);
 await put('input[name="name"]', "え".repeat(33), { loosen: true });
 await press("作成する");
 await wait(2800);
-check("33 字は受け側で断る", (await path()) === "/new" && (await notice()).includes("グループ名は1〜32字"), `${await path()} ${await notice()}`);
+check("33 字は受け側で断る", (await path()) === "/new" && (await notice()).includes("スペース名は1〜32字"), `${await path()} ${await notice()}`);
 await put('input[name="name"]', "　　", { loosen: true });
 await press("作成する");
 await wait(2800);
-check("空白だけも断る", (await path()) === "/new" && (await notice()).includes("グループ名は1〜32字"), `${await path()} ${await notice()}`);
+check("空白だけも断る", (await path()) === "/new" && (await notice()).includes("スペース名は1〜32字"), `${await path()} ${await notice()}`);
 await put('input[name="name"]', "お".repeat(32));
 await press("作成する");
 await wait(3200);
 check("32 字ちょうどは通り、そのまま中へ入る", /^\/[a-z0-9]{8,}$/.test(await path()), await path());
 await goto(B + "/");
-check("できたグループが一覧に並ぶ", (await text()).includes("お".repeat(32)), (await text()).slice(0, 120));
+check("できたスペースがトップに並ぶ", (await text()).includes("お".repeat(32)), (await text()).slice(0, 120));
 
 await send("Target.closeTarget", { targetId }); ws.close();
 for (const l of ok) console.log("  ○ " + l);

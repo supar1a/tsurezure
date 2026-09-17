@@ -111,8 +111,10 @@ check("目次には写真を置かない", (await ev(`document.querySelectorAll(
   // 別のグループの人にも見せない
   await send("Network.clearBrowserCookies", {}, sessionId);
   await goto(B + "/");
-  await ev(`(() => { const set = (n, v) => { const el = document.querySelector("input[name=" + n + "]"); el.value = v; }; set("placeName", "よそのところ"); set("name", "よそもの"); })()`);
-  await ev(`document.querySelector('form input[name="placeName"]').form.querySelector('button[type=submit]').click()`);
+  await ev(`(() => { const el = document.querySelector('form input[name="name"]'); el.value = "よそもの"; el.form.querySelector('button[type=submit]').click(); })()`);
+  await wait(3000);
+  await goto(B + "/new");
+  await ev(`(() => { const el = document.querySelector('form input[name="name"]'); el.value = "よそのところ"; el.form.querySelector('button[type=submit]').click(); })()`);
   await wait(3000);
   const r = await fetchAsPage(photoUrl);
   check("よそのグループの人にも無いことにする（404）", r.status === 404, JSON.stringify(r));
@@ -160,9 +162,10 @@ await wait(600);
 // 貼って、送る
 await pasteImage('textarea[name="bodyBefore"]', 800, 400, 5);
 await wait(1800);
-await ev(`[...document.querySelectorAll("button")].find(b => b.textContent.trim() === "書き残す").click()`);
+await ev(`document.querySelector(".compose-foot > button").click()`); await wait(400);
+await ev(`document.querySelector("dialog[open] button[type=submit]")?.click()`);
 await wait(3500);
-check("送るとグループへ戻る", (await path()) === "/sannin", await path());
+check("送るとスペースへ戻る", (await path()) === "/sannin", await path());
 check("目次に「写」の印つきで載る",
   await ev(`!![...document.querySelectorAll(".entry")].find(e => e.textContent.includes("前半の文") && e.querySelector(".entry-mark"))`));
 const href = await ev(`[...document.querySelectorAll(".entry")].find(e => e.textContent.includes("前半の文"))?.getAttribute("href") ?? ""`);
@@ -188,7 +191,8 @@ await goto(B + href + "/edit");
 await ev(`[...document.querySelectorAll("button")].find(b => b.textContent.trim() === "外す").click()`);
 await wait(500);
 check("外すと、消す印が立つ", (await composer()).remove === "1");
-await ev(`[...document.querySelectorAll("button")].find(b => b.textContent.trim() === "保存する").click()`);
+await ev(`document.querySelector(".compose-foot > button").click()`); await wait(400);
+await ev(`document.querySelector("dialog[open] button[type=submit]")?.click()`);
 await wait(3200);
 check("保存すると一篇の頁に戻る", (await path()) === href, await path());
 {

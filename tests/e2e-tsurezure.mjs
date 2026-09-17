@@ -39,7 +39,7 @@ const OLD_HTML = /短冊|交換日記|tanzaku/;
 // 名乗りは自分でこしらえる（この試験は引数を取らない）
 const prisma = new PrismaClient();
 const hanako = await prisma.user.findFirst({ where: { name: "はなこ" } });
-const slip = await prisma.slip.findFirst({ where: { authorId: hanako.id, published: true } });
+const slip = await prisma.slip.findFirst({ where: { authorId: hanako.id, shares: { some: {} } } });
 const token = async () => {
   const t = randomBytes(32).toString("base64url");
   await prisma.session.create({ data: { token: t, userId: hanako.id, expires: new Date(Date.now() + 864e5) } });
@@ -50,12 +50,12 @@ const token = async () => {
 await clear();
 await goto(B + "/");
 check("戸口の頁の題が「つれづれ」", (await title()) === "つれづれ", await title());
-check("戸口の印が「つれづれ」", (await ev(`document.querySelector(".gate-mark-title")?.textContent`)) === "つれづれ");
+check("戸口の表題が「つれづれ」", (await ev(`document.querySelector(".masthead-title")?.textContent?.trim()`)) === "つれづれ");
 check("html の言語が日本語", (await ev(`document.documentElement.lang`)) === "ja");
 check("戸口に前の名前が残っていない", !OLD.test(await text()), (await text()).match(OLD)?.[0]);
 
 await goto(B + "/sannin");
-check("招待の頁の題に、グループの名前と「つれづれ」", (await title()) === "三人のところ — つれづれ", await title());
+check("招待の頁の題に、スペースの名前と「つれづれ」", (await title()) === "三人のところ — つれづれ", await title());
 check("招待の頁にも前の名前が残っていない", !OLD.test(await text()), (await text()).match(OLD)?.[0]);
 
 // ── 名乗ったあとの頁を、ひとつずつ ──
@@ -64,10 +64,12 @@ const pages = [
   ["/", "つれづれ"],
   ["/sannin", "三人のところ — つれづれ"],
   ["/sannin?view=maki", "三人のところ — つれづれ"],
-  ["/sannin/write", "書く — 三人のところ — つれづれ"],
+  ["/sannin/write", "書き散らす — 三人のところ — つれづれ"],
   ["/sannin/members", null],
-  ["/me", "あなたのページ — つれづれ"],
-  ["/new", "グループを作る — つれづれ"],
+  ["/private", "ひとりのスペース — つれづれ"],
+  ["/write", "書き散らす — つれづれ"],
+  ["/me", "設定 — つれづれ"],
+  ["/new", "スペースを作る — つれづれ"],
   [`/post/${slip.id}`, "つれづれ"],
   [`/post/${slip.id}/edit`, "編集 — つれづれ"],
 ];
@@ -116,16 +118,16 @@ for (const [path, expected] of pages) {
 await clear();
 await setCookie("tanzaku", await token());
 await goto(B + "/");
-check("前の名前のクッキーでも、名乗りが通る", (await text()).includes("はなこ さん"), (await text()).slice(0, 80));
+check("前の名前のクッキーでも、名乗りが通る", (await text()).includes("ひとりのスペース"), (await text()).slice(0, 80));
 await goto(`${B}/post/${slip.id}`);
 check("前の名前のクッキーでも、中が読める", (await text()).includes("アスファルトが濡れる"));
 
 // そこで「消す」と、前の名前のクッキーも一緒に片づく
 await goto(B + "/me");
 await ev(`window.confirm = () => true`);
-await ev(`[...document.querySelectorAll("button")].find(b => b.textContent.trim() === "消す").click()`);
+await ev(`[...document.querySelectorAll("button")].find(b => b.textContent.trim() === "ログアウト").click()`);
 await wait(2800);
-check("消すと、誰でもなくなる", (await text()).includes("はじめまして"), (await text()).slice(0, 80));
+check("ログアウトすると、誰でもなくなる", (await text()).includes("ひとりではじめる"), (await text()).slice(0, 80));
 {
   const names = (await cookies()).map((c) => c.name);
   check("前の名前のクッキーも残らない", !names.includes("tanzaku") && !names.includes("tsurezure"), JSON.stringify(names));
@@ -135,7 +137,7 @@ check("消すと、誰でもなくなる", (await text()).includes("はじめま
 await clear();
 await setCookie("tanzaku", "ただのごみ");
 await goto(B + "/");
-check("壊れた古いクッキーでは名乗れず、戸口に出る", (await text()).includes("はじめまして"), (await text()).slice(0, 80));
+check("壊れた古いクッキーでは名乗れず、戸口に出る", (await text()).includes("ひとりではじめる"), (await text()).slice(0, 80));
 await ev(`[...document.querySelectorAll(".debug-btn")].find(b => b.textContent.includes("はなこ")).click()`);
 await wait(2600);
 {
@@ -146,13 +148,13 @@ await wait(2600);
   check("sameSite は lax", (mine?.sameSite ?? "").toLowerCase() === "lax", mine?.sameSite);
   check("一年以上もつ", mine && (mine.expires * 1000 - Date.now()) > 365 * 864e5, mine?.expires);
   check("前の名前のクッキーは片づいている", !cs.some((c) => c.name === "tanzaku"), JSON.stringify(cs.map((c) => c.name)));
-  check("名乗りが通っている", (await text()).includes("はなこ さん"), (await text()).slice(0, 80));
+  check("名乗りが通っている", (await text()).includes("ひとりのスペース"), (await text()).slice(0, 80));
 }
 
 // ── 無いところは、ちゃんと無い ──
 {
   const r = await fetch(`${B}/nosuchgroupxyz`);
-  check("無いグループは 404", r.status === 404, r.status);
+  check("無いスペースは 404", r.status === 404, r.status);
   const p = await fetch(`${B}/photo/nosuchphoto`);
   check("無い写真も 404", p.status === 404, p.status);
 }

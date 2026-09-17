@@ -32,29 +32,36 @@ const ok = [], bad = [];
 const check = (label, cond, extra = "") => { console.log((cond ? "  ○ " : "  × ") + label + (cond ? "" : " ← " + String(extra).slice(0, 180))); (cond ? ok : bad).push(label + (cond ? "" : " ← " + String(extra).slice(0, 180))); };
 const HOME = "http://localhost:3000/";
 
-// ── はじめて来た人は、グループを作るところから ──
+// ── はじめて来た人は、名前ひとつで始められる ──
 await fresh();
 await goto(HOME); await settle();
 let t = await text();
-check("いきなり「はじめまして」で迎えられる", t.includes("はじめまして"), t.slice(0, 100));
+check("いきなり口上と名乗る欄で迎えられる", t.includes("つれづれとは") && t.includes("ひとりではじめる"), t.slice(0, 100));
 check("ログインという言葉が出てこない", !/ログイン|サインイン|パスワード|メールアドレス/.test(t), t);
-check("グループ名と名前だけを、その場で決められる",
-  await evalJs(`["placeName","name"].every(n => !!document.querySelector("input[name=" + n + "]"))`));
-check("それ以外は何も聞かれない",
-  (await evalJs(`document.querySelectorAll("form input:not([type=hidden])").length`)) === 2,
+check("聞かれるのは名前だけ",
+  (await evalJs(`document.querySelectorAll("form input:not([type=hidden])").length`)) === 1,
   await evalJs(`[...document.querySelectorAll("form input:not([type=hidden])")].map(i => i.name)`));
 
-await type("input[name=placeName]", "いちろうのところ");
 await type("input[name=name]", "いちろう");
-await submitOf("placeName");
+await submitOf("name");
 await settle(3000);
-check("名前と一緒にグループができ、そのまま中へ入る", /^\/[a-z0-9]{8,}$/.test(await path()), await path());
+check("名乗ると、そのままトップに入る", (await path()) === "/", await path());
+check("ひとりのスペースが用意されている", (await text()).includes("ひとりのスペース"), await text().then(s => s.slice(0, 100)));
+check("もう書ける（書き散らすの入口がある）", (await text()).includes("書き散らす"));
+
+// ── スペースを作る ──
+await goto(HOME + "new"); await settle();
+await type("input[name=name]", "いちろうのところ");
+await submitOf("name");
+await settle(3000);
+check("スペースができ、そのまま中へ入る", /^\/[a-z0-9]{8,}$/.test(await path()), await path());
 const place = await path();
-check("空の一覧を経由しない（もう書ける）", (await text()).includes("書く"), await text().then(s => s.slice(0, 100)));
+check("空の一覧を経由しない（もう書ける）", (await text()).includes("いちばん最初の一枚"), await text().then(s => s.slice(0, 100)));
 
 await goto(HOME); await settle();
-check("一覧には、作ったグループが並ぶ", (await text()).includes("いちろうのところ"), await text().then(s => s.slice(0, 100)));
-check("名乗りもできている", (await text()).includes("いちろう さん"));
+check("トップには、作ったスペースが並ぶ", (await text()).includes("いちろうのところ"), await text().then(s => s.slice(0, 100)));
+await goto(HOME + "me"); await settle();
+check("名乗りは設定に控えられている", (await evalJs(`document.querySelector('input[name=name]').value`)) === "いちろう");
 
 // ── 招待 URL を受け取った、まだ誰でもない人 ──
 await goto("http://localhost:3000" + place + "/members"); await settle();
@@ -68,7 +75,7 @@ check("招待 URL は誰でも開ける", t.includes("招待されています")
 check("そこでは名前だけ聞かれる",
   (await evalJs(`!!document.querySelector("input[name=name]")`))
     && !(await evalJs(`!!document.querySelector("input[name=placeName]")`)));
-check("でも中身は見えない", !t.includes("書く"), t);
+check("でも中身は見えない", !t.includes("いちばん最初の一枚") && !(await evalJs(`!!document.querySelector(".entry, .slip")`)), t);
 await type("input[name=name]", "にろう");
 await submitOf("name");
 await settle(3000);
@@ -86,34 +93,22 @@ check("選び直すと、その人として戻れる", (await path()) === place,
 
 // ── すでに仲間なら、そのまま中が出る ──
 await goto(inviteUrl); await settle();
-check("すでに仲間なら、そのまま中が出る", (await text()).includes("書く"), await text().then(s => s.slice(0, 100)));
+check("すでに仲間なら、そのまま中が出る", (await text()).includes("いちばん最初の一枚"), await text().then(s => s.slice(0, 100)));
 
 // ── 名前を変える ──
 await goto("http://localhost:3000/me"); await settle();
 await type("input[name=name]", "にろう改");
 await submitOf("name");
 await settle(2800);
-check("名前を変えられる", (await text()).includes("にろう改 さん"), await text().then(s => s.slice(0, 80)));
+await goto("http://localhost:3000/me"); await settle();
+check("名前を変えられる", (await evalJs(`document.querySelector('input[name=name]').value`)) === "にろう改");
 
-// ── 名乗りそのものが、あなたのページへの戸口 ──
-await goto("http://localhost:3000/"); await settle();
-check("柱の名乗りが戸口になっている",
-  (await evalJs(`document.querySelector(".masthead-sub")?.tagName`)) === "A"
-  && (await evalJs(`document.querySelector(".masthead-sub")?.getAttribute("href")`)) === "/me",
-  await evalJs(`document.querySelector(".masthead-sub")?.outerHTML?.slice(0, 90)`));
-check("品書きに同じ行き先は並べない",
-  (await evalJs(`[...document.querySelectorAll(".masthead-link")].filter(a => a.getAttribute("href") === "/me").length`)) === 0,
-  await evalJs(`[...document.querySelectorAll(".masthead-link")].map(a => a.textContent.trim()).join(" / ")`));
-await evalJs(`document.querySelector(".masthead-sub").click()`);
-await settle(2200);
-check("押すと、あなたのページへ移る", (await path()) === "/me", await path());
-
-// ── あなたのページに、あなたの持ちものが集まっている ──
+// ── 設定に、あなたの持ちものが集まっている ──
 await goto("http://localhost:3000/me"); await settle();
 {
   const panels = await evalJs(`[...document.querySelectorAll(".panel-title")].map(e => e.textContent)`);
-  check("あなたの頁に、名前・音・入っているグループ・消す が並ぶ",
-    JSON.stringify(panels) === JSON.stringify(["名前", "紙の音", "入っているグループ", "このブラウザから消す"]),
+  check("設定に、名前・音・ログアウト が並ぶ",
+    JSON.stringify(panels) === JSON.stringify(["名前", "紙の音", "ログアウト"]),
     JSON.stringify(panels));
 
   check("柱には音を置かない", !(await text()).match(/音 [●—]/), await text().then(t => t.slice(0, 60)));
@@ -128,16 +123,16 @@ await goto("http://localhost:3000/me"); await settle();
     (await evalJs(`localStorage.getItem("tsurezure.muted")`)) !== null);
 }
 
-// 表題は、どの頁からでも入っているグループへ戻る戸口
+// 表題は、どの頁からでもトップへ戻る戸口
 check("表題が、入っているグループへの戸口を兼ねる",
   (await evalJs(`document.querySelector(".masthead-title")?.getAttribute("href")`)) === "/",
   await evalJs(`document.querySelector(".masthead-title")?.outerHTML?.slice(0, 80)`));
 
 // ── このブラウザから消す ──
 await goto("http://localhost:3000/me"); await settle();
-await evalJs(`[...document.querySelectorAll('button')].find(b => b.textContent.trim() === '消す').click()`);
+await evalJs(`[...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'ログアウト').click()`);
 await settle(2800);
-check("消すと、また誰でもなくなる", (await text()).includes("はじめまして"), await text().then(s => s.slice(0, 80)));
+check("ログアウトすると、また誰でもなくなる", (await text()).includes("ひとりではじめる"), await text().then(s => s.slice(0, 80)));
 
 console.log("○ " + ok.join("\n○ "));
 if (bad.length) console.log("\n× " + bad.join("\n× "));

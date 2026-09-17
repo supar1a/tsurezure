@@ -39,6 +39,8 @@ const put = (v, { loosen = false } = {}) => ev(`(() => {
 })()`);
 const save = () => ev(`[...document.querySelectorAll("button")].find(b => b.textContent.trim() === "保存する").click()`);
 const rename = async (v, opts) => { await goto(ME); await put(v, opts); await save(); await wait(3000); };
+// 柱には名乗りを出さないので、いまの名前は設定の欄で見る
+const nameNow = async () => { await goto(ME); return ev(`document.querySelector(${JSON.stringify(NAME)}).value`); };
 
 // ── いまの名前が入った状態で始まる ──
 await goto(ME);
@@ -48,8 +50,8 @@ const before = await cookie();
 
 // ── 変える ──
 await rename("はなこ改");
-check("変えると、入っているグループの一覧に戻る", (await path()) === "/", await path());
-check("柱の名乗りが変わる", (await text()).includes("はなこ改 さん"), (await text()).slice(0, 80));
+check("変えると、トップに戻る", (await path()) === "/", await path());
+check("設定の欄の名前が変わる", (await nameNow()) === "はなこ改", await nameNow());
 check("クッキーは変わらない（同じ人のまま）", (await cookie()) === before, `${before?.slice(0, 8)} → ${(await cookie())?.slice(0, 8)}`);
 
 // 書いたものの名前も付け替わる
@@ -59,7 +61,8 @@ await goto(`${B}/sannin?view=maki`);
   check("巻物で、自分の書いたものの名前が付け替わる", who.includes("はなこ改"), JSON.stringify(who));
   check("前の名前は一つも残らない", !who.includes("はなこ"), JSON.stringify(who));
   check("ほかの人の名前は動かない", who.includes("たろう") && who.includes("じろう"), JSON.stringify(who));
-  check("下書きも自分のものとして見えたまま（同じ人）", (await text()).includes("まだ途中"), (await text()).slice(0, 120));
+  await goto(`${B}/private?view=maki`);
+  check("投稿していない一枚も、ひとりのスペースに自分のものとして残っている", (await text()).includes("まだ途中"), (await text()).slice(0, 120));
 }
 await goto(`${B}/sannin`);
 check("目次でも付け替わる",
@@ -78,15 +81,15 @@ await goto(`${B}/sannin/members`);
 
 // ── 前後の空白は落とす（全角も） ──
 await rename("　 さくら 　");
-check("前後の空白（全角も）は落とす", (await text()).includes("さくら さん") && !(await text()).includes("　さくら"), (await text()).slice(0, 80));
+check("前後の空白（全角も）は落とす", (await nameNow()) === "さくら", await nameNow());
 
 // ── 長さ ──
 await rename("あ".repeat(24));
-check("24 字はそのまま通る", (await text()).includes("あ".repeat(24) + " さん"), (await text()).slice(0, 80));
+check("24 字はそのまま通る", (await nameNow()) === "あ".repeat(24), await nameNow());
 
 await rename("あ".repeat(25), { loosen: true });
 check("25 字は受け側で弾く", (await path()) === "/me" && (await text()).includes("名前は1〜24字"), `${await path()} ${(await text()).slice(0, 120).replace(/\s+/g, " ")}`);
-check("弾かれても、名前は前のまま", await (async () => { await goto(B + "/"); return (await text()).includes("あ".repeat(24) + " さん"); })());
+check("弾かれても、名前は前のまま", (await nameNow()) === "あ".repeat(24), await nameNow());
 
 await rename("", { loosen: true });
 check("空は受け側で弾く", (await path()) === "/me" && (await text()).includes("名前は1〜24字"), `${await path()}`);
@@ -103,7 +106,7 @@ check("欄が空のときは、そもそも送りにいかない（required）",
 
 // ── 元に戻しておく ──
 await rename("はなこ");
-check("元の名前に戻せる", (await text()).includes("はなこ さん"), (await text()).slice(0, 80));
+check("元の名前に戻せる", (await nameNow()) === "はなこ", await nameNow());
 
 await send("Target.closeTarget", { targetId }); ws.close();
 for (const l of ok) console.log("  ○ " + l);
