@@ -950,10 +950,10 @@ button.line-check:disabled {
  * ひとりのスペースの札。スペースの札と同じ形だが、ひと目で「自分のもの」と分かるように、
  * 朱の印（じぶん）を頭に置き、右の縁（縦組みでは頭の側）に朱の細い罫を通す。紙も少し濃い。
  */
+/* ひとりのスペースの札。ほかの札と同じ顔で、少しだけ明るい紙 */
 .book-self {
   background-color: rgba(255, 253, 246, 0.8);
   border-color: rgba(33, 30, 25, 0.2);
-  border-right: 2px solid rgba(168, 65, 44, 0.55);
 }
 
 .book:hover {
