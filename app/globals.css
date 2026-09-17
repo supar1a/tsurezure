@@ -1274,7 +1274,7 @@ a {
 
 .about {
   flex: 0 0 auto;
-  align-self: stretch; /* 丈は場いっぱい。幅は中身（列の数）で決まる */
+  align-self: flex-start; /* 丈は中身のぶんだけ（いちばん長い列に合わせる）。幅は列の数で決まる */
   display: flex;
   flex-direction: column; /* 縦組みでは右から左へ */
   align-items: flex-start;
@@ -1319,10 +1319,10 @@ a {
   white-space: nowrap;
 }
 
-/* 本文。見出しから一段離して、丈は札いっぱい（戸口を下に寄せるため） */
+/* 本文。見出しから一段離して */
 .about-body {
   flex: 0 0 auto;
-  align-self: stretch;
+  align-self: flex-start;
   display: flex;
   flex-direction: column; /* 右から左へ */
   align-items: flex-start;
