@@ -1210,7 +1210,7 @@ a {
 .invite {
   display: flex;
   flex-direction: column; /* 縦組みでは右から左へ */
-  align-items: center;
+  align-items: flex-start; /* 頭（上）を揃える。見出しも URL も釦も同じ高さから */
   gap: 0.9rem;
 }
 
