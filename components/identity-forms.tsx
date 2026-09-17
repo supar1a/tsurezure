@@ -16,7 +16,7 @@ export function StartForm({ action }: { action: Action }) {
   const { play } = useSound();
 
   return (
-    <form action={formAction} className="gate-block">
+    <form action={formAction} className="stack">
       <label className="field">
         <span className="field-label">あなたの名前</span>
         <input
@@ -34,7 +34,7 @@ export function StartForm({ action }: { action: Action }) {
 
       <button
         type="submit"
-        className="btn btn-ink gate-wide"
+        className="btn btn-ink btn-wide"
         disabled={pending}
         onClick={() => play("ink")}
       >
@@ -56,7 +56,7 @@ export function NameOnlyForm({
   const { play } = useSound();
 
   return (
-    <form action={formAction} className="gate-block">
+    <form action={formAction} className="stack">
       {Object.entries(hidden).map(([name, value]) => (
         <input key={name} type="hidden" name={name} value={value} />
       ))}
@@ -78,7 +78,7 @@ export function NameOnlyForm({
 
       <button
         type="submit"
-        className="btn btn-ink gate-wide"
+        className="btn btn-ink btn-wide"
         disabled={pending}
         onClick={() => play("ink")}
       >
@@ -102,12 +102,12 @@ export function JoinAsMe({
   const { play } = useSound();
 
   return (
-    <form action={formAction} className="gate-block">
+    <form action={formAction} className="stack">
       <input type="hidden" name="slug" value={slug} />
       {state?.error ? <p className="notice">{state.error}</p> : null}
       <button
         type="submit"
-        className="btn btn-ink gate-wide"
+        className="btn btn-ink btn-wide"
         disabled={pending}
         onClick={() => play("ink")}
       >

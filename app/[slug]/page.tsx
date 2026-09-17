@@ -12,7 +12,7 @@ import { SlipColumn } from "@/components/slip-column";
 import { ContentsEntry } from "@/components/contents-entry";
 import { MarkAsRead } from "@/components/mark-as-read";
 import { OpenAt } from "@/components/open-at";
-import { GateMark } from "@/components/gate-mark";
+import { Intro, Epigraph } from "@/components/intro";
 import { JoinAsMe, NameOnlyForm, PickMe } from "@/components/identity-forms";
 
 const SCROLLER = "scroller";
@@ -57,31 +57,42 @@ export default async function PlacePage({
     });
 
     return (
-      <main className="gate">
-        <div className="gate-inner fade-in">
-          <GateMark />
-          <div className="gate-form">
-            <p className="gate-heading">{place.name}</p>
+      <div className="app">
+        <Masthead />
 
-            {user ? (
-              <JoinAsMe action={joinAction} slug={slug} name={user.name} />
-            ) : (
-              <>
-                <p className="leaf-lede">
-                  このスペースに招待されています。
-                  <br />
-                  呼ばれたい名前をひとつ、決めてください。
-                </p>
-                <NameOnlyForm action={joinAction} hidden={{ slug }} />
-                <PickMe
-                  slug={slug}
-                  people={members.map((m) => ({ id: m.user.id, name: m.user.name }))}
-                />
-              </>
-            )}
+        <OpenAt edge="right" />
+        <div className="stage">
+          <div className="scroll-tate">
+            <div className="stream tate fade-in" data-stream>
+              {/* 招待された人がはじめて見る頁。これが何かの口上を、招待状と一緒に。 */}
+              <Intro />
+
+              <section className="welcome">
+                <h2 className="panel-title">{place.name}</h2>
+
+                {user ? (
+                  <JoinAsMe action={joinAction} slug={slug} name={user.name} />
+                ) : (
+                  <>
+                    <p className="caption">
+                      このスペースに招待されています。
+                      <br />
+                      呼ばれたい名前をひとつ、決めてください。
+                    </p>
+                    <NameOnlyForm action={joinAction} hidden={{ slug }} />
+                    <PickMe
+                      slug={slug}
+                      people={members.map((m) => ({ id: m.user.id, name: m.user.name }))}
+                    />
+                  </>
+                )}
+              </section>
+
+              <Epigraph />
+            </div>
           </div>
         </div>
-      </main>
+      </div>
     );
   }
 

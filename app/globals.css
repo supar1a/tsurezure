@@ -433,15 +433,6 @@ html::before {
   inline-size: min(58vh, 17rem);
 }
 
-/*
- * 戸口の入力欄。伸ばしっぱなしにすると、名前ひとつのために
- * 画面の丈いっぱいの帯が立つ。書く量に見合うところで止める。
- */
-.gate-form .input {
-  inline-size: min(100%, 22rem);
-  align-self: flex-start;
-}
-
 /* 枠で囲まず、罫が濃くなることで焦点を示す */
 .input:focus-visible {
   outline: none;
@@ -685,39 +676,6 @@ a.slip-when:hover {
   background: var(--rule);
 }
 
-/* 下書きの印 */
-.seal {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.745rem;
-  letter-spacing: 0.14em;
-  color: var(--shu);
-  border: 1px solid rgba(168, 65, 44, 0.35);
-  border-radius: 1px;
-  padding: 0.45em 0.3em;
-  line-height: 1.6;
-}
-
-/* --------------------------------------------------------------------------
-   何もないとき
-   -------------------------------------------------------------------------- */
-
-.hollow {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 1.6rem;
-  height: 100%;
-  padding: var(--air) var(--gutter);
-  color: var(--sumi-ghost);
-  font-size: 0.9rem;
-  letter-spacing: 0.28em;
-  line-height: 2.4;
-  text-align: start;
-}
-
 /* --------------------------------------------------------------------------
    詳細 — 一枚の紙を、そのまま広げる
    -------------------------------------------------------------------------- */
@@ -903,75 +861,6 @@ a.slip-when:hover {
 /* 原稿用紙のうっすらとした罫 */
 
 /* --------------------------------------------------------------------------
-   入口 — 戸口
-   -------------------------------------------------------------------------- */
-
-.gate {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100dvh - var(--keyboard, 0px));
-  padding: var(--air) var(--gutter);
-  position: relative;
-  z-index: 1;
-}
-
-.gate-inner {
-  display: flex;
-  /* 縦組みの読み順に合わせて、印が右、書くところがその左 */
-  flex-direction: row-reverse;
-  align-items: stretch;
-  gap: clamp(2.5rem, 8vw, 7rem);
-  width: 100%;
-  max-width: 62rem;
-}
-
-.gate-mark {
-  writing-mode: vertical-rl;
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: clamp(1.1rem, 2vw, 1.8rem); /* 印と添えの一行は一組 */
-  padding-block: 0.5rem;
-}
-
-.gate-mark-title {
-  margin: 0;
-  color: var(--sumi);
-}
-
-.gate-mark-title .logo {
-  display: block;
-  height: clamp(9rem, 14vw, 12rem);
-  width: auto;
-}
-
-.gate-mark-note {
-  font-size: 0.865rem;
-  letter-spacing: 0.3em;
-  color: var(--sumi-faint);
-  line-height: 2;
-}
-
-.gate-form {
-  writing-mode: vertical-rl;
-  flex: 0 1 auto;
-  display: flex;
-  flex-direction: column; /* 縦組みでは右から左へ */
-  gap: 1.8rem;
-  /* 縦組みでは、書ける長さは高さのほう。ここで与えないと一行に潰れる。 */
-  inline-size: min(74vh, 32rem);
-  align-self: center;
-}
-
-.gate-heading {
-  font-size: 0.925rem;
-  letter-spacing: 0.32em;
-  color: var(--sumi-faint);
-}
-
-/* --------------------------------------------------------------------------
    ノート
    -------------------------------------------------------------------------- */
 
@@ -1024,6 +913,13 @@ a.slip-when:hover {
   height: auto;
   align-self: flex-start;
   opacity: 0.86;
+}
+
+/* 口上が先頭（名乗る前）のときは、右に区切る相手がいない */
+.stream > .intro:first-child {
+  border-block-start: 0;
+  padding-block-start: 0;
+  margin-block-start: 0;
 }
 
 .intro-title {
@@ -1097,11 +993,6 @@ a.slip-when:hover {
   background-color: rgba(255, 253, 246, 0.8);
   border-color: rgba(33, 30, 25, 0.2);
   border-right: 2px solid rgba(168, 65, 44, 0.55);
-}
-
-.book-seal {
-  align-self: flex-start;
-  margin-block-end: 0.2rem;
 }
 
 .book:hover {
@@ -1365,32 +1256,6 @@ a {
     padding: 0.7em 0.9em;
   }
 
-  /*
-   * 戸口は送れる器ではないので、書く欄が横に収まらないと左が切れたまま届かない
-   * （そのうえ携帯の Chrome は「収まるように」画面ごと縮める）。
-   * 間と縁を詰めて 375px に収める。それでも収まらない狭い画面では、右から送れるようにしておく。
-   * 縦組みは右から読むので、器は rtl にして原点を右端に置く（中の字は ltr に戻す）。
-   */
-  .gate {
-    padding-inline: 0.5rem;
-    overflow-x: auto;
-    direction: rtl;
-    justify-content: flex-start;
-  }
-
-  .gate-inner {
-    direction: ltr;
-    flex-direction: column;
-    gap: 2.5rem;
-    width: max-content;
-    max-width: none;
-    margin-inline: auto; /* 収まるときは真ん中、はみ出すときは端から */
-  }
-
-  .gate-form {
-    gap: 0.9rem;
-  }
-
   .page {
     max-block-size: 20rem;
   }
@@ -1407,18 +1272,6 @@ a {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-
-/* 戸口の断り書きは、書く欄とは別のもの。少し離す。 */
-.gate-form .leaf-lede {
-  margin-block-start: 1rem;
-}
-
-.leaf-lede {
-  font-size: 0.985rem;
-  letter-spacing: 0.1em;
-  line-height: 2;
-  color: var(--sumi-faint);
 }
 
 .row {
@@ -1440,34 +1293,41 @@ a {
 }
 
 /* --------------------------------------------------------------------------
-   戸口 — Google と、メールに届くリンク
+   名乗る欄
    -------------------------------------------------------------------------- */
 
-.gate-block {
+.stack {
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
+}
+
+/* 名乗る欄（トップ・招待状）。口上の左に、札ひとつぶんの丈で。 */
+.welcome {
+  display: flex;
+  flex-direction: column; /* 縦組みでは右から左へ */
+  align-items: flex-start;
+  align-self: flex-start;
+  gap: 1.4rem;
+  max-block-size: 24rem;
+}
+
+.welcome .input {
+  inline-size: min(100%, 22rem);
+}
+
+.welcome .caption {
+  max-inline-size: 22em;
 }
 
 /*
  * 主たる釦。横組みでは端から端まで伸ばしていたが、縦組みで同じことをすると
  * 墨の帯が場の丈いっぱいに立ってしまい、重すぎる。丈は抑える。
  */
-.gate-wide {
+.btn-wide {
   inline-size: min(100%, 11rem);
   align-self: flex-start;
   padding-block: 0.85em;
-}
-
-.gate-form .caption {
-  font-size: 0.845rem;
-  line-height: 2;
-}
-
-.gate-form .code {
-  font-size: 0.845rem;
-  padding: 0.15em 0.4em;
-  margin-inline: 0.2em;
 }
 
 /* --------------------------------------------------------------------------
@@ -1702,19 +1562,6 @@ a {
   white-space: nowrap;
 }
 
-/* 日記（あなたのページ）。目次と同じ一行一篇。 */
-.notebook {
-  display: flex;
-  flex-direction: column; /* 縦組みでは右から左へ */
-  gap: clamp(1.6rem, 2.4vw, 2.6rem);
-}
-
-.entry-place {
-  font-size: 0.845rem;
-  letter-spacing: 0.16em;
-  color: var(--sumi-faint);
-}
-
 /* 字数は帯のいちばん下へ。釦の並びから離して、数えているだけの顔にする。 */
 .compose-tally {
   display: flex;
@@ -1764,17 +1611,6 @@ a {
 
 .blankpage:active .blankpage-btn {
   transform: translateY(1px);
-}
-
-.stream-end {
-  display: flex;
-  align-items: flex-start;
-  inline-size: 100%;
-  margin-block-end: clamp(3.4rem, 5.4vw, 6rem);
-  font-size: 0.845rem;
-  letter-spacing: 0.24em;
-  color: var(--sumi-ghost);
-  white-space: nowrap;
 }
 
 .waiting {
