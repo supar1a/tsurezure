@@ -70,7 +70,7 @@ export function NameOnlyForm({
       ))}
 
       <label className="field">
-        <span className="field-label">名前</span>
+        <span className="field-label">あなたの名前</span>
         <input
           name="name"
           className="input"
