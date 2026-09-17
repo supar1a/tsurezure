@@ -17,6 +17,9 @@ export const metadata: Metadata = {
 
   openGraph: card(),
   twitter: { card: "summary_large_image" },
+
+  // ホーム画面に置いたとき、Safari の枠なしで開く。表題は短く、名前だけ。
+  appleWebApp: { capable: true, title: SITE, statusBarStyle: "default" },
 };
 
 export const viewport = {

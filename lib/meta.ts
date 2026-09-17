@@ -6,7 +6,7 @@
  * 取りこぼしが起きないよう、作るのはここ一か所に寄せてある。
  */
 export const SITE = "つれづれ";
-export const ABOUT = "仲間うちだけの、縦書きの書き散らし。";
+export const ABOUT = "自分と友達だけの、縦書きの書き散らし。";
 const CARD = "/opengraph-image.png";
 
 export function card(title: string = SITE) {
