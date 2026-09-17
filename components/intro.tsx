@@ -16,9 +16,6 @@ export function Intro({ actions = false }: { actions?: boolean }) {
         <h1 className="about-title">思いつくまま、書き散らす。</h1>
       </header>
 
-      {/* 紙に向かって書く人の絵。見出しの左に */}
-      <img src="/dance.png" alt="" className="about-mark" width={246} height={260} />
-
       <div className="about-body">
         <p className="about-text">
           日々のことや、ふと思ったことを、
@@ -26,6 +23,9 @@ export function Intro({ actions = false }: { actions?: boolean }) {
           縦書きで残しておける場所です。
         </p>
         <p className="about-text">ひとりでも、友達とも。</p>
+
+        {/* 紙に向かって書く人の絵。本文の左に */}
+        <img src="/dance.png" alt="" className="about-mark" width={246} height={260} />
 
         {/* 戸口は本文と同じ縦の流れの末尾（左）に、下に寄せて置く。別の段にすると本文の丈が足りなくなる。 */}
         {actions ? (
