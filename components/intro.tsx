@@ -3,8 +3,8 @@ import { PaperLink } from "./paper-link";
 /**
  * つれづれとは。細い枠で囲った一枚の札。
  *
- * 上に横組みで小さく「つれづれとは」と大きな見出し、その下に縦組みの本文、
- * 左下に縦の戸口（書き散らす）。宿の案内板のような組み。
+ * 右から、小さく「つれづれとは」、大きな見出し、本文、そして左下に戸口（書き散らす）。
+ * 全部縦組み。宿の案内板のような組み。
  * トップに来た人みんなに見せる。名乗る前の人にはこれが口上、名乗った人には札の並びの左の添え。
  * 戸口は名乗った人にだけ。名乗る前は、この札の左に名乗る欄が続く。
  */
@@ -13,11 +13,7 @@ export function Intro({ actions = false }: { actions?: boolean }) {
     <section className="about">
       <header className="about-head">
         <p className="about-kicker">つれづれとは</p>
-        <h1 className="about-title">
-          思いつくまま、
-          <br />
-          書き散らす。
-        </h1>
+        <h1 className="about-title">思いつくまま、書き散らす。</h1>
       </header>
 
       <div className="about-body">

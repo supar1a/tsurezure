@@ -1069,7 +1069,6 @@ a {
   }
 
   .about {
-    width: 16rem;
     padding: 1.4rem 1.1rem;
   }
 
@@ -1215,36 +1214,32 @@ a {
 
 /* 名乗る欄（トップ・招待状）。口上の左に、札ひとつぶんの丈で。 */
 /* --------------------------------------------------------------------------
-   つれづれとは — 細い枠の札。上は横組み（小さな添えと見出し）、下は縦組みの本文、左下に戸口
+   つれづれとは — 細い枠の札。右から、小さな添え、見出し、本文、左下に戸口。全部縦組み
    -------------------------------------------------------------------------- */
 
 .about {
-  /* 札そのものは横組み。上から下へ積む。縦組みの流れの中では、丈が場いっぱい、幅は決め打ち。 */
-  writing-mode: horizontal-tb;
   flex: 0 0 auto;
-  align-self: stretch;
+  align-self: stretch; /* 丈は場いっぱい。幅は中身（列の数）で決まる */
   display: flex;
-  flex-direction: column;
-  width: clamp(17rem, 24vw, 22rem);
-  padding: clamp(1.8rem, 3vh, 2.6rem) clamp(1.4rem, 2vw, 2rem);
+  flex-direction: column; /* 縦組みでは右から左へ */
+  align-items: flex-start;
+  padding: clamp(1.8rem, 3vh, 2.6rem) clamp(1.6rem, 2.4vw, 2.4rem);
   border: 1px solid var(--rule);
-  /* 札の並びとは別のもの。空きで離す */
-  margin-inline-start: clamp(1.6rem, 3vw, 3rem);
+  /* 札の並びとは別のもの。空きで離す（縦組みでは block-start が右） */
+  margin-block-start: clamp(1.6rem, 3vw, 3rem);
 }
 
 .about-head {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.9rem;
-  text-align: center;
+  flex-direction: column; /* 右から左へ：添え、見出し */
+  align-items: flex-start;
+  gap: 1.2rem;
 }
 
 .about-kicker {
   margin: 0;
   font-size: 0.845rem;
   letter-spacing: 0.4em;
-  text-indent: 0.4em; /* 字間のぶん右に寄るのを戻して真ん中に */
   color: var(--sumi-faint);
 }
 
@@ -1253,24 +1248,20 @@ a {
   font-size: clamp(1.3rem, 2vw, 1.7rem);
   font-weight: 600;
   letter-spacing: 0.24em;
-  text-indent: 0.24em;
   line-height: 1.7;
   color: var(--sumi);
   white-space: nowrap;
 }
 
-/* 本文は縦組み。残った丈をぜんぶ使い、右上から流す */
+/* 本文。見出しから一段離して、丈は札いっぱい（戸口を下に寄せるため） */
 .about-body {
-  writing-mode: vertical-rl;
-  flex: 1 1 auto;
-  min-height: 0;
+  flex: 0 0 auto;
+  align-self: stretch;
   display: flex;
-  flex-direction: column; /* 縦組みでは右から左へ */
+  flex-direction: column; /* 右から左へ */
   align-items: flex-start;
   gap: 1rem;
-  margin-block-start: clamp(1.4rem, 2.6vh, 2rem);
-  /* 段落の右端は札の中で少し内側に */
-  padding-inline-start: 0.4rem;
+  margin-block-start: clamp(1.6rem, 2.6vw, 2.4rem);
 }
 
 .about-text {
