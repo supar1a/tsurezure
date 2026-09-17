@@ -882,11 +882,11 @@ a.slip-when:hover {
   border-block-start: 1px solid var(--rule-soft);
 }
 
-/* 巻いた紙とペンの絵。墨だけの線画なので、地に溶けるよう少しだけ薄める。 */
+/* 紙に向かって書く人の絵。墨だけの線画なので、地に溶けるよう少しだけ薄める。 */
 .intro-mark {
   inline-size: auto;
   block-size: auto;
-  width: clamp(5.4rem, 8vw, 7.4rem);
+  width: clamp(7rem, 11vw, 10rem);
   height: auto;
   align-self: flex-start;
   opacity: 0.86;

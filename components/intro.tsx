@@ -1,7 +1,7 @@
 import { PaperLink } from "./paper-link";
 
 /**
- * これが何かを一息で。巻いた紙とペンの絵、見出し、概要。
+ * これが何かを一息で。絵、見出し、概要。
  *
  * トップに来た人みんなに見せる。まだ名乗っていない人にはこれが戸口の口上になり、
  * 名乗った人には札の並びの左に添え書きとして残る。
@@ -10,7 +10,7 @@ import { PaperLink } from "./paper-link";
 export function Intro({ actions = false }: { actions?: boolean }) {
   return (
     <section className="intro">
-      <img src="/pen.png" alt="" className="intro-mark" width={186} height={155} />
+      <img src="/dance.png" alt="" className="intro-mark" width={246} height={260} />
 
       <h1 className="intro-title">思いついたまま、書き散らす。</h1>
 
