@@ -215,6 +215,18 @@ html::before {
   border: 0;
 }
 
+/* ステージングの印。ロゴの下に、朱の太字で。字は立てて判のように */
+.masthead-stage {
+  flex: 0 0 auto;
+  margin-inline-start: 0.6rem; /* 縦組みでは上 */
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--shu);
+  text-orientation: upright;
+  white-space: nowrap;
+}
+
 .masthead-sub {
   /* 丈が足りなくなっても、名前は削らない。詰めるのは品書きのほう。 */
   flex: 0 0 auto;

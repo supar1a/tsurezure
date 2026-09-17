@@ -18,6 +18,8 @@ export function Masthead({
           <Logo />
           <span className="sr-only">つれづれ</span>
         </PaperLink>
+        {/* 本番でないところ（Vercel の Preview）には、ロゴの下に朱で印を押しておく */}
+        {process.env.VERCEL_ENV === "preview" ? <span className="masthead-stage">Staging</span> : null}
         {sub && subHref ? (
           <PaperLink href={subHref} className="masthead-sub masthead-sub-link" voice="rustle">
             {sub}
