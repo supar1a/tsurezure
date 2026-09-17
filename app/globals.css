@@ -1280,6 +1280,46 @@ a {
 }
 
 /* 名乗る欄（トップ・招待状）。口上の左に、札ひとつぶんの丈で。 */
+/* 名乗る前のトップ。主の塊は口上と同じ組みで、名乗る欄までひと続き。 */
+.landing-start {
+  display: flex;
+  flex-direction: column; /* 縦組みでは右から左へ */
+  align-items: flex-start;
+  gap: 1rem;
+  /* 口上の文からは一段空ける。ここから「する」ことになる */
+  margin-block-start: 0.6rem;
+}
+
+.landing-start .input {
+  inline-size: min(100%, 22rem);
+}
+
+.landing-note {
+  margin: 0;
+  font-size: 0.845rem;
+  letter-spacing: 0.16em;
+  line-height: 2;
+  color: var(--sumi-faint);
+  max-inline-size: 30em;
+}
+
+/* 招待の塊。主の塊とは別のものなので、罫と広い空きで離し、字も薄く。 */
+.landing-invite {
+  display: flex;
+  flex-direction: column; /* 縦組みでは右から左へ */
+  align-items: flex-start;
+  align-self: flex-start;
+  gap: 1rem;
+  max-block-size: 22rem;
+  padding-block-start: clamp(2rem, 3.6vw, 3.6rem);
+  margin-block-start: clamp(2rem, 3.6vw, 3.6rem);
+  border-block-start: 1px solid var(--rule-soft);
+}
+
+.landing-invite .caption {
+  max-inline-size: 24em;
+}
+
 .welcome {
   display: flex;
   flex-direction: column; /* 縦組みでは右から左へ */

@@ -31,18 +31,34 @@ export default async function HomePage() {
         <div className="stage">
           <div className="scroll-tate">
             <div className="stream tate fade-in" data-stream>
-              <Intro />
+              {/* 主の塊：これが何か → ひとりではじめる。全部ひと続きに。 */}
+              <section className="intro landing">
+                <img src="/dance.png" alt="" className="intro-mark" width={246} height={260} />
 
-              <section className="welcome">
-                <h2 className="panel-title">はじめまして</h2>
-                <StartForm action={startAction} />
-                <p className="caption">
-                  アカウントはありません。
+                <h1 className="intro-title">思いついたまま、書き散らす。</h1>
+
+                <p className="intro-text">
+                  つれづれは、日々のことや、ふと思ったことを
                   <br />
-                  誰かに招待された方は、受け取った URL をひらいてください。
+                  縦書きで残しておける場所です。
                 </p>
+
+                <div className="landing-start">
+                  <StartForm action={startAction} label="呼ばれたい名前" submit="ひとりではじめる" />
+                  <p className="landing-note">友達と書きたいときは、あとからスペースを作れます。</p>
+                </div>
                 {isDev ? <DevSwitcher people={people} /> : null}
               </section>
+
+              {/* 招待の塊：主の塊から離して、控えめに。 */}
+              <aside className="landing-invite">
+                <h2 className="panel-title">招待されていますか？</h2>
+                <p className="caption">
+                  届いた URL をひらくと、そのスペースに参加できます。
+                  <br />
+                  アカウント登録は必要ありません。
+                </p>
+              </aside>
             </div>
           </div>
         </div>

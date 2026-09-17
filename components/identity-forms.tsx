@@ -11,14 +11,22 @@ type Action = (prev: FormState, formData: FormData) => Promise<FormState>;
  * はじめまして。スペースを作るところから始める。
  * 名前だけ決めても行き先が無いので、名前はこの form のひとつとして聞く。
  */
-export function StartForm({ action }: { action: Action }) {
+export function StartForm({
+  action,
+  label = "あなたの名前",
+  submit = "はじめる",
+}: {
+  action: Action;
+  label?: string;
+  submit?: string;
+}) {
   const [state, formAction, pending] = useActionState(action, null);
   const { play } = useSound();
 
   return (
     <form action={formAction} className="stack">
       <label className="field">
-        <span className="field-label">あなたの名前</span>
+        <span className="field-label">{label}</span>
         <input
           name="name"
           className="input"
@@ -38,7 +46,7 @@ export function StartForm({ action }: { action: Action }) {
         disabled={pending}
         onClick={() => play("ink")}
       >
-        {pending ? "…" : "はじめる"}
+        {pending ? "…" : submit}
       </button>
     </form>
   );
