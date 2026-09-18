@@ -28,6 +28,10 @@
   --rule: rgba(33, 30, 25, 0.12);
   --rule-soft: rgba(33, 30, 25, 0.06);
 
+  /* 押した手応え。押すときは速く沈み（80ms）、離すと少し弾んで戻る（バネ） */
+  --press-in: 80ms ease-out;
+  --press-out: 320ms cubic-bezier(0.34, 1.4, 0.64, 1);
+
   /* 半紙。薄い白の紙が一枚、地の上に載っている。ぼかさず、うっすら透ける。繊維は粒の PNG を重ねて出す */
   --sheet-fill: var(--paper-grain), linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6));
   --sheet-size: 160px 160px, auto;
@@ -257,7 +261,19 @@ html::before {
   gap: clamp(1.6rem, 2.8vw, 2.4rem);
 }
 
+.masthead-link:active,
+.entry:active,
+a.slip-when:active,
+.slip-who:active,
+.about-link:active,
+.btn-quiet:active {
+  opacity: 0.55;
+  transform: none;
+  transition: opacity var(--press-in);
+}
+
 .masthead-link {
+  -webkit-tap-highlight-color: transparent;
   font-size: 0.925rem;
   letter-spacing: 0.2em;
   color: var(--sumi-soft);
@@ -351,14 +367,18 @@ html::before {
   font: inherit;
   font-size: 0.975rem;
   letter-spacing: 0.22em;
-  color: var(--sumi-soft);
-  /* 小さな半紙。罫で囲わず、うっすら透ける白と紙の影で立たせる */
-  background-color: transparent; /* button の素の灰色を消す */
-  background-image: var(--sheet-fill);
-  background-size: var(--sheet-size);
+  color: var(--sumi);
+  /* 半透明の白。後ろを少しぼかして、紙が透けて見える（Apple の釦の作り） */
+  background-color: transparent;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.4));
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  backdrop-filter: blur(10px) saturate(1.2);
   border: 0;
-  border-radius: 3px;
-  box-shadow: var(--sheet-shadow);
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+    0 0 0 1px rgba(33, 30, 25, 0.05),
+    0 2px 8px -3px rgba(33, 30, 25, 0.18);
   padding-block: 0.7em;
   padding-inline: 1.5em;
   cursor: pointer;
@@ -368,31 +388,39 @@ html::before {
   align-items: center;
   justify-content: center;
   gap: 0.6em;
+  -webkit-tap-highlight-color: transparent;
   transition:
     color var(--quick) var(--ease),
     box-shadow var(--quick) var(--ease),
-    transform var(--quick) var(--ease);
+    background-image var(--quick) var(--ease),
+    transform var(--press-out);
 }
 
 .btn:hover {
   color: var(--sumi);
-  background-image: var(--paper-grain), linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.82));
+  background-image: linear-gradient(rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.55));
   box-shadow:
-    0 0 0 1px rgba(33, 30, 25, 0.07),
-    0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 6px 16px -8px rgba(33, 30, 25, 0.28);
+    0 0 0 1px rgba(255, 255, 255, 0.8) inset,
+    0 0 0 1px rgba(33, 30, 25, 0.06),
+    0 6px 16px -6px rgba(33, 30, 25, 0.22);
 }
 
 .btn:active {
-  transform: translateY(1px);
+  transform: scale(0.94);
+  transition: transform var(--press-in), box-shadow var(--press-in);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.65));
   box-shadow:
-    0 0 0 1px rgba(33, 30, 25, 0.07),
-    0 1px 4px -2px rgba(33, 30, 25, 0.2);
+    0 0 0 1px rgba(255, 255, 255, 0.8) inset,
+    0 0 0 1px rgba(33, 30, 25, 0.06);
 }
 
 /* 静かな釦（やめる など）：紙を載せず、字だけ */
+/* 静かな釦（やめる など）：地を載せず、字だけ */
 .btn-quiet {
+  color: var(--sumi-soft);
   background-image: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   box-shadow: none;
   padding-inline: 0.6em;
 }
@@ -404,25 +432,32 @@ html::before {
 }
 
 /* 墨の釦：墨で塗った紙。粒を重ねて、塗りむらのように */
+/* 墨の釦：半透明の墨。後ろの紙の粒がかすかに透け、上の縁に光の筋 */
 .btn-ink {
   color: var(--washi-lit);
-  background-image: var(--paper-grain), linear-gradient(var(--sumi), var(--sumi));
-  background-size: var(--sheet-size);
+  background-image: linear-gradient(rgba(30, 27, 22, 0.86), rgba(30, 27, 22, 0.8));
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  backdrop-filter: blur(10px) saturate(1.2);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.12) inset,
-    0 4px 14px -6px rgba(33, 30, 25, 0.5);
+    0 1px 0 rgba(255, 255, 255, 0.18) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 4px 14px -5px rgba(30, 27, 22, 0.5);
 }
 
 .btn-ink:hover {
   color: var(--washi-lit);
-  background-image: var(--paper-grain), linear-gradient(#322d26, #322d26);
+  background-image: linear-gradient(rgba(30, 27, 22, 0.92), rgba(30, 27, 22, 0.86));
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.12) inset,
-    0 8px 20px -8px rgba(33, 30, 25, 0.6);
+    0 1px 0 rgba(255, 255, 255, 0.22) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 8px 20px -7px rgba(30, 27, 22, 0.55);
 }
 
 .btn-ink:active {
-  box-shadow: 0 1px 4px -2px rgba(33, 30, 25, 0.5);
+  background-image: linear-gradient(rgba(30, 27, 22, 0.96), rgba(30, 27, 22, 0.9));
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.14) inset,
+    0 1px 4px -2px rgba(30, 27, 22, 0.5);
 }
 
 .btn:disabled {
@@ -432,6 +467,16 @@ html::before {
 
 .btn:disabled:active {
   transform: none;
+}
+
+/* 触れると、わずかに浮く（指の無い PC だけ） */
+@media (hover: hover) {
+  .btn:not(.btn-quiet):hover {
+    transform: scale(1.02);
+  }
+  .btn:not(.btn-quiet):active {
+    transform: scale(0.96);
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -970,10 +1015,11 @@ button.line-check:disabled {
   box-shadow: var(--sheet-shadow);
   color: inherit;
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
   transition:
-    transform var(--slow) var(--ease),
+    transform var(--press-out),
     border-color var(--slow) var(--ease),
-    background-color var(--slow) var(--ease),
+    background-image var(--slow) var(--ease),
     box-shadow var(--slow) var(--ease);
 }
 
@@ -987,7 +1033,7 @@ button.line-check:disabled {
 }
 
 .book:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.01);
   background-image: var(--paper-grain), linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.82));
   box-shadow:
     0 0 0 1px rgba(33, 30, 25, 0.07),
@@ -996,9 +1042,12 @@ button.line-check:disabled {
 }
 
 .book:active {
-  transform: translateY(1px) scale(0.985);
+  transform: scale(0.97);
+  transition: transform var(--press-in), box-shadow var(--press-in);
   background-image: var(--paper-grain), linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9));
-  transition-duration: 60ms;
+  box-shadow:
+    0 0 0 1px rgba(33, 30, 25, 0.06),
+    0 1px 4px -2px rgba(33, 30, 25, 0.2);
 }
 
 .book-name {
@@ -1749,6 +1798,7 @@ a {
    -------------------------------------------------------------------------- */
 
 .blankpage {
+  -webkit-tap-highlight-color: transparent;
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */
   align-items: flex-start;
@@ -1765,11 +1815,12 @@ a {
 }
 
 .blankpage:hover .blankpage-btn {
-  background-image: var(--paper-grain), linear-gradient(#322d26, #322d26);
+  background-image: linear-gradient(rgba(30, 27, 22, 0.92), rgba(30, 27, 22, 0.86));
 }
 
 .blankpage:active .blankpage-btn {
-  transform: translateY(1px);
+  transform: scale(0.94);
+  transition: transform var(--press-in);
 }
 
 .waiting {
@@ -1994,6 +2045,8 @@ a {
 }
 
 .entry {
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity var(--press-out);
   flex: 0 0 auto;
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */

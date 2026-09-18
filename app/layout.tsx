@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SoundProvider } from "@/components/sound-provider";
 import { KeyboardInset } from "@/components/keyboard-inset";
+import { Press } from "@/components/press";
 import { ABOUT, SITE, card } from "@/lib/meta";
 
 export const metadata: Metadata = {
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <KeyboardInset />
+        <Press />
         <SoundProvider>{children}</SoundProvider>
       </body>
     </html>

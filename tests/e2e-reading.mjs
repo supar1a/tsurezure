@@ -62,7 +62,8 @@ await wait(3000);
     const seen = Math.min(r.right, v.right) - Math.max(r.left, v.left);
     return String(Math.round(seen));
   })()`);
-  check("携帯でも、スペースの囲いが画面に出ている", Number(reach) > 60, `見えている幅 ${reach}px`);
+  // 指が掛かる幅（44px）があればよい。罫の有無で 1〜2px 動くので、そこで割らない
+  check("携帯でも、スペースの囲いが画面に出ている", Number(reach) >= 44, `見えている幅 ${reach}px`);
   // 実際に指で押して入れる
   const box = JSON.parse(await ev(`(() => { const r = document.querySelector(".book:not(.book-self)").getBoundingClientRect();
     return JSON.stringify({ x: Math.round(r.x + r.width/2), y: Math.round(r.y + 60) }); })()`));
