@@ -60,9 +60,27 @@ export default async function HomePage() {
   // ── トップ。書き散らす入口と、ひとりのスペース・スペースの札が並ぶ。 ──
   const places = await prisma.place.findMany({
     where: { memberships: { some: { userId: user.id } } },
-    include: { _count: { select: { memberships: true } } },
+    include: {
+      _count: { select: { memberships: true } },
+      memberships: { where: { userId: user.id }, select: { lastReadAt: true } },
+    },
     orderBy: { createdAt: "asc" },
   });
+
+  /*
+   * 新しいものがあるか。最後に見た時刻より後に、ほかの人が投げていれば付ける。
+   * 数は出さない（数えないのがこの場の性格）。自分の投稿では付けない。まだ一度も見ていない札にも付けない。
+   */
+  const fresh = new Set<string>();
+  for (const place of places) {
+    const seen = place.memberships[0]?.lastReadAt;
+    if (!seen) continue;
+    const newer = await prisma.share.findFirst({
+      where: { placeId: place.id, createdAt: { gt: seen }, slip: { authorId: { not: user.id } } },
+      select: { slipId: true },
+    });
+    if (newer) fresh.add(place.id);
+  }
 
   const tallies = places.length
     ? await prisma.share.groupBy({
@@ -116,7 +134,14 @@ export default async function HomePage() {
               return (
                 <PaperLink key={place.id} href={`/${place.slug}`} className="book">
                   <div className="book-head">
-                    <h2 className="book-name">{place.name}</h2>
+                    <h2 className="book-name">
+                      {fresh.has(place.id) ? (
+                        <span className="book-fresh" title="新しいものがあります">
+                          <span className="sr-only">新しいものがあります</span>
+                        </span>
+                      ) : null}
+                      {place.name}
+                    </h2>
                     <div className="book-meta">
                       <span>{kanjiNumber(place._count.memberships)}人</span>
                       <span>{written > 0 ? `${kanjiNumber(written)}枚` : "まだ何もない"}</span>

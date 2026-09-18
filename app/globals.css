@@ -964,10 +964,22 @@ button.line-check:disabled {
 }
 
 .book-name {
+  position: relative;
   font-size: clamp(0.98rem, 1.2vw, 1.12rem);
   font-weight: 600;
   letter-spacing: 0.22em;
   max-inline-size: 14em;
+}
+
+/* 新しいものがある印。朱の小さな点を、名前の頭の右上に。数は出さない。 */
+.book-fresh {
+  position: absolute;
+  top: -0.35em;
+  right: -0.55em;
+  width: 0.42em;
+  height: 0.42em;
+  border-radius: 50%;
+  background: var(--shu);
 }
 
 .panel {
