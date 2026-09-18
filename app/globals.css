@@ -352,9 +352,13 @@ html::before {
   font-size: 0.975rem;
   letter-spacing: 0.22em;
   color: var(--sumi-soft);
-  background: transparent;
-  border: 1px solid var(--rule);
-  border-radius: 1px;
+  /* 小さな半紙。罫で囲わず、うっすら透ける白と紙の影で立たせる */
+  background-color: transparent; /* button の素の灰色を消す */
+  background-image: var(--sheet-fill);
+  background-size: var(--sheet-size);
+  border: 0;
+  border-radius: 3px;
+  box-shadow: var(--sheet-shadow);
   padding-block: 0.7em;
   padding-inline: 1.5em;
   cursor: pointer;
@@ -366,42 +370,59 @@ html::before {
   gap: 0.6em;
   transition:
     color var(--quick) var(--ease),
-    border-color var(--quick) var(--ease),
-    background-color var(--quick) var(--ease),
+    box-shadow var(--quick) var(--ease),
     transform var(--quick) var(--ease);
 }
 
 .btn:hover {
   color: var(--sumi);
-  border-color: rgba(33, 30, 25, 0.24);
-  background-color: rgba(255, 253, 246, 0.55);
+  background-image: var(--paper-grain), linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.82));
+  box-shadow:
+    0 0 0 1px rgba(33, 30, 25, 0.07),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 6px 16px -8px rgba(33, 30, 25, 0.28);
 }
 
 .btn:active {
   transform: translateY(1px);
+  box-shadow:
+    0 0 0 1px rgba(33, 30, 25, 0.07),
+    0 1px 4px -2px rgba(33, 30, 25, 0.2);
 }
 
+/* 静かな釦（やめる など）：紙を載せず、字だけ */
 .btn-quiet {
-  border-color: transparent;
+  background-image: none;
+  box-shadow: none;
   padding-inline: 0.6em;
 }
 
 .btn-quiet:hover {
-  border-color: transparent;
-  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
   color: var(--sumi);
 }
 
+/* 墨の釦：墨で塗った紙。粒を重ねて、塗りむらのように */
 .btn-ink {
   color: var(--washi-lit);
-  background-color: var(--sumi);
-  border-color: var(--sumi);
+  background-image: var(--paper-grain), linear-gradient(var(--sumi), var(--sumi));
+  background-size: var(--sheet-size);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 4px 14px -6px rgba(33, 30, 25, 0.5);
 }
 
 .btn-ink:hover {
   color: var(--washi-lit);
-  background-color: #322d26;
-  border-color: #322d26;
+  background-image: var(--paper-grain), linear-gradient(#322d26, #322d26);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 8px 20px -8px rgba(33, 30, 25, 0.6);
+}
+
+.btn-ink:active {
+  box-shadow: 0 1px 4px -2px rgba(33, 30, 25, 0.5);
 }
 
 .btn:disabled {
@@ -1508,13 +1529,12 @@ a {
   letter-spacing: 0.08em;
   padding: 0.5em 0.9em;
   color: var(--shu);
-  border-color: rgba(168, 65, 44, 0.3);
+  box-shadow: 0 0 0 1px rgba(168, 65, 44, 0.3);
 }
 
 .debug-btn:hover {
   color: var(--shu);
-  border-color: rgba(168, 65, 44, 0.6);
-  background-color: rgba(168, 65, 44, 0.05);
+  box-shadow: 0 0 0 1px rgba(168, 65, 44, 0.6);
 }
 
 /* --------------------------------------------------------------------------
@@ -1745,8 +1765,7 @@ a {
 }
 
 .blankpage:hover .blankpage-btn {
-  background-color: #322d26;
-  border-color: #322d26;
+  background-image: var(--paper-grain), linear-gradient(#322d26, #322d26);
 }
 
 .blankpage:active .blankpage-btn {
