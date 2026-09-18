@@ -19,7 +19,7 @@ export function CreatePlaceForm({ action }: { action: Action }) {
           className="input"
           maxLength={32}
           required
-          placeholder="たとえば「三人のところ」"
+          placeholder="例）少年探偵団"
         />
       </label>
 
