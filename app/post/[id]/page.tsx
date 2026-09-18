@@ -6,6 +6,7 @@ import { HeadAway } from "@/components/head-away";
 import { OpenAt } from "@/components/open-at";
 import { PaperLink } from "@/components/paper-link";
 import { DeleteSlip, ShareControl } from "@/components/slip-actions";
+import { ShareImage } from "@/components/share-image";
 import { myPlaces } from "@/lib/guards";
 import { SlipText } from "@/components/slip-column";
 
@@ -87,6 +88,8 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
                   {["ひとりのスペース", ...sharedTo.map((p) => p.name)].join("・")}
                 </span>
                 <ShareControl slipId={slip.id} places={places} checked={sharedTo.map((p) => p.id)} />
+                {/* 縦書きの絵にして、端末の共有シートへ（Instagram のストーリーなど） */}
+                <ShareImage slip={{ title: slip.title, body: slip.body, date: kanjiDate(slip.createdAt) }} />
                 <DeleteSlip slipId={slip.id} />
               </footer>
             ) : null}
