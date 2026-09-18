@@ -28,15 +28,13 @@
   --rule: rgba(33, 30, 25, 0.12);
   --rule-soft: rgba(33, 30, 25, 0.06);
 
-  /* 硝子（Liquid Glass）。地はほとんど透かし、後ろをぼかして彩度を上げ、縁に光を回す */
-  --glass-blur: blur(14px) saturate(1.3);
-  --glass-fill: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.12));
-  --glass-edge: rgba(255, 255, 255, 0.5);
-  --glass-shadow:
-    inset 1px 1px 0 rgba(255, 255, 255, 0.7),
-    inset 0 0 14px rgba(255, 255, 255, 0.2),
-    0 12px 30px -18px rgba(33, 30, 25, 0.22),
-    0 1px 2px rgba(33, 30, 25, 0.04);
+  /* 半紙。薄い白の紙が一枚、地の上に載っている。ぼかさず、うっすら透ける。繊維は粒の PNG を重ねて出す */
+  --sheet-fill: var(--paper-grain), linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6));
+  --sheet-size: 160px 160px, auto;
+  --sheet-shadow:
+    0 0 0 1px rgba(33, 30, 25, 0.05),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 3px 12px -6px rgba(33, 30, 25, 0.22);
 
   /* 余白の階梯 — note のような、思い切った空き */
   --gutter: clamp(1.5rem, 5vw, 5.5rem);
@@ -944,13 +942,11 @@ button.line-check:disabled {
   padding: clamp(1.1rem, 1.8vh, 1.6rem) clamp(0.9rem, 1.5vw, 1.3rem);
   margin-block-end: clamp(1.2rem, 2vw, 2rem);
   position: relative;
-  overflow: hidden;
-  border: 1px solid var(--glass-edge);
-  border-radius: 16px;
-  background: var(--glass-fill);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-shadow);
+  border: 0;
+  border-radius: 3px;
+  background-image: var(--sheet-fill);
+  background-size: var(--sheet-size);
+  box-shadow: var(--sheet-shadow);
   color: inherit;
   text-decoration: none;
   transition:
@@ -966,36 +962,21 @@ button.line-check:disabled {
  */
 /* ひとりのスペースの札。ほかの札と同じ顔で、少しだけ澄んだ硝子 */
 .book-self {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.22));
-}
-
-/* 縁の光。左上から差す反射を一枚、上に重ねる（レンズの屈折の代わり） */
-.book::before,
-.share-dialog::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  background:
-    radial-gradient(120% 60% at 0% 0%, rgba(255, 255, 255, 0.32), transparent 60%),
-    radial-gradient(80% 40% at 100% 100%, rgba(255, 255, 255, 0.12), transparent 60%);
+  background-image: var(--paper-grain), linear-gradient(rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.78));
 }
 
 .book:hover {
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.85);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.22));
+  background-image: var(--paper-grain), linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.82));
   box-shadow:
-    inset 1px 1px 0 rgba(255, 255, 255, 1),
-    inset -1px -1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 0 26px rgba(255, 255, 255, 0.45),
-    0 24px 50px -22px rgba(33, 30, 25, 0.38);
+    0 0 0 1px rgba(33, 30, 25, 0.07),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 8px 20px -8px rgba(33, 30, 25, 0.28);
 }
 
 .book:active {
   transform: translateY(1px) scale(0.985);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.34));
+  background-image: var(--paper-grain), linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9));
   transition-duration: 60ms;
 }
 
@@ -1581,19 +1562,16 @@ a {
   position: fixed;
   inset: 0;
   margin: auto;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 20px;
+  border: 0;
+  border-radius: 4px;
   padding: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.4));
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  backdrop-filter: blur(20px) saturate(1.4);
+  background-image: var(--paper-grain), linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9));
+  background-size: var(--sheet-size);
   color: var(--sumi);
   box-shadow:
-    inset 1px 1px 0 rgba(255, 255, 255, 1),
-    inset -1px -1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 0 30px rgba(255, 255, 255, 0.4),
-    0 30px 80px -30px rgba(33, 30, 25, 0.5);
+    0 0 0 1px rgba(33, 30, 25, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 18px 50px -20px rgba(33, 30, 25, 0.4);
   max-width: min(92vw, 30rem);
 }
 
