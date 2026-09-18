@@ -27,7 +27,7 @@ export function CheckMark({
   return (
     <button
       type="button"
-      className="line-mark line-check"
+      className="tap line-mark line-check"
       aria-pressed={done}
       disabled={pending}
       onClick={() => {

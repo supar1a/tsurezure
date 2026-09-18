@@ -95,11 +95,7 @@ export function RemoveMember({
     >
       <input type="hidden" name="placeId" value={placeId} />
       <input type="hidden" name="userId" value={userId} />
-      <button
-        type="submit"
-        className="btn btn-quiet"
-        style={{ fontSize: "0.7rem", color: "var(--sumi-ghost)" }}
-      >
+      <button type="submit" className="btn btn-quiet btn-faint btn-small">
         外す
       </button>
     </form>
@@ -121,11 +117,7 @@ export function LeavePlace({ placeId }: { placeId: string }) {
       }}
     >
       <input type="hidden" name="placeId" value={placeId} />
-      <button
-        type="submit"
-        className="btn btn-quiet"
-        style={{ fontSize: "0.72rem", color: "var(--sumi-ghost)" }}
-      >
+      <button type="submit" className="btn btn-quiet btn-faint btn-small">
         スペースを抜ける
       </button>
     </form>

@@ -143,8 +143,8 @@ export default async function PlacePage({
               ))}
 
               {/* 巻物の左端。次の一枚が書かれる場所。押せると分かるように、投稿するのと同じ墨の釦にする。 */}
-              <PaperLink href={`/${slug}/write`} className="blankpage" voice="rustle">
-                <span className="btn btn-ink blankpage-btn">書き散らす</span>
+              <PaperLink href={`/${slug}/write`} className="btn btn-ink blankpage" voice="rustle">
+                書き散らす
               </PaperLink>
             </div>
           ) : (
@@ -171,8 +171,8 @@ export default async function PlacePage({
               ))}
 
               {/* 目次の末尾にも、このスペースへ直接書き散らす入口。書いたものはひとりのスペースにも残る。 */}
-              <PaperLink href={`/${slug}/write`} className="blankpage" voice="rustle">
-                <span className="btn btn-ink blankpage-btn">書き散らす</span>
+              <PaperLink href={`/${slug}/write`} className="btn btn-ink blankpage" voice="rustle">
+                書き散らす
               </PaperLink>
             </div>
           )}

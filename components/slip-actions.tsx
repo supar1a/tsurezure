@@ -111,7 +111,7 @@ export function DeleteSlip({ slipId }: { slipId: string }) {
       }}
     >
       <input type="hidden" name="slipId" value={slipId} />
-      <button type="submit" className="btn btn-quiet" style={{ color: "var(--sumi-faint)" }}>
+      <button type="submit" className="btn btn-quiet btn-faint">
         削除
       </button>
     </form>

@@ -234,7 +234,7 @@ export function Forget({ action }: { action: () => Promise<void> }) {
         play("turn");
       }}
     >
-      <button type="submit" className="btn" style={{ color: "var(--sumi-soft)" }}>
+      <button type="submit" className="btn">
         ログアウト
       </button>
     </form>

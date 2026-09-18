@@ -59,8 +59,8 @@ export default async function PrivatePage({
               ))}
 
               {/* 巻物の左端。次の一枚が書かれる場所。 */}
-              <PaperLink href="/write" className="blankpage" voice="rustle">
-                <span className="btn btn-ink blankpage-btn">書き散らす</span>
+              <PaperLink href="/write" className="btn btn-ink blankpage" voice="rustle">
+                書き散らす
               </PaperLink>
             </div>
           ) : (
@@ -80,8 +80,8 @@ export default async function PrivatePage({
                 <ContentsEntry key={slip.id} slip={slip} who={false} />
               ))}
 
-              <PaperLink href="/write" className="blankpage" voice="rustle">
-                <span className="btn btn-ink blankpage-btn">書き散らす</span>
+              <PaperLink href="/write" className="btn btn-ink blankpage" voice="rustle">
+                書き散らす
               </PaperLink>
             </div>
           )}

@@ -37,8 +37,17 @@ const files = readdirSync("tests")
   .filter((f) => !only || f.includes(only))
   .sort();
 
+/** 前の試験がこけて残した頁を閉じる。溜まると Chrome が重くなり、次の試験が時間切れになる。 */
+async function sweep() {
+  try {
+    const pages = await (await fetch("http://127.0.0.1:9222/json")).json();
+    for (const p of pages) if (p.type === "page") await fetch(`http://127.0.0.1:9222/json/close/${p.id}`).catch(() => {});
+  } catch {}
+}
+
 let failed = 0;
 for (const file of files) {
+  await sweep();
   seed();
   // 試験ごとに要るものが違うので、ここで揃えて渡す
   const args = [];

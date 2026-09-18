@@ -5,6 +5,8 @@
 //
 // 見かた：中身の字の箱（Range の getClientRects）を、縦組みなら left、横組みなら top で束ねれば列の本数。
 // それが、書いた <br> の数 + 1 を超えていたら折れている。
+// 返事が来ないまま止まらないように。時間切れはしくじりとして返す
+const bail = setTimeout(() => { console.log("（時間切れ）"); process.exit(2); }, 150000); bail.unref?.();
 const version = await (await fetch("http://127.0.0.1:9222/json/version")).json();
 const ws = new WebSocket(version.webSocketDebuggerUrl);
 await new Promise((r) => (ws.onopen = r));
@@ -27,7 +29,7 @@ const check = (label, cond, extra = "") => (cond ? ok : bad).push(label + (cond 
 
 // 見張る要素。人が入れた名前や題（長さが決まらないもの）は含めない。
 const OURS = [
-  ".about-kicker", ".about-title", ".about-text", ".about-link", ".landing-note", ".landing-invite .caption", ".welcome .caption",
+  ".about-kicker", ".about-title", ".about-text", ".landing-note", ".landing-invite .caption", ".welcome .caption",
   ".panel-title", ".caption", ".masthead-link", ".btn", ".waiting", ".share-dialog-title",
 ];
 

@@ -59,7 +59,7 @@ check("起こしただけでは鳴らない", (await tally()).bursts === 0, JSON
 
 // ── 頁を繰ると鳴る。声は行き先で違う ──
 {
-  const h = await heard(click(`a => a.classList.contains("about-link") && a.textContent.trim() === "スペースを作る"`));
+  const h = await heard(click(`a => a.closest(".about") && a.textContent.trim() === "スペースを作る"`));
   check("戸口を押すと紙の音（撫でる：ひと掴み）", h.bursts === 1 && h.thuds === 0, JSON.stringify(h));
   await wait(1800);
   check("そのまま移っている", (await path()) === "/new", await path());

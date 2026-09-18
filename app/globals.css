@@ -261,11 +261,7 @@ html::before {
   gap: clamp(1.6rem, 2.8vw, 2.4rem);
 }
 
-.masthead-link:active,
-.entry:active,
-a.slip-when:active,
-.slip-who:active,
-.about-link:active,
+/* 字だけの釦（やめる など）も、字だけの戸口と同じ手応え */
 .btn-quiet:active {
   opacity: 0.55;
   transform: none;
@@ -273,13 +269,11 @@ a.slip-when:active,
 }
 
 .masthead-link {
-  -webkit-tap-highlight-color: transparent;
   font-size: 0.925rem;
   letter-spacing: 0.2em;
   color: var(--sumi-soft);
   text-decoration: none;
   white-space: nowrap;
-  transition: color var(--quick) var(--ease);
 }
 
 .masthead-link:hover {
@@ -289,7 +283,6 @@ a.slip-when:active,
 /* 添え名が戸口を兼ねるとき。押せることは、触れたときの濃さで返す。 */
 .masthead-sub-link {
   text-decoration: none;
-  transition: color var(--quick) var(--ease);
 }
 
 .masthead-sub-link:hover {
@@ -360,6 +353,34 @@ a.slip-when:active,
 }
 
 /* --------------------------------------------------------------------------
+   押せるもの — 共通の土台
+   釦（.btn）、札（.book）、字だけの戸口（.tap）。どれも
+   ・タップの青い光は出さない ・押すと速く沈み、離すと弾んで戻る
+   新しく押せるものを作るときは、この三つのどれかを必ず付ける（tests/e2e-hitbox.mjs が見張る）。
+   -------------------------------------------------------------------------- */
+
+.btn,
+.book,
+.tap {
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+
+/* 字だけの戸口：押している間だけ薄く（釦と札は自分の手応えを持つので除く） */
+.tap:not(.btn):not(.book) {
+  text-decoration: none;
+  transition:
+    opacity var(--press-out),
+    color var(--quick) var(--ease),
+    border-color var(--quick) var(--ease);
+}
+
+.tap:not(.btn):not(.book):active {
+  opacity: 0.55;
+  transition: opacity var(--press-in);
+}
+
+/* --------------------------------------------------------------------------
    釦 — 触れると紙が少しだけ沈む
    -------------------------------------------------------------------------- */
 
@@ -388,7 +409,6 @@ a.slip-when:active,
   align-items: center;
   justify-content: center;
   gap: 0.6em;
-  -webkit-tap-highlight-color: transparent;
   transition:
     color var(--quick) var(--ease),
     box-shadow var(--quick) var(--ease),
@@ -458,6 +478,20 @@ a.slip-when:active,
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.14) inset,
     0 1px 4px -2px rgba(30, 27, 22, 0.5);
+}
+
+/* 字だけの釦のうち、さらに引いたもの（削除・外す・抜ける） */
+.btn-faint {
+  color: var(--sumi-faint);
+}
+
+.btn-faint:hover {
+  color: var(--sumi);
+}
+
+.btn-small {
+  font-size: 0.82rem;
+  letter-spacing: 0.16em;
 }
 
 .btn:disabled {
@@ -657,7 +691,6 @@ a.slip-when:active,
   color: var(--sumi);
   text-decoration: none;
   border-block-start: 1px solid transparent;
-  transition: border-color var(--quick) var(--ease);
 }
 
 .slip-who:hover {
@@ -680,7 +713,6 @@ a.slip-when:active,
 .slip-when {
   color: inherit;
   text-decoration: none;
-  transition: color var(--quick) var(--ease), border-color var(--quick) var(--ease);
 }
 
 /*
@@ -745,8 +777,6 @@ button.line-check {
   border: 0;
   background: transparent;
   color: var(--sumi);
-  cursor: pointer;
-  transition: color var(--quick) var(--ease), transform var(--quick) var(--ease);
 }
 
 button.line-check:hover {
@@ -782,7 +812,6 @@ button.line-check:disabled {
 .link {
   color: var(--ai);
   text-decoration: none;
-  transition: color var(--quick) var(--ease);
 }
 
 .link:hover {
@@ -1015,7 +1044,6 @@ button.line-check:disabled {
   box-shadow: var(--sheet-shadow);
   color: inherit;
   text-decoration: none;
-  -webkit-tap-highlight-color: transparent;
   transition:
     transform var(--press-out),
     border-color var(--slow) var(--ease),
@@ -1439,37 +1467,14 @@ a {
 }
 
 /* 左下の戸口。本文の列の左に、下に寄せて。縦の一行ずつ、左に細い罫。案内板の「読む」と同じ置きかた */
+/* 戸口の釦。本文の列の左に、上から下へ二つ */
 .about-foot {
   display: flex;
-  flex-direction: column; /* 右から左へ */
+  flex-direction: row; /* 縦組みでは上から下へ */
   align-items: flex-start;
-  align-self: flex-start; /* 頭（上）を本文と揃える */
-  gap: 1.2rem;
+  align-self: flex-start;
+  gap: 0.8rem;
   margin-block-start: clamp(1.2rem, 2vw, 2rem); /* 本文の列から離す（右側） */
-}
-
-.about-link {
-  position: relative;
-  padding-block-end: 0.9rem; /* 縦組みでは左。罫のぶん */
-  font-size: 0.925rem;
-  letter-spacing: 0.24em;
-  color: var(--sumi);
-  text-decoration: none;
-  transition: color var(--quick) var(--ease);
-}
-
-.about-link::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: -0.4rem;
-  bottom: -0.4rem;
-  width: 1px;
-  background: var(--sumi-soft);
-}
-
-.about-link:hover {
-  color: var(--sumi-soft);
 }
 
 /* 名乗る前のトップ。札の左に、名乗る欄。 */
@@ -1797,31 +1802,12 @@ a {
    巻物の端 — はじまり（右端）と、次の一枚を書く白紙（左端）
    -------------------------------------------------------------------------- */
 
+/* 巻物の左端、次の一枚を書く入口。釦そのもの。並びの中で幅を取らないよう、頭に寄せる */
 .blankpage {
-  -webkit-tap-highlight-color: transparent;
-  display: flex;
-  flex-direction: row; /* 縦組みでは上から下へ */
-  align-items: flex-start;
-  /* 当たりは釦のぶんだけ。丈も幅も中身に合わせる */
-  inline-size: auto;
   align-self: flex-start;
-  block-size: auto;
-  text-decoration: none;
 }
 
 /* 釦は a の中の span。見た目は .btn に任せ、押した感じは a 全体に効かせる */
-.blankpage-btn {
-  display: inline-block;
-}
-
-.blankpage:hover .blankpage-btn {
-  background-image: linear-gradient(rgba(30, 27, 22, 0.92), rgba(30, 27, 22, 0.86));
-}
-
-.blankpage:active .blankpage-btn {
-  transform: scale(0.94);
-  transition: transform var(--press-in);
-}
 
 .waiting {
   inline-size: 100%;
@@ -2045,8 +2031,6 @@ a {
 }
 
 .entry {
-  -webkit-tap-highlight-color: transparent;
-  transition: opacity var(--press-out);
   flex: 0 0 auto;
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */

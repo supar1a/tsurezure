@@ -162,7 +162,7 @@ function Prose({
           ) : null}
           {linkify(line.text).map((piece, i) =>
             piece.link ? (
-              <a key={i} className="link" href={piece.value} target="_blank" rel="noreferrer">
+              <a key={i} className="tap link" href={piece.value} target="_blank" rel="noreferrer">
                 {piece.value}
               </a>
             ) : (
