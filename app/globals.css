@@ -972,7 +972,6 @@ button.line-check:disabled {
 
 /* 縁の光。左上から差す反射を一枚、上に重ねる（レンズの屈折の代わり） */
 .book::before,
-.about::before,
 .share-dialog::before {
   content: "";
   position: absolute;
@@ -993,6 +992,12 @@ button.line-check:disabled {
     inset -1px -1px 0 rgba(255, 255, 255, 0.5),
     inset 0 0 26px rgba(255, 255, 255, 0.45),
     0 24px 50px -22px rgba(33, 30, 25, 0.38);
+}
+
+.book:active {
+  transform: translateY(1px) scale(0.985);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.34));
+  transition-duration: 60ms;
 }
 
 .book-name {
@@ -1043,10 +1048,8 @@ button.line-check:disabled {
   font-size: 0.945rem;
   letter-spacing: 0.14em;
   color: var(--sumi);
-  background: var(--glass-fill);
-  border: 1px solid var(--glass-edge);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--rule);
   padding: 0.4em 0.7em;
   border-radius: 1px;
 }
@@ -1325,14 +1328,8 @@ a {
   flex-direction: column; /* 縦組みでは右から左へ */
   align-items: flex-start;
   padding: clamp(1.8rem, 3vh, 2.6rem) clamp(1.6rem, 2.4vw, 2.4rem);
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--glass-edge);
-  border-radius: 26px;
-  background: var(--glass-fill);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-shadow);
+  /* 読むものなので紙のまま。硝子は押せるものにだけ */
+  border: 1px solid var(--rule);
   /* 札の並びとは別のもの。空きで離す（縦組みでは block-start が右） */
   margin-block-start: clamp(1.6rem, 3vw, 3rem);
 }
@@ -1827,12 +1824,9 @@ a {
   line-height: 1.9;
   letter-spacing: 0.02em;
   color: var(--sumi);
-  background: var(--glass-fill);
-  border: 1px solid var(--glass-edge);
-  border-radius: 14px;
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-shadow);
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
   padding: 0.8em 0.7em;
   word-break: break-all;
 }
