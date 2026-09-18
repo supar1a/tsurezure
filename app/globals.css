@@ -29,15 +29,14 @@
   --rule-soft: rgba(33, 30, 25, 0.06);
 
   /* 硝子（Liquid Glass）。地はほとんど透かし、後ろをぼかして彩度を上げ、縁に光を回す */
-  --glass-blur: blur(24px) saturate(1.7) contrast(1.04);
-  --glass-fill: linear-gradient(135deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.1));
-  --glass-edge: rgba(255, 255, 255, 0.55);
+  --glass-blur: blur(14px) saturate(1.3);
+  --glass-fill: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.12));
+  --glass-edge: rgba(255, 255, 255, 0.5);
   --glass-shadow:
-    inset 1px 1px 0 rgba(255, 255, 255, 0.95),
-    inset -1px -1px 0 rgba(255, 255, 255, 0.45),
-    inset 0 0 22px rgba(255, 255, 255, 0.35),
-    0 18px 44px -22px rgba(33, 30, 25, 0.32),
-    0 1px 2px rgba(33, 30, 25, 0.05);
+    inset 1px 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 0 14px rgba(255, 255, 255, 0.2),
+    0 12px 30px -18px rgba(33, 30, 25, 0.22),
+    0 1px 2px rgba(33, 30, 25, 0.04);
 
   /* 余白の階梯 — note のような、思い切った空き */
   --gutter: clamp(1.5rem, 5vw, 5.5rem);
@@ -947,7 +946,7 @@ button.line-check:disabled {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--glass-edge);
-  border-radius: 22px;
+  border-radius: 16px;
   background: var(--glass-fill);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
@@ -979,8 +978,8 @@ button.line-check:disabled {
   pointer-events: none;
   border-radius: inherit;
   background:
-    radial-gradient(120% 60% at 0% 0%, rgba(255, 255, 255, 0.55), transparent 60%),
-    radial-gradient(80% 40% at 100% 100%, rgba(255, 255, 255, 0.22), transparent 60%);
+    radial-gradient(120% 60% at 0% 0%, rgba(255, 255, 255, 0.32), transparent 60%),
+    radial-gradient(80% 40% at 100% 100%, rgba(255, 255, 255, 0.12), transparent 60%);
 }
 
 .book:hover {
@@ -1584,11 +1583,11 @@ a {
   margin: auto;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 28px;
+  border-radius: 20px;
   padding: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.36));
-  -webkit-backdrop-filter: blur(30px) saturate(1.8) contrast(1.04);
-  backdrop-filter: blur(30px) saturate(1.8) contrast(1.04);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.4));
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(20px) saturate(1.4);
   color: var(--sumi);
   box-shadow:
     inset 1px 1px 0 rgba(255, 255, 255, 1),
