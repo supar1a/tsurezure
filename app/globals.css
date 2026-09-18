@@ -28,6 +28,17 @@
   --rule: rgba(33, 30, 25, 0.12);
   --rule-soft: rgba(33, 30, 25, 0.06);
 
+  /* 硝子（Liquid Glass）。地はほとんど透かし、後ろをぼかして彩度を上げ、縁に光を回す */
+  --glass-blur: blur(24px) saturate(1.7) contrast(1.04);
+  --glass-fill: linear-gradient(135deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.1));
+  --glass-edge: rgba(255, 255, 255, 0.55);
+  --glass-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.95),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 0 22px rgba(255, 255, 255, 0.35),
+    0 18px 44px -22px rgba(33, 30, 25, 0.32),
+    0 1px 2px rgba(33, 30, 25, 0.05);
+
   /* 余白の階梯 — note のような、思い切った空き */
   --gutter: clamp(1.5rem, 5vw, 5.5rem);
   --air: clamp(2rem, 6vh, 4.5rem);
@@ -933,10 +944,14 @@ button.line-check:disabled {
   max-block-size: 22rem;
   padding: clamp(1.1rem, 1.8vh, 1.6rem) clamp(0.9rem, 1.5vw, 1.3rem);
   margin-block-end: clamp(1.2rem, 2vw, 2rem);
-  border: 1px solid var(--rule);
-  border-radius: 2px;
-  background-color: rgba(255, 253, 246, 0.5);
-  box-shadow: 0 1px 14px rgba(82, 78, 70, 0.05);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--glass-edge);
+  border-radius: 22px;
+  background: var(--glass-fill);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
   color: inherit;
   text-decoration: none;
   transition:
@@ -950,17 +965,34 @@ button.line-check:disabled {
  * ひとりのスペースの札。スペースの札と同じ形だが、ひと目で「自分のもの」と分かるように、
  * 朱の印（じぶん）を頭に置き、右の縁（縦組みでは頭の側）に朱の細い罫を通す。紙も少し濃い。
  */
-/* ひとりのスペースの札。ほかの札と同じ顔で、少しだけ明るい紙 */
+/* ひとりのスペースの札。ほかの札と同じ顔で、少しだけ澄んだ硝子 */
 .book-self {
-  background-color: rgba(255, 253, 246, 0.8);
-  border-color: rgba(33, 30, 25, 0.2);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.22));
+}
+
+/* 縁の光。左上から差す反射を一枚、上に重ねる（レンズの屈折の代わり） */
+.book::before,
+.about::before,
+.share-dialog::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    radial-gradient(120% 60% at 0% 0%, rgba(255, 255, 255, 0.55), transparent 60%),
+    radial-gradient(80% 40% at 100% 100%, rgba(255, 255, 255, 0.22), transparent 60%);
 }
 
 .book:hover {
   transform: translateY(-2px);
-  border-color: rgba(33, 30, 25, 0.22);
-  background-color: rgba(255, 253, 246, 0.85);
-  box-shadow: 0 3px 20px rgba(82, 78, 70, 0.09);
+  border-color: rgba(255, 255, 255, 0.85);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.22));
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 1),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 0 26px rgba(255, 255, 255, 0.45),
+    0 24px 50px -22px rgba(33, 30, 25, 0.38);
 }
 
 .book-name {
@@ -1011,8 +1043,10 @@ button.line-check:disabled {
   font-size: 0.945rem;
   letter-spacing: 0.14em;
   color: var(--sumi);
-  background: rgba(255, 253, 246, 0.6);
-  border: 1px solid var(--rule);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-edge);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
   padding: 0.4em 0.7em;
   border-radius: 1px;
 }
@@ -1291,7 +1325,14 @@ a {
   flex-direction: column; /* 縦組みでは右から左へ */
   align-items: flex-start;
   padding: clamp(1.8rem, 3vh, 2.6rem) clamp(1.6rem, 2.4vw, 2.4rem);
-  border: 1px solid var(--rule);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--glass-edge);
+  border-radius: 26px;
+  background: var(--glass-fill);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
   /* 札の並びとは別のもの。空きで離す（縦組みでは block-start が右） */
   margin-block-start: clamp(1.6rem, 3vw, 3rem);
 }
@@ -1544,17 +1585,26 @@ a {
   position: fixed;
   inset: 0;
   margin: auto;
-  border: 1px solid var(--rule);
-  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 28px;
   padding: 0;
-  background-color: var(--washi-lit);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.36));
+  -webkit-backdrop-filter: blur(30px) saturate(1.8) contrast(1.04);
+  backdrop-filter: blur(30px) saturate(1.8) contrast(1.04);
   color: var(--sumi);
-  box-shadow: 0 6px 30px rgba(82, 78, 70, 0.14);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 1),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 0 30px rgba(255, 255, 255, 0.4),
+    0 30px 80px -30px rgba(33, 30, 25, 0.5);
   max-width: min(92vw, 30rem);
 }
 
 .share-dialog::backdrop {
-  background: rgba(33, 30, 25, 0.28);
+  background: rgba(33, 30, 25, 0.14);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  backdrop-filter: blur(10px) saturate(1.2);
 }
 
 .share-dialog-inner {
@@ -1775,9 +1825,12 @@ a {
   line-height: 1.9;
   letter-spacing: 0.02em;
   color: var(--sumi);
-  background: rgba(255, 253, 246, 0.66);
-  border: 1px solid var(--rule);
-  border-radius: 1px;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-edge);
+  border-radius: 14px;
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
   padding: 0.8em 0.7em;
   word-break: break-all;
 }
