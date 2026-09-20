@@ -173,8 +173,52 @@ export type StorySource = {
   date: string;
 };
 
-/** 一篇を絵にして canvas に描く。共有や保存に使うのは PNG の Blob。 */
+/** 紙を塗る（地の色と粒）。 */
+async function paintPaper(ctx: CanvasRenderingContext2D) {
+  ctx.fillStyle = PAPER;
+  ctx.fillRect(0, 0, STORY_W, STORY_H);
+  const tile = await grain();
+  if (!tile) return;
+  const pattern = ctx.createPattern(tile, "repeat");
+  if (!pattern) return;
+  ctx.save();
+  ctx.scale(0.5, 0.5); // 2 倍密度で焼いてあるので、等倍の粒に戻す
+  ctx.fillStyle = pattern;
+  ctx.fillRect(0, 0, STORY_W * 2, STORY_H * 2);
+  ctx.restore();
+}
+
+function toPng(canvas: HTMLCanvasElement): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("書き出せませんでした"))), "image/png");
+  });
+}
+
+/**
+ * 一篇を絵にする。共有や保存に使うのは PNG の Blob。
+ *
+ * 字は、ブラウザ自身の縦組みで組んだものを写す（lib/story-svg.ts）。句読点の詰めも禁則も画面と同じになる。
+ * それが出来ない環境（SVG を絵に出来ない、書き出しを断られる）では、一字ずつ置く古いやり方に落とす。
+ */
 export async function renderStory(slip: StorySource): Promise<Blob> {
+  try {
+    const canvas = document.createElement("canvas");
+    canvas.width = STORY_W;
+    canvas.height = STORY_H;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("描けませんでした");
+    await paintPaper(ctx);
+    const { drawStoryText } = await import("./story-svg");
+    await drawStoryText(ctx, slip);
+    return await toPng(canvas);
+  } catch (e) {
+    console.warn("縦組みの絵にできなかったので、一字ずつ置くやり方で描きます", e);
+    return renderStoryManual(slip);
+  }
+}
+
+/** 一字ずつ canvas に置く、古いやり方。上が使えないときの控え。 */
+async function renderStoryManual(slip: StorySource): Promise<Blob> {
   const canvas = document.createElement("canvas");
   canvas.width = STORY_W;
   canvas.height = STORY_H;
@@ -187,20 +231,7 @@ export async function renderStory(slip: StorySource): Promise<Blob> {
     document.fonts.load(`600 40px ${FONT}`),
   ]).catch(() => {});
 
-  // 紙
-  ctx.fillStyle = PAPER;
-  ctx.fillRect(0, 0, STORY_W, STORY_H);
-  const tile = await grain();
-  if (tile) {
-    const pattern = ctx.createPattern(tile, "repeat");
-    if (pattern) {
-      ctx.save();
-      ctx.scale(0.5, 0.5); // 2 倍密度で焼いてあるので、等倍の粒に戻す
-      ctx.fillStyle = pattern;
-      ctx.fillRect(0, 0, STORY_W * 2, STORY_H * 2);
-      ctx.restore();
-    }
-  }
+  await paintPaper(ctx);
 
   const margin = { top: 200, right: 120, bottom: 200, left: 120 };
   const small = 26; // 日付と印の字
@@ -280,7 +311,5 @@ export async function renderStory(slip: StorySource): Promise<Blob> {
   let my = margin.top + small / 2;
   for (const g of mark) { drawGlyph(ctx, g, dx, my, small); my += small * 1.3; }
 
-  return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("書き出せませんでした"))), "image/png");
-  });
+  return toPng(canvas);
 }
