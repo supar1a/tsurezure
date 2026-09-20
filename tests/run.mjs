@@ -60,7 +60,7 @@ for (const file of files) {
 
   const env = { ...process.env };
   if (needs === "story") env.TARO = await keyFor("たろう");
-  if (["open", "shortcut", "wrap", "marks", "fresh", "hitbox"].includes(needs)) env.TOK = await keyFor("はなこ");
+  if (["open", "shortcut", "wrap", "marks", "fresh", "hitbox", "draft"].includes(needs)) env.TOK = await keyFor("はなこ");
 
   let out = "";
   try {

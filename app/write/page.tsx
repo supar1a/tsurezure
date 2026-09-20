@@ -1,7 +1,6 @@
 import { requireUser } from "@/lib/auth";
 import { myPlaces } from "@/lib/guards";
 import { writeSlipAction } from "@/app/actions/slips";
-import { PaperLink } from "@/components/paper-link";
 import { Composer } from "@/components/composer";
 
 export const metadata = { title: "書き散らす" };
@@ -22,11 +21,7 @@ export default async function WritePage() {
           hidden={{ back: "/private" }}
           places={places}
           defaultPlaceIds={[]}
-          cancel={
-            <PaperLink href="/private" className="btn btn-quiet" voice="rustle">
-              やめる
-            </PaperLink>
-          }
+          cancelHref="/private"
         />
       </div>
     </div>

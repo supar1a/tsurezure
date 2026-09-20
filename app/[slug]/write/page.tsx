@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
 import { myPlaces, requirePlace } from "@/lib/guards";
 import { writeSlipAction } from "@/app/actions/slips";
-import { PaperLink } from "@/components/paper-link";
 import { Composer } from "@/components/composer";
 
 /* 名札。名前は URL を知っている人には元々見えているものだけ。 */
@@ -31,11 +30,7 @@ export default async function WritePage({ params }: { params: Promise<{ slug: st
           hidden={{ back: `/${slug}` }}
           places={places}
           defaultPlaceIds={[place.id]}
-          cancel={
-            <PaperLink href={`/${slug}`} className="btn btn-quiet" voice="rustle">
-              やめる
-            </PaperLink>
-          }
+          cancelHref={`/${slug}`}
         />
       </div>
     </div>
