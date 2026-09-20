@@ -11,13 +11,13 @@ export const metadata: Metadata = {
   description: ABOUT,
 
   /*
-   * 探しものからは外す。
-   * スペースは URL を知っている人だけのものなので、目録に載ってはいけない。
+   * 探しものからは外す。スペースも一篇も、URL を知っている人だけのものなので、目録に載ってはいけない。
+   * 戸口（app/page.tsx）だけが、これを上書きして載せる。
    */
-  robots: { index: false, follow: false },
+  robots: { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false } },
 
   openGraph: card(),
-  twitter: { card: "summary_large_image" },
+  twitter: { card: "summary_large_image", title: SITE, description: ABOUT },
 
   // ホーム画面に置いたとき、Safari の枠なしで開く。表題は短く、名前だけ。
   appleWebApp: { capable: true, title: SITE, statusBarStyle: "default" },

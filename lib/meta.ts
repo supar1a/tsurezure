@@ -6,16 +6,19 @@
  * 取りこぼしが起きないよう、作るのはここ一か所に寄せてある。
  */
 export const SITE = "つれづれ";
-export const ABOUT = "自分と友達だけの、縦書きの書き散らし。";
+/** 名札と、探しものの一行。戸口の口上と揃える。 */
+export const ABOUT = "日々のことや、ふと思ったことを、縦書きで残しておける場所。ひとりでも、友達とも。";
 const CARD = "/opengraph-image.png";
+const CARD_ALT = "つれづれ — 思いつくまま、書き散らす。";
 
-export function card(title: string = SITE) {
+export function card(title: string = SITE, url?: string) {
   return {
     type: "website" as const,
     siteName: SITE,
     locale: "ja_JP",
     title,
     description: ABOUT,
-    images: [CARD],
+    ...(url ? { url } : {}),
+    images: [{ url: CARD, width: 1200, height: 630, alt: CARD_ALT }],
   };
 }
