@@ -110,10 +110,6 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
                 <PaperLink href={`/post/${slip.id}/edit`} className="btn" voice="rustle">
                   編集
                 </PaperLink>
-                {/* いまの投稿先。ここでだけ、書いた本人にだけ。すぐ下の釦で変えられる。 */}
-                <span className="sheet-shared">
-                  {["ひとりのスペース", ...sharedTo.map((p) => p.name)].join("・")}
-                </span>
                 <ShareControl slipId={slip.id} places={places} checked={sharedTo.map((p) => p.id)} />
                 {/* リンクで公開。入れている間だけ、URL を知っている人なら誰でも本文だけ読める */}
                 <OpenControl slipId={slip.id} open={slip.open} />
