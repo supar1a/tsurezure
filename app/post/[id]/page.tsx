@@ -83,10 +83,6 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
                 <PaperLink href={`/post/${slip.id}/edit`} className="btn" voice="rustle">
                   編集
                 </PaperLink>
-                {/* いまの投稿先。ここでだけ、書いた本人にだけ。すぐ下の釦で変えられる。 */}
-                <span className="sheet-shared">
-                  {["ひとりのスペース", ...sharedTo.map((p) => p.name)].join("・")}
-                </span>
                 <ShareControl slipId={slip.id} places={places} checked={sharedTo.map((p) => p.id)} />
                 {/* 縦書きの絵にして、端末の共有シートへ（Instagram のストーリーなど） */}
                 <ShareImage slip={{ title: slip.title, body: slip.body, date: kanjiDate(slip.createdAt) }} />
