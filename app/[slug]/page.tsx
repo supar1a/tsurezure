@@ -166,7 +166,7 @@ export default async function PlacePage({
                       <span className="unread-mark-label">ここから未読</span>
                     </div>
                   ) : null}
-                  <ContentsEntry slip={slip} mine={slip.author.id === user!.id} />
+                  <ContentsEntry slip={slip} />
                 </Fragment>
               ))}
 
