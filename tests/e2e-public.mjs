@@ -2,10 +2,12 @@
 //   ・公開していなければ、外の人には見えない（これまで通り）
 //   ・本人が公開すると、名乗っていない人も本文だけ読める。スペースの名前も、ほかの一枚も見えない
 //   ・やめれば、また見えなくなる
-const [, , tok, slipId] = process.argv;
+const [, , tok] = process.argv;
 const bail = setTimeout(() => { console.log("（時間切れ）"); process.exit(2); }, 150000); bail.unref?.();
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
+// 確かめる一枚は自分で探す（題と本文を見るので、どの一枚でもよいわけではない）
+const slipId = (await prisma.slip.findFirst({ where: { title: "雨の匂い", shares: { some: {} } } })).id;
 const version = await (await fetch("http://127.0.0.1:9222/json/version")).json();
 const ws = new WebSocket(version.webSocketDebuggerUrl); await new Promise((r) => (ws.onopen = r));
 let seq = 0; const waiters = new Map(); const listeners = new Set();
