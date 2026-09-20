@@ -1152,8 +1152,9 @@ button.line-check:disabled {
   flex: 0 0 auto;
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */
+  flex-wrap: wrap; /* 丈に収まらなければ、左の列へ折る */
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.8rem 1rem;
   align-self: stretch;
   /* できること（編集・戻す・削除）は本文とは別のもの。本文からしっかり離す。 */
   margin-block-start: clamp(3.5rem, 6vw, 6rem);
@@ -1779,6 +1780,32 @@ a {
 }
 
 /* 一篇の帯に添える「投稿先」。釦ではないので薄く小さく。 */
+/* 公開中の印。切り忘れに気づけるよう、朱で */
+.sheet-open {
+  font-size: 0.845rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--shu);
+  white-space: nowrap;
+}
+
+/* 外から来た人へ、一篇の左に続ける口上。罫と空きで、一篇からしっかり離す */
+.sheet-after {
+  flex: 0 0 auto;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column; /* 縦組みでは右から左へ */
+  align-items: flex-start;
+  margin-block-start: clamp(3.5rem, 6vw, 6rem);
+  padding-block-start: clamp(2rem, 3.6vw, 3.6rem);
+  border-block-start: 1px solid var(--rule-soft);
+}
+
+/* 口上の札は、ここでは右の空きを自分で持たない（上の罫と空きが担う） */
+.sheet-after > .about {
+  margin-block-start: 0;
+}
+
 .sheet-shared {
   font-size: 0.845rem;
   letter-spacing: 0.16em;

@@ -165,3 +165,10 @@ export async function toggleCheckAction(slipId: string, lineIndex: number) {
   revalidatePath(`/post/${slipId}`);
   revalidatePath("/private");
 }
+
+/** 一枚を「リンクで公開」する／やめる。書いた本人だけ。 */
+export async function setOpenAction(slipId: string, open: boolean) {
+  await requireOwnSlip(slipId);
+  await prisma.slip.update({ where: { id: slipId }, data: { open } });
+  revalidatePath(`/post/${slipId}`);
+}

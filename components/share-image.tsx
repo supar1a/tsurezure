@@ -12,7 +12,7 @@ import { renderStory, type StorySource } from "@/lib/story";
  * 共有シートは「押した直後」にしか開けない（待たせると断られる）。
  * だから絵は頁を開いたときに先に描いておき、押した瞬間にそのまま渡す。
  */
-export function ShareImage({ slip }: { slip: StorySource }) {
+export function ShareImage({ slip, link = "/" }: { slip: StorySource; /** ストーリーのリンクスタンプに貼る先。公開中ならその一枚、そうでなければトップ */ link?: string }) {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
   const { play } = useSound();
@@ -38,9 +38,16 @@ export function ShareImage({ slip }: { slip: StorySource }) {
     setNote(null);
     try {
       const file = await prepare();
+      // 貼る先の URL を先に写しておく。Instagram のリンクスタンプにそのまま貼れる（押した直後でないと写せない）
+      let copiedLink = false;
+      try {
+        await navigator.clipboard.writeText(new URL(link, window.location.origin).toString());
+        copiedLink = true;
+      } catch {}
       const nav = navigator as Navigator & { canShare?: (data: ShareData) => boolean };
       if (nav.share && nav.canShare?.({ files: [file] })) {
         play("turn");
+        if (copiedLink) setNote("リンクを写しました。ストーリーのリンクスタンプに貼れます。");
         await nav.share({ files: [file] });
       } else {
         // 共有シートが無い（PC など）：保存に落とす

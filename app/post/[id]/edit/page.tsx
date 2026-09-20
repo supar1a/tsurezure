@@ -10,7 +10,8 @@ export const metadata = { title: "編集" };
 export default async function EditSlipPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { user, slip, isAuthor } = await requireReadableSlip(id);
-  if (!isAuthor) notFound();
+  // 直せるのは書いた本人だけ（公開中の一枚を外の人がひらいても、ここには入れない）
+  if (!isAuthor || !user) notFound();
   const places = await myPlaces(user.id);
 
   const { before, after } = slip.photo

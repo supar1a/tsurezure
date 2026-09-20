@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
+import { canSeeSlip } from "@/lib/guards";
 
 const NOT_FOUND = new Response("Not found", { status: 404 });
 
@@ -12,20 +13,13 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 
   const photo = await prisma.photo.findUnique({
     where: { id },
-    include: { slip: { select: { authorId: true, shares: { select: { placeId: true } } } } },
+    include: { slip: { select: { authorId: true, open: true, shares: { select: { placeId: true } } } } },
   });
   if (!photo) return NOT_FOUND;
 
+  // 一篇と同じ条件：書いた本人・投げられたスペースの仲間・リンクで公開中
   const user = await currentUser();
-  if (!user) return NOT_FOUND;
-
-  // 書いた本人はいつでも。ほかの人は、投げられたスペースのどれかに入っていれば。
-  if (photo.slip.authorId !== user.id) {
-    const placeIds = photo.slip.shares.map((s) => s.placeId);
-    if (placeIds.length === 0) return NOT_FOUND;
-    const member = await prisma.membership.findFirst({ where: { userId: user.id, placeId: { in: placeIds } } });
-    if (!member) return NOT_FOUND;
-  }
+  if (!(await canSeeSlip(photo.slip, user?.id ?? null))) return NOT_FOUND;
 
   return new Response(Buffer.from(photo.data), {
     headers: {

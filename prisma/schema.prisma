@@ -75,6 +75,9 @@ model Slip {
   /// 題。無くてよい。目次に出すときは、無ければ本文の一行目を借りる。
   title     String?
   body      String
+  /// リンクで公開しているか。入れている間だけ、URL を知っている人なら誰でも本文だけ読める。
+  /// スペースの名前も、ほかの一枚も見えない。書いた本人だけが切り替えられる。
+  open      Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
