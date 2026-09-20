@@ -501,6 +501,12 @@ html::before {
   color: var(--sumi);
 }
 
+/* 取り返しのつかないもの（削除）。朱で */
+.btn-danger,
+.btn-danger:hover {
+  color: var(--shu);
+}
+
 .btn-small {
   font-size: 0.82rem;
   letter-spacing: 0.16em;

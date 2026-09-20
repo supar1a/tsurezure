@@ -111,7 +111,7 @@ export function DeleteSlip({ slipId }: { slipId: string }) {
       }}
     >
       <input type="hidden" name="slipId" value={slipId} />
-      <button type="submit" className="btn btn-quiet btn-faint">
+      <button type="submit" className="btn btn-quiet btn-danger">
         削除
       </button>
     </form>

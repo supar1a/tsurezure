@@ -58,9 +58,9 @@ export function kanjiDateShort(date: Date, now = new Date()) {
 
 /** 午後九時四十分 */
 export function kanjiTime(date: Date) {
-  const { hour, minute } = partsOf(date);
+  // 分は出さない（切り捨て）。書き散らしに、分刻みの正確さは要らない
+  const { hour } = partsOf(date);
   const meridiem = hour < 12 ? "午前" : "午後";
   const h12 = hour % 12 === 0 ? 12 : hour % 12;
-  const mm = minute === 0 ? "" : `${kanjiNumber(minute)}分`;
-  return `${meridiem}${kanjiNumber(h12)}時${mm}`;
+  return `${meridiem}${kanjiNumber(h12)}時ころ`;
 }

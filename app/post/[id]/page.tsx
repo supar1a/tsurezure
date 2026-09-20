@@ -113,12 +113,12 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
                 <ShareControl slipId={slip.id} places={places} checked={sharedTo.map((p) => p.id)} />
                 {/* リンクで公開。入れている間だけ、URL を知っている人なら誰でも本文だけ読める */}
                 <OpenControl slipId={slip.id} open={slip.open} />
-                {/* 縦書きの絵にして、端末の共有シートへ（Instagram のストーリーなど）。公開中なら URL も一緒に写す */}
+                <DeleteSlip slipId={slip.id} />
+                {/* いちばん下に。縦書きの絵にして、端末の共有シートへ（Instagram のストーリーなど）。公開中なら URL も一緒に写す */}
                 <ShareImage
                   slip={{ title: slip.title, body: slip.body, date: kanjiDate(slip.createdAt) }}
                   link={slip.open ? `/post/${slip.id}` : "/"}
                 />
-                <DeleteSlip slipId={slip.id} />
               </footer>
             ) : null}
 
