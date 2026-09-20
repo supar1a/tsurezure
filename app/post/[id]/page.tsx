@@ -86,7 +86,7 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
                 <ShareControl slipId={slip.id} places={places} checked={sharedTo.map((p) => p.id)} />
                 <DeleteSlip slipId={slip.id} />
                 {/* いちばん下に。縦書きの絵にして、端末の共有シートへ（Instagram のストーリーなど） */}
-                <ShareImage slip={{ title: slip.title, body: slip.body, date: kanjiDate(slip.createdAt) }} />
+                <ShareImage slip={{ title: slip.title, body: slip.body, date: kanjiDate(slip.createdAt), time: kanjiTime(slip.createdAt) }} />
               </footer>
             ) : null}
           </article>

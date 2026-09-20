@@ -171,6 +171,8 @@ export type StorySource = {
   body: string;
   /** 「二〇二六年九月十八日」のように、すでに字にしたもの */
   date: string;
+  /** 「午後四時ころ」。あれば日付の下に添える */
+  time?: string;
 };
 
 /** 紙を塗る（地の色と粒）。 */
