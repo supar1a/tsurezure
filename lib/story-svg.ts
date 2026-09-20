@@ -15,7 +15,7 @@ import { LOGO_PATH, LOGO_VIEWBOX } from "../components/logo-path";
  *     Google Fonts は字体を unicode-range で百あまりに割って配っているので、本文に出てくる字を含む片だけ取る。
  *   ・Safari は、埋め込んだ字体を解く前に一度描いてしまうことがある。数回描き直して、最後の一枚を使う。
  *   ・収まるかどうかは、同じ HTML を画面の外に置いて実際に測る。字は小さくしない。余れば末尾を「…」で切る。
- *   ・組み：右上に日付と時刻、その左に本文、左下に下揃えで「思いつくまま、書き散らす。 ── ロゴ」
+ *   ・組み：右上に日付と時刻、その左に本文、左下に下揃えで添えの一言とロゴ
  */
 
 const W = 1080;
@@ -52,12 +52,12 @@ const SHEET = `
 .p.apart { padding-block-start: 1.1em; }
 .mk { display: inline-block; min-inline-size: 1.4em; text-indent: 0; color: #5f574c; }
 .rule { block-size: 2px; inline-size: 76%; margin-block: 1.1em; margin-inline: 12%; background: rgba(33, 30, 25, 0.18); }
-/* 左下。上から添えの一言、縦の線（ダッシュ）、ロゴ。下揃え */
+/* 左下。上から添えの一言、ロゴ。下揃え */
 .sign { position: absolute; left: ${EDGE}px; bottom: ${TOP}px; width: ${LOGO_W}px;
   display: flex; flex-direction: column; align-items: center; }
 .sign svg { display: block; width: ${LOGO_W}px; height: ${LOGO_H}px; }
-.dash { width: 2px; height: 64px; margin: 26px 0; background: #5f574c; opacity: 0.7; }
-.tag { font-size: ${META + 2}px; line-height: 1; letter-spacing: 0.22em; white-space: nowrap; color: #5f574c; }
+.tag { font-size: ${META + 2}px; line-height: 1; letter-spacing: 0.22em; white-space: nowrap; color: #5f574c;
+  margin-bottom: 40px; }
 `;
 
 /** 絵にする HTML を組む。bodySize は本文の字の大きさ、limit は本文を何字で切るか（切ったら「…」）。 */
@@ -101,7 +101,7 @@ function build(slip: StorySource, bodySize: number, limit: number | null): HTMLE
   path.setAttribute("d", LOGO_PATH);
   path.setAttribute("fill", "#1e1b16");
   logo.append(path);
-  sign.append(el("div", "tag v", "思いつくまま、書き散らす。"), el("div", "dash"), logo);
+  sign.append(el("div", "tag v", "思いつくまま、書き散らす。"), logo);
 
   page.append(meta, flow, sign);
   return page;
