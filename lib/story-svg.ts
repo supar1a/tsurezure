@@ -1,7 +1,7 @@
 import { paragraphs, splitAroundPhoto } from "./text";
 import { glyphOf } from "./marks";
 import type { StorySource } from "./story";
-import { LOGO_PATH } from "../components/logo-path";
+import { LOGO_PATH, LOGO_VIEWBOX } from "../components/logo-path";
 
 /*
  * 一篇の絵を、ブラウザ自身の縦組みで組む。
@@ -15,7 +15,7 @@ import { LOGO_PATH } from "../components/logo-path";
  *     Google Fonts は字体を unicode-range で百あまりに割って配っているので、本文に出てくる字を含む片だけ取る。
  *   ・Safari は、埋め込んだ字体を解く前に一度描いてしまうことがある。数回描き直して、最後の一枚を使う。
  *   ・収まるかどうかは、同じ HTML を画面の外に置いて実際に測る。字は小さくしない。余れば末尾を「…」で切る。
- *   ・左上の印は字ではなくロゴ（柱と同じ筆の字）。SVG の path としてそのまま描く。
+ *   ・組み：右上に日付と時刻、その左に本文、左下に下揃えで「ロゴ ── 思いつくまま、書き散らす。」
  */
 
 const W = 1080;
@@ -24,29 +24,40 @@ const FAMILY = "Shippori Mincho B1";
 const FONT_CSS = "https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600&display=swap";
 const XHTML = "http://www.w3.org/1999/xhtml";
 
-const BODY_SIZE = 42; // 本文の字。読みやすさを優先して大きめに。収まらない分は「…」で切る
+const SVG_NS = "http://www.w3.org/2000/svg";
+const BODY_SIZE = 42; // 本文の字。収まらない分は「…」で切る（字は小さくしない）
+const LINE = 2.3; // 列の間。字が大きいぶん、息を入れる
+const EDGE = 100; // 左右の余白
+const TOP = 200;
+const META = 26; // 日付・時刻・添えの字
 // ロゴ（もとは 60×223）。柱のロゴと同じか、少し大きいくらい
-const LOGO_H = 290;
+const LOGO_H = 270;
 const LOGO_W = Math.round((LOGO_H * 60) / 223);
-const LEFT = 120;
-const GUTTER = LOGO_W + 48; // ロゴと日付の列。本文はその右から
+const FLOW_RIGHT = EDGE + META + 46; // 右端の日付の列の、さらに左から本文
+const FLOW_LEFT = EDGE + LOGO_W + 40; // 左下のロゴの列の右から本文
 
 const SHEET = `
 .page { position: relative; width: ${W}px; height: ${H}px; margin: 0; color: #1e1b16;
   font-family: "${FAMILY}", "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 400;
   font-feature-settings: "vpal" 1, "vkrn" 1; line-break: strict; -webkit-font-smoothing: antialiased; }
-.flow { position: absolute; top: 200px; right: 120px; width: ${W - 120 - LEFT - GUTTER}px; height: 1520px;
-  writing-mode: vertical-rl; -webkit-writing-mode: vertical-rl; text-orientation: mixed; overflow: hidden; }
+.v { writing-mode: vertical-rl; -webkit-writing-mode: vertical-rl; text-orientation: mixed; }
+.meta { position: absolute; top: ${TOP}px; right: ${EDGE}px; font-size: ${META}px; line-height: 1;
+  letter-spacing: 0.2em; white-space: nowrap; color: #5f574c; }
+.meta span + span { margin-inline-start: 1.4em; }
+.flow { position: absolute; top: ${TOP}px; right: ${FLOW_RIGHT}px; width: ${W - FLOW_RIGHT - FLOW_LEFT}px; height: ${H - TOP * 2}px; overflow: hidden; }
 .t { margin: 0; font-size: 56px; font-weight: 600; letter-spacing: 0.22em; line-height: 1.9; margin-block-end: 0.9em; }
-.b { letter-spacing: 0.16em; line-height: 2; } /* 画面（2.4）より少し詰める。絵は幅が限られるので、列を一本でも多く */
+.b { letter-spacing: 0.16em; line-height: ${LINE}; }
 .p { margin: 0; text-indent: 1em; }
 .p.m { text-indent: -1.4em; padding-inline-start: 1.4em; }
 .p.apart { padding-block-start: 1.1em; }
 .mk { display: inline-block; min-inline-size: 1.4em; text-indent: 0; color: #5f574c; }
 .rule { block-size: 2px; inline-size: 76%; margin-block: 1.1em; margin-inline: 12%; background: rgba(33, 30, 25, 0.18); }
-.date { position: absolute; left: ${LEFT}px; bottom: 200px; inline-size: auto; block-size: ${LOGO_W}px;
-  writing-mode: vertical-rl; -webkit-writing-mode: vertical-rl; text-align: start;
-  font-size: 26px; line-height: ${LOGO_W}px; letter-spacing: 0.2em; white-space: nowrap; color: #5f574c; }
+/* 左下。上からロゴ、縦の線（ダッシュ）、添えの一言。下揃え */
+.sign { position: absolute; left: ${EDGE}px; bottom: ${TOP}px; width: ${LOGO_W}px;
+  display: flex; flex-direction: column; align-items: center; }
+.sign svg { display: block; width: ${LOGO_W}px; height: ${LOGO_H}px; }
+.dash { width: 2px; height: 64px; margin: 26px 0; background: #5f574c; opacity: 0.7; }
+.tag { font-size: ${META + 2}px; line-height: 1; letter-spacing: 0.22em; white-space: nowrap; color: #5f574c; }
 `;
 
 /** 絵にする HTML を組む。bodySize は本文の字の大きさ、limit は本文を何字で切るか（切ったら「…」）。 */
@@ -58,7 +69,7 @@ function build(slip: StorySource, bodySize: number, limit: number | null): HTMLE
     return e;
   };
   const page = el("div", "page");
-  const flow = el("div", "flow");
+  const flow = el("div", "flow v");
   if (slip.title) flow.append(el("h1", "t", slip.title));
 
   const { before, after } = splitAroundPhoto(slip.body);
@@ -75,7 +86,24 @@ function build(slip: StorySource, bodySize: number, limit: number | null): HTMLE
     body.append(p);
   }
   flow.append(body);
-  page.append(flow, el("div", "date", slip.date));
+  // 右上：日付と時刻
+  const meta = el("div", "meta v");
+  meta.append(el("span", undefined, slip.date));
+  if (slip.time) meta.append(el("span", undefined, slip.time));
+
+  // 左下：ロゴ ── 思いつくまま、書き散らす。
+  const sign = el("div", "sign");
+  const logo = document.createElementNS(SVG_NS, "svg");
+  logo.setAttribute("viewBox", LOGO_VIEWBOX);
+  logo.setAttribute("width", String(LOGO_W));
+  logo.setAttribute("height", String(LOGO_H));
+  const path = document.createElementNS(SVG_NS, "path");
+  path.setAttribute("d", LOGO_PATH);
+  path.setAttribute("fill", "#1e1b16");
+  logo.append(path);
+  sign.append(logo, el("div", "dash"), el("div", "tag v", "思いつくまま、書き散らす。"));
+
+  page.append(meta, flow, sign);
   return page;
 }
 
@@ -200,7 +228,7 @@ export async function drawStoryText(ctx: CanvasRenderingContext2D, slip: StorySo
   page.prepend(style);
 
   const xhtml = new XMLSerializer().serializeToString(page);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><foreignObject x="0" y="0" width="${W}" height="${H}">${xhtml}</foreignObject><path transform="translate(${LEFT} 200) scale(${LOGO_H / 223})" fill="#1e1b16" d="${LOGO_PATH}"/></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><foreignObject x="0" y="0" width="${W}" height="${H}">${xhtml}</foreignObject></svg>`;
   const src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 
   // Safari は埋め込んだ字体を解く前に描くことがある。捨ての一枚に何度か描いてから、本番を描く

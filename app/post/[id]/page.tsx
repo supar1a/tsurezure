@@ -116,7 +116,7 @@ export default async function SlipPage({ params }: { params: Promise<{ id: strin
                 <DeleteSlip slipId={slip.id} />
                 {/* いちばん下に。縦書きの絵にして、端末の共有シートへ（Instagram のストーリーなど）。公開中なら URL も一緒に写す */}
                 <ShareImage
-                  slip={{ title: slip.title, body: slip.body, date: kanjiDate(slip.createdAt) }}
+                  slip={{ title: slip.title, body: slip.body, date: kanjiDate(slip.createdAt), time: kanjiTime(slip.createdAt) }}
                   link={slip.open ? `/post/${slip.id}` : "/"}
                 />
               </footer>

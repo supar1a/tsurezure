@@ -31,7 +31,7 @@ export function ShareImage({ slip, link = "/" }: { slip: StorySource; /** スト
     const kick = () => { prepare().catch(() => { ready.current = null; }); };
     if (idle) idle(kick); else setTimeout(kick, 800);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slip.title, slip.body, slip.date]);
+  }, [slip.title, slip.body, slip.date, slip.time]);
 
   async function share() {
     setBusy(true);
