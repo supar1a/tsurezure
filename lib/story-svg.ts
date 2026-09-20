@@ -1,6 +1,7 @@
 import { paragraphs, splitAroundPhoto } from "./text";
 import { glyphOf } from "./marks";
 import type { StorySource } from "./story";
+import { LOGO_PATH } from "../components/logo-path";
 
 /*
  * 一篇の絵を、ブラウザ自身の縦組みで組む。
@@ -13,7 +14,8 @@ import type { StorySource } from "./story";
  *   ・SVG を絵として読むと、外の資源（Web フォント）は読まれない。使う字のぶんだけ、字体を data URL で埋め込む。
  *     Google Fonts は字体を unicode-range で百あまりに割って配っているので、本文に出てくる字を含む片だけ取る。
  *   ・Safari は、埋め込んだ字体を解く前に一度描いてしまうことがある。数回描き直して、最後の一枚を使う。
- *   ・収まるかどうかは、同じ HTML を画面の外に置いて実際に測る。収まらなければ字を小さくし、それでも余れば末尾を「…」で切る。
+ *   ・収まるかどうかは、同じ HTML を画面の外に置いて実際に測る。字は小さくしない。余れば末尾を「…」で切る。
+ *   ・左上の印は字ではなくロゴ（柱と同じ筆の字）。SVG の path としてそのまま描く。
  */
 
 const W = 1080;
@@ -22,23 +24,29 @@ const FAMILY = "Shippori Mincho B1";
 const FONT_CSS = "https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600&display=swap";
 const XHTML = "http://www.w3.org/1999/xhtml";
 
+const BODY_SIZE = 42; // 本文の字。読みやすさを優先して大きめに。収まらない分は「…」で切る
+// ロゴ（もとは 60×223）。柱のロゴと同じか、少し大きいくらい
+const LOGO_H = 290;
+const LOGO_W = Math.round((LOGO_H * 60) / 223);
+const LEFT = 120;
+const GUTTER = LOGO_W + 48; // ロゴと日付の列。本文はその右から
+
 const SHEET = `
 .page { position: relative; width: ${W}px; height: ${H}px; margin: 0; color: #1e1b16;
   font-family: "${FAMILY}", "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 400;
   font-feature-settings: "vpal" 1, "vkrn" 1; line-break: strict; -webkit-font-smoothing: antialiased; }
-.flow { position: absolute; top: 200px; right: 120px; width: 780px; height: 1520px;
+.flow { position: absolute; top: 200px; right: 120px; width: ${W - 120 - LEFT - GUTTER}px; height: 1520px;
   writing-mode: vertical-rl; -webkit-writing-mode: vertical-rl; text-orientation: mixed; overflow: hidden; }
 .t { margin: 0; font-size: 56px; font-weight: 600; letter-spacing: 0.22em; line-height: 1.9; margin-block-end: 0.9em; }
-.b { letter-spacing: 0.16em; line-height: 2.2; }
+.b { letter-spacing: 0.16em; line-height: 2; } /* 画面（2.4）より少し詰める。絵は幅が限られるので、列を一本でも多く */
 .p { margin: 0; text-indent: 1em; }
 .p.m { text-indent: -1.4em; padding-inline-start: 1.4em; }
 .p.apart { padding-block-start: 1.1em; }
 .mk { display: inline-block; min-inline-size: 1.4em; text-indent: 0; color: #5f574c; }
 .rule { block-size: 2px; inline-size: 76%; margin-block: 1.1em; margin-inline: 12%; background: rgba(33, 30, 25, 0.18); }
-.side { position: absolute; left: 120px; writing-mode: vertical-rl; -webkit-writing-mode: vertical-rl;
-  font-size: 26px; letter-spacing: 0.2em; white-space: nowrap; }
-.brand { top: 200px; color: #736a5e; letter-spacing: 0.3em; }
-.date { bottom: 200px; color: #5f574c; }
+.date { position: absolute; left: ${LEFT}px; bottom: 200px; inline-size: auto; block-size: ${LOGO_W}px;
+  writing-mode: vertical-rl; -webkit-writing-mode: vertical-rl; text-align: start;
+  font-size: 26px; line-height: ${LOGO_W}px; letter-spacing: 0.2em; white-space: nowrap; color: #5f574c; }
 `;
 
 /** 絵にする HTML を組む。bodySize は本文の字の大きさ、limit は本文を何字で切るか（切ったら「…」）。 */
@@ -67,7 +75,7 @@ function build(slip: StorySource, bodySize: number, limit: number | null): HTMLE
     body.append(p);
   }
   flow.append(body);
-  page.append(flow, el("div", "side brand", "つれづれ"), el("div", "side date", slip.date));
+  page.append(flow, el("div", "date", slip.date));
   return page;
 }
 
@@ -77,7 +85,7 @@ function fits(page: HTMLElement): boolean {
   return flow.scrollWidth <= flow.clientWidth + 1;
 }
 
-/** 収まる組みを探す：字を小さくしていき、それでも余れば末尾を切る。 */
+/** 収まる組みを探す：字の大きさは変えず、余れば末尾を切る。 */
 async function compose(slip: StorySource): Promise<HTMLElement> {
   const host = document.createElement("div");
   host.setAttribute("aria-hidden", "true");
@@ -89,21 +97,17 @@ async function compose(slip: StorySource): Promise<HTMLElement> {
   try {
     const mount = (p: HTMLElement) => { host.querySelector(".page")?.remove(); host.append(p); return p; };
     // 字体が来てから測る（来る前だと代わりの字体の寸法で測ってしまう）
-    mount(build(slip, 40, null));
+    const whole = mount(build(slip, BODY_SIZE, null));
     await document.fonts.ready;
+    if (fits(whole)) return whole.cloneNode(true) as HTMLElement;
 
-    for (const size of [40, 36, 32, 28]) {
-      const page = mount(build(slip, size, null));
-      if (fits(page)) return page.cloneNode(true) as HTMLElement;
-    }
-    // いちばん小さくしても余る：収まる字数を二分で探す
-    const total = [...slip.body].length;
-    let lo = 0, hi = total;
-    while (hi - lo > 8) {
+    // 余る：収まる字数を二分で探して、末尾を「…」で切る
+    let lo = 0, hi = [...slip.body].length;
+    while (hi - lo > 2) {
       const mid = (lo + hi) >> 1;
-      if (fits(mount(build(slip, 28, mid)))) lo = mid; else hi = mid;
+      if (fits(mount(build(slip, BODY_SIZE, mid)))) lo = mid; else hi = mid;
     }
-    return mount(build(slip, 28, lo)).cloneNode(true) as HTMLElement;
+    return mount(build(slip, BODY_SIZE, lo)).cloneNode(true) as HTMLElement;
   } finally {
     host.remove();
   }
@@ -196,7 +200,7 @@ export async function drawStoryText(ctx: CanvasRenderingContext2D, slip: StorySo
   page.prepend(style);
 
   const xhtml = new XMLSerializer().serializeToString(page);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><foreignObject x="0" y="0" width="${W}" height="${H}">${xhtml}</foreignObject></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><foreignObject x="0" y="0" width="${W}" height="${H}">${xhtml}</foreignObject><path transform="translate(${LEFT} 200) scale(${LOGO_H / 223})" fill="#1e1b16" d="${LOGO_PATH}"/></svg>`;
   const src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 
   // Safari は埋め込んだ字体を解く前に描くことがある。捨ての一枚に何度か描いてから、本番を描く
