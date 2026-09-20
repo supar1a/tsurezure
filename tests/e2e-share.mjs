@@ -29,7 +29,7 @@ const head = async (path, asMember = false) => {
   check("名札にも名前が出る", m.ogTitle === "三人のところ — つれづれ", m.ogTitle);
   check("名札の絵が付く", !!m.ogImage && m.ogImage.includes("opengraph-image"), m.ogImage);
   check("名札の種別と場の名も落ちていない", m.ogType === "website" && m.ogSite === "つれづれ", `${m.ogType} / ${m.ogSite}`);
-  check("探しものからは外してある", m.robots === "noindex, nofollow", m.robots);
+  check("探しものからは外してある", m.robots.startsWith("noindex"), m.robots);
   check("名乗らない相手に、中身は渡さない", !m.html.includes("アスファルトが濡れる"), "本文が名札の頁に出ている");
 }
 
@@ -56,7 +56,8 @@ const head = async (path, asMember = false) => {
 {
   const r = await fetch(B + "/robots.txt");
   const t = await r.text();
-  check("robots.txt がまるごと断っている", /User-Agent:\s*\*/i.test(t) && /Disallow:\s*\/$/m.test(t), t.slice(0, 80));
+  check("robots.txt は、戸口だけ通してあとは断る", /User-Agent:\s*\*/i.test(t) && /Allow:\s*\/\$/m.test(t) && /Disallow:\s*\/$/m.test(t), t.slice(0, 120));
+  check("名札を取りにくる相手（X・Slack など）は通す", /Twitterbot/i.test(t) && /Slackbot/i.test(t), t.slice(0, 200));
 }
 
 // ── 名札の絵そのもの ──

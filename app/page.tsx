@@ -7,8 +7,19 @@ import { kanjiDateShort, kanjiNumber } from "@/lib/kanji";
 import { PaperLink } from "@/components/paper-link";
 import { Intro } from "@/components/intro";
 import { DevSwitcher, StartForm } from "@/components/identity-forms";
+import { SITE, card } from "@/lib/meta";
 
 const isDev = process.env.NODE_ENV !== "production";
+
+/*
+ * 戸口だけは、探しものに載せる。ここに出ているのは口上と名乗る欄だけで、
+ * 誰かの書いたものは何も無い。スペースも一篇も、これまで通り載せない（app/layout.tsx で断っている）。
+ */
+export const metadata = {
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
+  alternates: { canonical: "/" },
+  openGraph: card(SITE, "https://tsurezure.site/"),
+};
 
 export default async function HomePage() {
   const user = await currentUser();
