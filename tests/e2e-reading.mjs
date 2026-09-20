@@ -130,4 +130,5 @@ for (const l of ok) console.log("  ○ " + l);
 for (const l of bad) console.log("  × " + l);
 console.log(bad.length ? `${bad.length} 件しくじりました` : `${ok.length} 件すべて通りました`);
 clearTimeout(bail);
-process.exit(bad.length ? 1 : 0);
+// すぐ exit すると、pipe に出した結果が途中で切れることがある。少し待ってから終える
+process.exitCode = bad.length ? 1 : 0; setTimeout(() => process.exit(), 300);
