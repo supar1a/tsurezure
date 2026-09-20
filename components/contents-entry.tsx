@@ -13,11 +13,9 @@ import type { SlipRow } from "./slip-column";
  */
 export function ContentsEntry({
   slip,
-  mine = false,
   who = true,
 }: {
   slip: SlipRow;
-  mine?: boolean;
   /** 書いた人の名前を出すか。ひとりのスペースでは全部自分なので出さない。 */
   who?: boolean;
 }) {
@@ -26,7 +24,6 @@ export function ContentsEntry({
       <span className="entry-title">{headingOf(slip)}</span>
 
       <span className="entry-meta">
-        {mine ? <span className="slip-mine">じぶん</span> : null}
         {slip.photo ? <span className="entry-mark">写</span> : null}
         {who ? <span>{slip.author.name}</span> : null}
         <span className="slip-when">{kanjiDateShort(slip.createdAt)}</span>
