@@ -1,12 +1,15 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useCallback, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { TITLE_MAX, countChars } from "@/lib/text";
 import { autoMark, continueMark } from "@/lib/marks";
 import { useSound } from "./sound-provider";
 import { DrawnCaret } from "./drawn-caret";
 import { IosRepaint } from "./ios-repaint";
 import { ShareDialog, type PlaceOption, type ShareDialogHandle } from "./slip-actions";
+import { clearDraft, readDraft, writeDraft } from "@/lib/draft";
+import { PaperLink } from "./paper-link";
 import type { FormState } from "@/app/actions/slips";
 
 type Attached = { url: string; width: number; height: number; local: boolean };
@@ -24,7 +27,8 @@ type Props = {
   defaultPhoto?: { id: string; width: number; height: number } | null;
   /** すでに部屋に置いてあるものを編集しているとき */
   published?: boolean;
-  cancel?: React.ReactNode;
+  /** やめたときの戻り先。書きかけがあれば、戻る前に一度たずねる。 */
+  cancelHref: string;
   /** 投げる先の候補（入っているスペース）と、先にチェックしておくスペース */
   places?: PlaceOption[];
   defaultPlaceIds?: string[];
@@ -49,7 +53,7 @@ export function Composer({
   defaultAfter = "",
   defaultPhoto = null,
   published = false,
-  cancel,
+  cancelHref,
   places,
   defaultPlaceIds = [],
 }: Props) {
@@ -76,6 +80,11 @@ export function Composer({
   const [titleOpen, setTitleOpen] = useState(() => defaultTitle.length > 0);
 
   const { play } = useSound();
+  const path = usePathname();
+  // 書きかけがあるか。控えと「戻ってよいか」の問いは、これで決める
+  const [dirty, setDirty] = useState(false);
+  // 差し出している控え（新しく書くときだけ）
+  const [offer, setOffer] = useState<{ title: string; before: string; after: string } | null>(null);
   const lastStroke = useRef(0);
   const formRef = useRef<HTMLFormElement>(null);
   const shareRef = useRef<ShareDialogHandle>(null);
@@ -110,6 +119,94 @@ export function Composer({
     titleRef.current?.focus();
   }, [titleOpen]);
 
+  const readAll = useCallback(() => ({
+    title: titleRef.current?.value ?? "",
+    before: beforeRef.current?.value ?? "",
+    after: afterRef.current?.value ?? "",
+  }), []);
+
+  /** 書きかけかどうか。はじめに入っていたものと違えば、書きかけ。 */
+  const isDirty = useCallback(() => {
+    const now = readAll();
+    return now.title !== defaultTitle || now.before !== defaultBefore || now.after !== defaultAfter;
+  }, [readAll, defaultTitle, defaultBefore, defaultAfter]);
+
+  /*
+   * 書きかけの控え。新しく書くときだけ持つ（編集には元の一篇があるので持たない）。
+   * ひらいたときに同じ場所の控えがあれば、戻すかどうかを一行でたずねる。勝手には戻さない。
+   */
+  useEffect(() => {
+    if (published) return;
+    // 組み上がってから差し出す（描いている最中に状態を変えない）
+    const timer = window.setTimeout(() => {
+      const found = readDraft(path);
+      if (found) setOffer({ title: found.title, before: found.before, after: found.after });
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [published, path]);
+
+  // 打つたびに控える。打鍵ごとに書き出すと重いので、手が止まってから
+  useEffect(() => {
+    if (published || !dirty) return;
+    const timer = window.setTimeout(() => writeDraft({ path, ...readAll() }), 600);
+    return () => window.clearTimeout(timer);
+  }, [published, dirty, path, readAll, count, titleLeft]);
+
+  // 窓を閉じる・読み込み直すとき
+  useEffect(() => {
+    if (!dirty) return;
+    const ask = (e: BeforeUnloadEvent) => { e.preventDefault(); e.returnValue = ""; };
+    window.addEventListener("beforeunload", ask);
+    return () => window.removeEventListener("beforeunload", ask);
+  }, [dirty]);
+
+  /*
+   * 「戻る」を押したとき。履歴に一つ余分に積んでおき、戻ってきたところでたずねる。
+   * 留まるなら積み直し、戻るならもう一度戻す。
+   */
+  const pushed = useRef(false);
+  const ask = useRef<() => boolean>(() => true);
+  useEffect(() => {
+    if (!dirty) return;
+    if (!pushed.current) { history.pushState(null, "", location.href); pushed.current = true; }
+    const onPop = () => {
+      if (ask.current()) { pushed.current = false; history.back(); }
+      else history.pushState(null, "", location.href);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [dirty]);
+
+  /** 書きかけを置いて戻ってよいか。控えがあることも伝える。 */
+  function askLeave() {
+    if (!isDirty()) return true;
+    return window.confirm(
+      published
+        ? "書きかけがあります。戻ると、直したところは失われます。よろしいですか。"
+        : "書きかけがあります。戻っても書きかけは控えてあり、次に書くときに戻せます。よろしいですか。",
+    );
+  }
+
+  // 聞き手は一度だけ登録し、中身はここで差し替える（登録し直すと履歴が二重に積まれる）
+  useEffect(() => { ask.current = askLeave; });
+
+  function restore() {
+    if (!offer) return;
+    const set = (el: HTMLTextAreaElement | null, v: string) => {
+      if (!el) return;
+      Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")?.set?.call(el, v);
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+    };
+    if (offer.title) { wantTitle.current = false; setTitleOpen(true); }
+    // 題の欄は、開いてから入れる
+    window.setTimeout(() => set(titleRef.current, offer.title), 0);
+    set(beforeRef.current, offer.before);
+    set(afterRef.current, offer.after);
+    setTitleLeft(TITLE_MAX - offer.title.length);
+    setOffer(null);
+    play("turn");
+  }
+
   function openTitle() {
     wantTitle.current = true;
     setTitleOpen(true);
@@ -119,6 +216,7 @@ export function Composer({
     setCount(countChars((beforeRef.current?.value ?? "") + (afterRef.current?.value ?? "")));
     // 書きはじめたら、注意は引っ込める
     setTrouble(null);
+    setDirty(isDirty());
   }
 
   /**
@@ -136,10 +234,12 @@ export function Composer({
     }
     setTrouble(null);
     if (places && places.length > 0) {
+      clearDraft();
       shareRef.current?.open();
       return;
     }
     play("ink");
+    clearDraft();
     formRef.current?.requestSubmit();
   }
 
@@ -328,6 +428,14 @@ export function Composer({
         ) : null}
       </div>
 
+      {offer ? (
+        <p className="notice compose-draft">
+          書きかけがあります。
+          <button type="button" className="btn btn-quiet" onClick={restore}>戻す</button>
+          <button type="button" className="btn btn-quiet btn-faint" onClick={() => { setOffer(null); clearDraft(); }}>捨てる</button>
+        </p>
+      ) : null}
+
       {state?.error ? <p className="notice">{state.error}</p> : null}
       {trouble ? <p className="notice">{trouble}</p> : null}
 
@@ -357,7 +465,14 @@ export function Composer({
           </button>
         ) : null}
 
-        {cancel}
+        <PaperLink
+          href={cancelHref}
+          className="btn btn-quiet"
+          voice="rustle"
+          onClick={(event) => { if (!askLeave()) event.preventDefault(); }}
+        >
+          やめる
+        </PaperLink>
 
         <span className="compose-tally">
           {/* 題の上限は、ぶつかる手前でだけ言う。ずっと出していると急かしになる。 */}

@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { myPlaces, requireReadableSlip } from "@/lib/guards";
 import { saveSlipAction } from "@/app/actions/slips";
-import { PaperLink } from "@/components/paper-link";
 import { Composer } from "@/components/composer";
 import { splitAroundPhoto } from "@/lib/text";
 
@@ -31,11 +30,7 @@ export default async function EditSlipPage({ params }: { params: Promise<{ id: s
           published={true}
           places={places}
           defaultPlaceIds={slip.shares.map((s) => s.place.id)}
-          cancel={
-            <PaperLink href={`/post/${slip.id}`} className="btn btn-quiet" voice="rustle">
-              やめる
-            </PaperLink>
-          }
+          cancelHref={`/post/${slip.id}`}
         />
       </div>
     </div>

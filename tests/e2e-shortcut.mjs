@@ -62,10 +62,10 @@ check("書いたものが目次に載る", (await text()).includes("近道で書
 {
   const entry = await ev(`(() => {
     const e = [...document.querySelectorAll(".entry")].find(x => x.textContent.includes("近道で書いた一枚"));
-    return e ? { draft: !!e.querySelector(".seal"), mine: !!e.querySelector(".slip-mine") } : null;
+    return e ? { draft: !!e.querySelector(".seal"), who: e.querySelector(".entry-meta")?.textContent ?? "" } : null;
   })()`);
   check("近道で送ったものは公開になっている", entry && !entry.draft, JSON.stringify(entry));
-  check("自分のものとして載る", entry?.mine, JSON.stringify(entry));
+  check("自分の名前とともに載る", entry?.who.includes("はなこ"), JSON.stringify(entry));
 }
 
 // ── Ctrl + Enter でも送れる（Windows） ──

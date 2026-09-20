@@ -585,6 +585,15 @@ html::before {
   color: var(--sumi-ghost);
 }
 
+/* 書きかけの控えを差し出す一行。注意と同じ扱いだが、釦を抱えるので並べ方を決める */
+.compose-draft {
+  display: flex;
+  flex-direction: row; /* 縦組みでは上から下へ */
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--sumi-soft);
+}
+
 .notice {
   font-size: 0.925rem;
   letter-spacing: 0.14em;
