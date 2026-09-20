@@ -188,6 +188,7 @@ html::before {
 .masthead {
   writing-mode: vertical-rl;
   flex: 0 0 auto;
+  max-width: 8rem; /* 何かの拍子に中身が広がっても、画面を食い尽くさない */
   display: flex;
   flex-direction: row; /* 縦組みでは上から下へ */
   align-items: baseline;
@@ -208,10 +209,21 @@ html::before {
   text-decoration: none;
 }
 
+/*
+ * ロゴの幅は auto に任せない。丈から比（60:223）で決め打ちする。
+ * viewBox だけの SVG に width: auto を当てると、Safari の実機は縦組みの中で
+ * 幅を「空いているだけ全部」と解くことがあり、柱が画面いっぱいに広がった。
+ */
+.masthead-title {
+  flex: 0 0 auto;
+}
+
 .masthead-title .logo {
+  --logo-h: clamp(6.2rem, 8vw, 7.4rem);
   display: block;
-  height: clamp(6.2rem, 8vw, 7.4rem);
-  width: auto;
+  height: var(--logo-h);
+  width: calc(var(--logo-h) * 60 / 223);
+  max-width: none;
 }
 
 /* 読み上げにだけ渡す字。見た目には出さない。 */
@@ -1247,7 +1259,7 @@ a {
   }
 
   .masthead-title .logo {
-    height: 6rem;
+    --logo-h: 6rem;
   }
 
   .about {
