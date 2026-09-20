@@ -92,29 +92,69 @@ function layout(text: string, size: number, perColumn: number, indent: number, w
   return cols;
 }
 
+/*
+ * 一字を升に置く。(x, y) は升の中心、size は字の大きさ、pitch は字送り。
+ *
+ * 置き場所は textBaseline の "middle" に頼らない。あれはブラウザで意味が違い（Safari は小文字の
+ * 丈の半分、Chrome は仮想ボディの半分）、同じ式でも Safari では字がずれる。
+ * かわりに欧文ベースライン（alphabetic）で描き、和文の仮想ボディ（上 0.88em・下 0.12em）から
+ * 自分で中心を出す。これはどのブラウザでも同じ。
+ *
+ *   ・ふつうの字……仮想ボディの中心を、升の中心に
+ *   ・小書きの仮名……そこから右上へ少し（縦組みの字形は、右上に 0.1em ほど寄る）
+ *   ・句読点……墨の実寸を測って、その中心を升の右上に置く（横組みの字形は左下にあるので、測らないと合わない）
+ *   ・長音・括弧・ラテン文字……升の中心で九十度倒してから、同じ置きかた
+ */
+const BODY_ASCENT = 0.88; // 和文の仮想ボディ。ベースラインから上が 0.88em、下が 0.12em
+const BASELINE_FROM_CENTER = BODY_ASCENT - 0.5; // 升の中心からベースラインまで（下向きに 0.38em）
+
+function drawUpright(ctx: CanvasRenderingContext2D, ch: string, cx: number, cy: number, size: number) {
+  const advance = ctx.measureText(ch).width;
+  ctx.fillText(ch, cx - advance / 2, cy + size * BASELINE_FROM_CENTER);
+}
+
 function drawGlyph(ctx: CanvasRenderingContext2D, g: Glyph, x: number, y: number, size: number, pitch = size) {
-  // (x, y) は升の中心
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+
   if (g.kind === "rotate") {
     ctx.save();
     if (g.cells > 1) {
-      // 塊は、最初の升の上端から下へ流す
+      // ラテン文字の塊：最初の升の上端から下へ流す。ベースラインは列の軸より少し左（倒した先では下）
       ctx.translate(x, y - pitch / 2);
       ctx.rotate(Math.PI / 2);
-      ctx.textAlign = "left";
-      ctx.fillText(g.ch, 0, 0);
+      ctx.fillText(g.ch, 0, size * 0.32);
     } else {
       ctx.translate(x, y);
       ctx.rotate(Math.PI / 2);
-      ctx.fillText(g.ch, 0, 0);
+      drawUpright(ctx, g.ch, 0, 0, size);
     }
     ctx.restore();
     return;
   }
-  if (g.kind === "corner") {
-    ctx.fillText(g.ch, x + size * 0.28, y - size * 0.28);
+
+  if (g.kind === "corner" && PUNCT.has(g.ch)) {
+    // 句読点：墨の箱を測って、その中心を升の右上（中心から右へ 0.28em・上へ 0.28em）に合わせる
+    const m = ctx.measureText(g.ch);
+    const inkLeft = -m.actualBoundingBoxLeft;
+    const inkRight = m.actualBoundingBoxRight;
+    const inkTop = -m.actualBoundingBoxAscent;
+    const inkBottom = m.actualBoundingBoxDescent;
+    const inkCx = (inkLeft + inkRight) / 2;
+    const inkCy = (inkTop + inkBottom) / 2;
+    const targetX = x + size * 0.28;
+    const targetY = y - size * 0.28;
+    ctx.fillText(g.ch, targetX - inkCx, targetY - inkCy);
     return;
   }
-  ctx.fillText(g.ch, x, y);
+
+  if (g.kind === "corner") {
+    // 小書きの仮名：右へ 0.1em、上へ 0.1em
+    drawUpright(ctx, g.ch, x + size * 0.1, y - size * 0.1, size);
+    return;
+  }
+
+  drawUpright(ctx, g.ch, x, y, size);
 }
 
 async function grain(): Promise<HTMLImageElement | null> {
@@ -165,9 +205,6 @@ export async function renderStory(slip: StorySource): Promise<Blob> {
   const margin = { top: 200, right: 120, bottom: 200, left: 120 };
   const small = 26; // 日付と印の字
   const usable = STORY_H - margin.top - margin.bottom;
-
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
 
   let x = STORY_W - margin.right; // 右端（ここから左へ列を置く）
 
