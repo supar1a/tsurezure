@@ -124,7 +124,8 @@ html::before {
   writing-mode: vertical-rl;
   -webkit-text-orientation: mixed;
   text-orientation: mixed;
-  font-feature-settings: "vpal" 1, "vkrn" 1;
+  /* 字は詰めない（vpal・vkrn を使わない）。字ごとに詰め方が違うと、字間を足したときに
+     空いた所と詰まった所が交互に出て、リズムが崩れる。全角のまま等間隔に並べる。 */
   line-break: strict;
   word-break: normal;
   overflow-wrap: normal;
@@ -949,7 +950,6 @@ button.line-check:disabled {
   writing-mode: vertical-rl;
   -webkit-text-orientation: mixed;
   text-orientation: mixed;
-  font-feature-settings: "vpal" 1, "vkrn" 1;
   line-break: strict;
   color: var(--sumi);
   background: transparent;
@@ -2020,7 +2020,6 @@ a {
   writing-mode: vertical-rl;
   -webkit-text-orientation: mixed;
   text-orientation: mixed;
-  font-feature-settings: "vpal" 1, "vkrn" 1;
   line-break: strict;
   flex: 0 0 auto;
   width: calc(2.6em + clamp(0.8rem, 1.6vw, 1.6rem));

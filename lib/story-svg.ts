@@ -39,7 +39,7 @@ const FLOW_LEFT = EDGE + LOGO_W + 40; // 左下のロゴの列の右から本文
 const SHEET = `
 .page { position: relative; width: ${W}px; height: ${H}px; margin: 0; color: #1e1b16;
   font-family: "${FAMILY}", "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 400;
-  font-feature-settings: "vpal" 1, "vkrn" 1; line-break: strict; -webkit-font-smoothing: antialiased; }
+  line-break: strict; -webkit-font-smoothing: antialiased; }
 .v { writing-mode: vertical-rl; -webkit-writing-mode: vertical-rl; text-orientation: mixed; }
 .meta { position: absolute; top: ${TOP}px; right: ${EDGE}px; font-size: ${META}px; line-height: 1;
   letter-spacing: 0.2em; white-space: nowrap; color: #5f574c; }
